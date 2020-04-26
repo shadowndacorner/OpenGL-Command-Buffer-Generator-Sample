@@ -272,11 +272,6 @@ void CommandBuffer::ProcessCommands()
 				GL_CHECK(glGetDoublev(pname, data));
 				break;
 			}
-			case CommandId::GetError:
-			{
-				GL_CHECK(glGetError());
-				break;
-			}
 			case CommandId::GetFloatv:
 			{
 				GLenum pname = m_Buffer.read<GLenum>();
@@ -289,12 +284,6 @@ void CommandBuffer::ProcessCommands()
 				GLenum pname = m_Buffer.read<GLenum>();
 				GLint * data = m_Buffer.read<GLint *>();
 				GL_CHECK(glGetIntegerv(pname, data));
-				break;
-			}
-			case CommandId::GetString:
-			{
-				GLenum name = m_Buffer.read<GLenum>();
-				GL_CHECK(glGetString(name));
 				break;
 			}
 			case CommandId::GetTexImage:
@@ -339,12 +328,6 @@ void CommandBuffer::ProcessCommands()
 				GLenum pname = m_Buffer.read<GLenum>();
 				GLint * params = m_Buffer.read<GLint *>();
 				GL_CHECK(glGetTexLevelParameteriv(target, level, pname, params));
-				break;
-			}
-			case CommandId::IsEnabled:
-			{
-				GLenum cap = m_Buffer.read<GLenum>();
-				GL_CHECK(glIsEnabled(cap));
 				break;
 			}
 			case CommandId::DepthRange:
@@ -482,13 +465,6 @@ void CommandBuffer::ProcessCommands()
 				auto handle = m_Buffer.read<TextureHandle>();
 				auto& texture = *m_ResourceManager.Textures.get(handle);
 				glGenTextures(1, &texture);
-				break;
-			}
-			case CommandId::IsTexture:
-			{
-				TextureHandle textureHandle = m_Buffer.read<TextureHandle>();
-				auto& texture = *m_ResourceManager.Textures.get(textureHandle);
-				GL_CHECK(glIsTexture(texture));
 				break;
 			}
 			case CommandId::DrawRangeElements:
@@ -735,12 +711,6 @@ void CommandBuffer::ProcessCommands()
 				GL_CHECK(glDeleteQueries(n, ids));
 				break;
 			}
-			case CommandId::IsQuery:
-			{
-				GLuint id = m_Buffer.read<GLuint>();
-				GL_CHECK(glIsQuery(id));
-				break;
-			}
 			case CommandId::BeginQuery:
 			{
 				GLenum target = m_Buffer.read<GLenum>();
@@ -800,13 +770,6 @@ void CommandBuffer::ProcessCommands()
 				glGenBuffers(1, &target);
 				break;
 			}
-			case CommandId::IsBuffer:
-			{
-				BufferHandle bufferHandle = m_Buffer.read<BufferHandle>();
-				auto& buffer = *m_ResourceManager.Buffers.get(bufferHandle);
-				GL_CHECK(glIsBuffer(buffer));
-				break;
-			}
 			case CommandId::BufferData:
 			{
 				GLenum target = m_Buffer.read<GLenum>();
@@ -832,19 +795,6 @@ void CommandBuffer::ProcessCommands()
 				GLsizeiptr size = m_Buffer.read<GLsizeiptr>();
 				void * data = m_Buffer.read<void *>();
 				GL_CHECK(glGetBufferSubData(target, offset, size, data));
-				break;
-			}
-			case CommandId::MapBuffer:
-			{
-				GLenum target = m_Buffer.read<GLenum>();
-				GLenum access = m_Buffer.read<GLenum>();
-				GL_CHECK(glMapBuffer(target, access));
-				break;
-			}
-			case CommandId::UnmapBuffer:
-			{
-				GLenum target = m_Buffer.read<GLenum>();
-				GL_CHECK(glUnmapBuffer(target));
 				break;
 			}
 			case CommandId::GetBufferParameteriv:
@@ -1013,14 +963,6 @@ void CommandBuffer::ProcessCommands()
 				GL_CHECK(glGetAttachedShaders(program, maxCount, count, shaders));
 				break;
 			}
-			case CommandId::GetAttribLocation:
-			{
-				ShaderProgramHandle programHandle = m_Buffer.read<ShaderProgramHandle>();
-				auto& program = *m_ResourceManager.ShaderPrograms.get(programHandle);
-				const GLchar * name = m_Buffer.read<const GLchar *>();
-				GL_CHECK(glGetAttribLocation(program, name));
-				break;
-			}
 			case CommandId::GetProgramiv:
 			{
 				ShaderProgramHandle programHandle = m_Buffer.read<ShaderProgramHandle>();
@@ -1067,14 +1009,6 @@ void CommandBuffer::ProcessCommands()
 				GLsizei * length = m_Buffer.read<GLsizei *>();
 				GLchar * source = m_Buffer.read<GLchar *>();
 				GL_CHECK(glGetShaderSource(shader, bufSize, length, source));
-				break;
-			}
-			case CommandId::GetUniformLocation:
-			{
-				ShaderProgramHandle programHandle = m_Buffer.read<ShaderProgramHandle>();
-				auto& program = *m_ResourceManager.ShaderPrograms.get(programHandle);
-				const GLchar * name = m_Buffer.read<const GLchar *>();
-				GL_CHECK(glGetUniformLocation(program, name));
 				break;
 			}
 			case CommandId::GetUniformfv:
@@ -1125,20 +1059,6 @@ void CommandBuffer::ProcessCommands()
 				GLenum pname = m_Buffer.read<GLenum>();
 				void ** pointer = m_Buffer.read<void **>();
 				GL_CHECK(glGetVertexAttribPointerv(index, pname, pointer));
-				break;
-			}
-			case CommandId::IsProgram:
-			{
-				ShaderProgramHandle programHandle = m_Buffer.read<ShaderProgramHandle>();
-				auto& program = *m_ResourceManager.ShaderPrograms.get(programHandle);
-				GL_CHECK(glIsProgram(program));
-				break;
-			}
-			case CommandId::IsShader:
-			{
-				ShaderHandle shaderHandle = m_Buffer.read<ShaderHandle>();
-				auto& shader = *m_ResourceManager.Shaders.get(shaderHandle);
-				GL_CHECK(glIsShader(shader));
 				break;
 			}
 			case CommandId::LinkProgram:
@@ -1708,13 +1628,6 @@ void CommandBuffer::ProcessCommands()
 				GL_CHECK(glDisablei(target, index));
 				break;
 			}
-			case CommandId::IsEnabledi:
-			{
-				GLenum target = m_Buffer.read<GLenum>();
-				GLuint index = m_Buffer.read<GLuint>();
-				GL_CHECK(glIsEnabledi(target, index));
-				break;
-			}
 			case CommandId::BeginTransformFeedback:
 			{
 				GLenum primitiveMode = m_Buffer.read<GLenum>();
@@ -1984,14 +1897,6 @@ void CommandBuffer::ProcessCommands()
 				GL_CHECK(glBindFragDataLocation(program, color, name));
 				break;
 			}
-			case CommandId::GetFragDataLocation:
-			{
-				ShaderProgramHandle programHandle = m_Buffer.read<ShaderProgramHandle>();
-				auto& program = *m_ResourceManager.ShaderPrograms.get(programHandle);
-				const GLchar * name = m_Buffer.read<const GLchar *>();
-				GL_CHECK(glGetFragDataLocation(program, name));
-				break;
-			}
 			case CommandId::Uniform1ui:
 			{
 				GLint location = m_Buffer.read<GLint>();
@@ -2127,20 +2032,6 @@ void CommandBuffer::ProcessCommands()
 				GL_CHECK(glClearBufferfi(buffer, drawbuffer, depth, stencil));
 				break;
 			}
-			case CommandId::GetStringi:
-			{
-				GLenum name = m_Buffer.read<GLenum>();
-				GLuint index = m_Buffer.read<GLuint>();
-				GL_CHECK(glGetStringi(name, index));
-				break;
-			}
-			case CommandId::IsRenderbuffer:
-			{
-				RenderbufferHandle renderbufferHandle = m_Buffer.read<RenderbufferHandle>();
-				auto& renderbuffer = *m_ResourceManager.Renderbuffers.get(renderbufferHandle);
-				GL_CHECK(glIsRenderbuffer(renderbuffer));
-				break;
-			}
 			case CommandId::BindRenderbuffer:
 			{
 				GLenum target = m_Buffer.read<GLenum>();
@@ -2180,13 +2071,6 @@ void CommandBuffer::ProcessCommands()
 				GL_CHECK(glGetRenderbufferParameteriv(target, pname, params));
 				break;
 			}
-			case CommandId::IsFramebuffer:
-			{
-				FramebufferHandle framebufferHandle = m_Buffer.read<FramebufferHandle>();
-				auto& framebuffer = *m_ResourceManager.Framebuffers.get(framebufferHandle);
-				GL_CHECK(glIsFramebuffer(framebuffer));
-				break;
-			}
 			case CommandId::BindFramebuffer:
 			{
 				GLenum target = m_Buffer.read<GLenum>();
@@ -2207,12 +2091,6 @@ void CommandBuffer::ProcessCommands()
 				auto handle = m_Buffer.read<FramebufferHandle>();
 				auto& target = *m_ResourceManager.Framebuffers.get(handle);
 				glGenFramebuffers(1, &target);
-				break;
-			}
-			case CommandId::CheckFramebufferStatus:
-			{
-				GLenum target = m_Buffer.read<GLenum>();
-				GL_CHECK(glCheckFramebufferStatus(target));
 				break;
 			}
 			case CommandId::FramebufferTexture1D:
@@ -2310,15 +2188,6 @@ void CommandBuffer::ProcessCommands()
 				GL_CHECK(glFramebufferTextureLayer(target, attachment, texture, level, layer));
 				break;
 			}
-			case CommandId::MapBufferRange:
-			{
-				GLenum target = m_Buffer.read<GLenum>();
-				GLintptr offset = m_Buffer.read<GLintptr>();
-				GLsizeiptr length = m_Buffer.read<GLsizeiptr>();
-				GLbitfield access = m_Buffer.read<GLbitfield>();
-				GL_CHECK(glMapBufferRange(target, offset, length, access));
-				break;
-			}
 			case CommandId::FlushMappedBufferRange:
 			{
 				GLenum target = m_Buffer.read<GLenum>();
@@ -2346,12 +2215,6 @@ void CommandBuffer::ProcessCommands()
 				auto handle = m_Buffer.read<VertexArrayHandle>();
 				auto& target = *m_ResourceManager.VertexArrays.get(handle);
 				glGenVertexArrays(1, &target);
-				break;
-			}
-			case CommandId::IsVertexArray:
-			{
-				GLuint array = m_Buffer.read<GLuint>();
-				GL_CHECK(glIsVertexArray(array));
 				break;
 			}
 			case CommandId::DrawArraysInstanced:
@@ -2428,14 +2291,6 @@ void CommandBuffer::ProcessCommands()
 				GLsizei * length = m_Buffer.read<GLsizei *>();
 				GLchar * uniformName = m_Buffer.read<GLchar *>();
 				GL_CHECK(glGetActiveUniformName(program, uniformIndex, bufSize, length, uniformName));
-				break;
-			}
-			case CommandId::GetUniformBlockIndex:
-			{
-				ShaderProgramHandle programHandle = m_Buffer.read<ShaderProgramHandle>();
-				auto& program = *m_ResourceManager.ShaderPrograms.get(programHandle);
-				const GLchar * uniformBlockName = m_Buffer.read<const GLchar *>();
-				GL_CHECK(glGetUniformBlockIndex(program, uniformBlockName));
 				break;
 			}
 			case CommandId::GetActiveUniformBlockiv:
@@ -2518,31 +2373,10 @@ void CommandBuffer::ProcessCommands()
 				GL_CHECK(glProvokingVertex(mode));
 				break;
 			}
-			case CommandId::FenceSync:
-			{
-				GLenum condition = m_Buffer.read<GLenum>();
-				GLbitfield flags = m_Buffer.read<GLbitfield>();
-				GL_CHECK(glFenceSync(condition, flags));
-				break;
-			}
-			case CommandId::IsSync:
-			{
-				GLsync sync = m_Buffer.read<GLsync>();
-				GL_CHECK(glIsSync(sync));
-				break;
-			}
 			case CommandId::DeleteSync:
 			{
 				GLsync sync = m_Buffer.read<GLsync>();
 				GL_CHECK(glDeleteSync(sync));
-				break;
-			}
-			case CommandId::ClientWaitSync:
-			{
-				GLsync sync = m_Buffer.read<GLsync>();
-				GLbitfield flags = m_Buffer.read<GLbitfield>();
-				GLuint64 timeout = m_Buffer.read<GLuint64>();
-				GL_CHECK(glClientWaitSync(sync, flags, timeout));
 				break;
 			}
 			case CommandId::WaitSync:
@@ -2644,14 +2478,6 @@ void CommandBuffer::ProcessCommands()
 				GL_CHECK(glBindFragDataLocationIndexed(program, colorNumber, index, name));
 				break;
 			}
-			case CommandId::GetFragDataIndex:
-			{
-				ShaderProgramHandle programHandle = m_Buffer.read<ShaderProgramHandle>();
-				auto& program = *m_ResourceManager.ShaderPrograms.get(programHandle);
-				const GLchar * name = m_Buffer.read<const GLchar *>();
-				GL_CHECK(glGetFragDataIndex(program, name));
-				break;
-			}
 			case CommandId::GenSamplers:
 			{
 				GLsizei count = m_Buffer.read<GLsizei>();
@@ -2664,12 +2490,6 @@ void CommandBuffer::ProcessCommands()
 				GLsizei count = m_Buffer.read<GLsizei>();
 				const GLuint * samplers = m_Buffer.read<const GLuint *>();
 				GL_CHECK(glDeleteSamplers(count, samplers));
-				break;
-			}
-			case CommandId::IsSampler:
-			{
-				GLuint sampler = m_Buffer.read<GLuint>();
-				GL_CHECK(glIsSampler(sampler));
 				break;
 			}
 			case CommandId::BindSampler:
@@ -3297,24 +3117,6 @@ void CommandBuffer::ProcessCommands()
 				GL_CHECK(glGetUniformdv(program, location, params));
 				break;
 			}
-			case CommandId::GetSubroutineUniformLocation:
-			{
-				ShaderProgramHandle programHandle = m_Buffer.read<ShaderProgramHandle>();
-				auto& program = *m_ResourceManager.ShaderPrograms.get(programHandle);
-				GLenum shadertype = m_Buffer.read<GLenum>();
-				const GLchar * name = m_Buffer.read<const GLchar *>();
-				GL_CHECK(glGetSubroutineUniformLocation(program, shadertype, name));
-				break;
-			}
-			case CommandId::GetSubroutineIndex:
-			{
-				ShaderProgramHandle programHandle = m_Buffer.read<ShaderProgramHandle>();
-				auto& program = *m_ResourceManager.ShaderPrograms.get(programHandle);
-				GLenum shadertype = m_Buffer.read<GLenum>();
-				const GLchar * name = m_Buffer.read<const GLchar *>();
-				GL_CHECK(glGetSubroutineIndex(program, shadertype, name));
-				break;
-			}
 			case CommandId::GetActiveSubroutineUniformiv:
 			{
 				ShaderProgramHandle programHandle = m_Buffer.read<ShaderProgramHandle>();
@@ -3409,12 +3211,6 @@ void CommandBuffer::ProcessCommands()
 				GLsizei n = m_Buffer.read<GLsizei>();
 				GLuint * ids = m_Buffer.read<GLuint *>();
 				GL_CHECK(glGenTransformFeedbacks(n, ids));
-				break;
-			}
-			case CommandId::IsTransformFeedback:
-			{
-				GLuint id = m_Buffer.read<GLuint>();
-				GL_CHECK(glIsTransformFeedback(id));
 				break;
 			}
 			case CommandId::PauseTransformFeedback:
@@ -3550,14 +3346,6 @@ void CommandBuffer::ProcessCommands()
 				GL_CHECK(glActiveShaderProgram(pipeline, program));
 				break;
 			}
-			case CommandId::CreateShaderProgramv:
-			{
-				GLenum type = m_Buffer.read<GLenum>();
-				GLsizei count = m_Buffer.read<GLsizei>();
-				const GLchar *const* strings = m_Buffer.read<const GLchar *const*>();
-				GL_CHECK(glCreateShaderProgramv(type, count, strings));
-				break;
-			}
 			case CommandId::BindProgramPipeline:
 			{
 				GLuint pipeline = m_Buffer.read<GLuint>();
@@ -3576,12 +3364,6 @@ void CommandBuffer::ProcessCommands()
 				GLsizei n = m_Buffer.read<GLsizei>();
 				GLuint * pipelines = m_Buffer.read<GLuint *>();
 				GL_CHECK(glGenProgramPipelines(n, pipelines));
-				break;
-			}
-			case CommandId::IsProgramPipeline:
-			{
-				GLuint pipeline = m_Buffer.read<GLuint>();
-				GL_CHECK(glIsProgramPipeline(pipeline));
 				break;
 			}
 			case CommandId::GetProgramPipelineiv:
@@ -4583,15 +4365,6 @@ void CommandBuffer::ProcessCommands()
 				GL_CHECK(glGetProgramInterfaceiv(program, programInterface, pname, params));
 				break;
 			}
-			case CommandId::GetProgramResourceIndex:
-			{
-				ShaderProgramHandle programHandle = m_Buffer.read<ShaderProgramHandle>();
-				auto& program = *m_ResourceManager.ShaderPrograms.get(programHandle);
-				GLenum programInterface = m_Buffer.read<GLenum>();
-				const GLchar * name = m_Buffer.read<const GLchar *>();
-				GL_CHECK(glGetProgramResourceIndex(program, programInterface, name));
-				break;
-			}
 			case CommandId::GetProgramResourceName:
 			{
 				ShaderProgramHandle programHandle = m_Buffer.read<ShaderProgramHandle>();
@@ -4616,24 +4389,6 @@ void CommandBuffer::ProcessCommands()
 				GLsizei * length = m_Buffer.read<GLsizei *>();
 				GLint * params = m_Buffer.read<GLint *>();
 				GL_CHECK(glGetProgramResourceiv(program, programInterface, index, propCount, props, count, length, params));
-				break;
-			}
-			case CommandId::GetProgramResourceLocation:
-			{
-				ShaderProgramHandle programHandle = m_Buffer.read<ShaderProgramHandle>();
-				auto& program = *m_ResourceManager.ShaderPrograms.get(programHandle);
-				GLenum programInterface = m_Buffer.read<GLenum>();
-				const GLchar * name = m_Buffer.read<const GLchar *>();
-				GL_CHECK(glGetProgramResourceLocation(program, programInterface, name));
-				break;
-			}
-			case CommandId::GetProgramResourceLocationIndex:
-			{
-				ShaderProgramHandle programHandle = m_Buffer.read<ShaderProgramHandle>();
-				auto& program = *m_ResourceManager.ShaderPrograms.get(programHandle);
-				GLenum programInterface = m_Buffer.read<GLenum>();
-				const GLchar * name = m_Buffer.read<const GLchar *>();
-				GL_CHECK(glGetProgramResourceLocationIndex(program, programInterface, name));
 				break;
 			}
 			case CommandId::ShaderStorageBlockBinding:
@@ -4772,19 +4527,6 @@ void CommandBuffer::ProcessCommands()
 				GLDEBUGPROC callback = m_Buffer.read<GLDEBUGPROC>();
 				const void * userParam = m_Buffer.read<const void *>();
 				GL_CHECK(glDebugMessageCallback(callback, userParam));
-				break;
-			}
-			case CommandId::GetDebugMessageLog:
-			{
-				GLuint count = m_Buffer.read<GLuint>();
-				GLsizei bufSize = m_Buffer.read<GLsizei>();
-				GLenum * sources = m_Buffer.read<GLenum *>();
-				GLenum * types = m_Buffer.read<GLenum *>();
-				GLuint * ids = m_Buffer.read<GLuint *>();
-				GLenum * severities = m_Buffer.read<GLenum *>();
-				GLsizei * lengths = m_Buffer.read<GLsizei *>();
-				GLchar * messageLog = m_Buffer.read<GLchar *>();
-				GL_CHECK(glGetDebugMessageLog(count, bufSize, sources, types, ids, severities, lengths, messageLog));
 				break;
 			}
 			case CommandId::PushDebugGroup:
@@ -5066,31 +4808,6 @@ void CommandBuffer::ProcessCommands()
 				GL_CHECK(glClearNamedBufferSubData(buffer, internalformat, offset, size, format, type, data));
 				break;
 			}
-			case CommandId::MapNamedBuffer:
-			{
-				BufferHandle bufferHandle = m_Buffer.read<BufferHandle>();
-				auto& buffer = *m_ResourceManager.Buffers.get(bufferHandle);
-				GLenum access = m_Buffer.read<GLenum>();
-				GL_CHECK(glMapNamedBuffer(buffer, access));
-				break;
-			}
-			case CommandId::MapNamedBufferRange:
-			{
-				BufferHandle bufferHandle = m_Buffer.read<BufferHandle>();
-				auto& buffer = *m_ResourceManager.Buffers.get(bufferHandle);
-				GLintptr offset = m_Buffer.read<GLintptr>();
-				GLsizeiptr length = m_Buffer.read<GLsizeiptr>();
-				GLbitfield access = m_Buffer.read<GLbitfield>();
-				GL_CHECK(glMapNamedBufferRange(buffer, offset, length, access));
-				break;
-			}
-			case CommandId::UnmapNamedBuffer:
-			{
-				BufferHandle bufferHandle = m_Buffer.read<BufferHandle>();
-				auto& buffer = *m_ResourceManager.Buffers.get(bufferHandle);
-				GL_CHECK(glUnmapNamedBuffer(buffer));
-				break;
-			}
 			case CommandId::FlushMappedNamedBufferRange:
 			{
 				BufferHandle bufferHandle = m_Buffer.read<BufferHandle>();
@@ -5294,14 +5011,6 @@ void CommandBuffer::ProcessCommands()
 				GLbitfield mask = m_Buffer.read<GLbitfield>();
 				GLenum filter = m_Buffer.read<GLenum>();
 				GL_CHECK(glBlitNamedFramebuffer(readFramebuffer, drawFramebuffer, srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter));
-				break;
-			}
-			case CommandId::CheckNamedFramebufferStatus:
-			{
-				FramebufferHandle framebufferHandle = m_Buffer.read<FramebufferHandle>();
-				auto& framebuffer = *m_ResourceManager.Framebuffers.get(framebufferHandle);
-				GLenum target = m_Buffer.read<GLenum>();
-				GL_CHECK(glCheckNamedFramebufferStatus(framebuffer, target));
 				break;
 			}
 			case CommandId::GetNamedFramebufferParameteriv:
@@ -5963,11 +5672,6 @@ void CommandBuffer::ProcessCommands()
 				GLsizei bufSize = m_Buffer.read<GLsizei>();
 				void * pixels = m_Buffer.read<void *>();
 				GL_CHECK(glGetCompressedTextureSubImage(texture, level, xoffset, yoffset, zoffset, width, height, depth, bufSize, pixels));
-				break;
-			}
-			case CommandId::GetGraphicsResetStatus:
-			{
-				GL_CHECK(glGetGraphicsResetStatus());
 				break;
 			}
 			case CommandId::GetnCompressedTexImage:

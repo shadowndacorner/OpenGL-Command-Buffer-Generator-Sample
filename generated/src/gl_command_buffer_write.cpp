@@ -267,15 +267,6 @@ void CommandBuffer::GetDoublev(GLenum pname, GLdouble * data)
 	m_Buffer.write(data);
 }
 
-GLenum CommandBuffer::GetError()
-{
-	m_Buffer.write_command(CommandId::GetError);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
-}
-
 void CommandBuffer::GetFloatv(GLenum pname, GLfloat * data)
 {
 	m_Buffer.write_command(CommandId::GetFloatv);
@@ -288,15 +279,6 @@ void CommandBuffer::GetIntegerv(GLenum pname, GLint * data)
 	m_Buffer.write_command(CommandId::GetIntegerv);
 	m_Buffer.write(pname);
 	m_Buffer.write(data);
-}
-
-const GLubyte * CommandBuffer::GetString(GLenum name)
-{
-	m_Buffer.write_command(CommandId::GetString);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
 }
 
 void CommandBuffer::GetTexImage(GLenum target, GLint level, GLenum format, GLenum type, void * pixels)
@@ -341,15 +323,6 @@ void CommandBuffer::GetTexLevelParameteriv(GLenum target, GLint level, GLenum pn
 	m_Buffer.write(level);
 	m_Buffer.write(pname);
 	m_Buffer.write(params);
-}
-
-GLboolean CommandBuffer::IsEnabled(GLenum cap)
-{
-	m_Buffer.write_command(CommandId::IsEnabled);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
 }
 
 void CommandBuffer::DepthRange(GLdouble n, GLdouble f)
@@ -485,18 +458,9 @@ TextureHandle CommandBuffer::GenTexture()
 {
 	m_Buffer.write_command(CommandId::GenTexture);
 
-	auto handle = m_ResourceManager.Textures.create();
+	auto handle = m_ResourceManager.Textures.create(0);
 	m_Buffer.write(handle);
 	return handle;
-}
-
-GLboolean CommandBuffer::IsTexture(TextureHandle texture)
-{
-	m_Buffer.write_command(CommandId::IsTexture);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
 }
 
 void CommandBuffer::DrawRangeElements(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, const void * indices)
@@ -742,15 +706,6 @@ void CommandBuffer::DeleteQueries(GLsizei n, const GLuint * ids)
 	m_Buffer.write(ids);
 }
 
-GLboolean CommandBuffer::IsQuery(GLuint id)
-{
-	m_Buffer.write_command(CommandId::IsQuery);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
-}
-
 void CommandBuffer::BeginQuery(GLenum target, GLuint id)
 {
 	m_Buffer.write_command(CommandId::BeginQuery);
@@ -806,18 +761,9 @@ BufferHandle CommandBuffer::GenBuffer()
 {
 	m_Buffer.write_command(CommandId::GenBuffer);
 
-	auto handle = m_ResourceManager.Buffers.create();
+	auto handle = m_ResourceManager.Buffers.create(0);
 	m_Buffer.write<BufferHandle>(handle);
 	return handle;
-}
-
-GLboolean CommandBuffer::IsBuffer(BufferHandle buffer)
-{
-	m_Buffer.write_command(CommandId::IsBuffer);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
 }
 
 void CommandBuffer::BufferData(GLenum target, GLsizeiptr size, const void * data, GLenum usage)
@@ -845,24 +791,6 @@ void CommandBuffer::GetBufferSubData(GLenum target, GLintptr offset, GLsizeiptr 
 	m_Buffer.write(offset);
 	m_Buffer.write(size);
 	m_Buffer.write(data);
-}
-
-void * CommandBuffer::MapBuffer(GLenum target, GLenum access)
-{
-	m_Buffer.write_command(CommandId::MapBuffer);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
-}
-
-GLboolean CommandBuffer::UnmapBuffer(GLenum target)
-{
-	m_Buffer.write_command(CommandId::UnmapBuffer);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
 }
 
 void CommandBuffer::GetBufferParameteriv(GLenum target, GLenum pname, GLint * params)
@@ -945,7 +873,7 @@ ShaderProgramHandle CommandBuffer::CreateProgram()
 {
 	m_Buffer.write_command(CommandId::CreateProgram);
 
-	auto handle = m_ResourceManager.ShaderPrograms.create();
+	auto handle = m_ResourceManager.ShaderPrograms.create(0);
 	m_Buffer.write(handle);
 	return handle;
 }
@@ -954,7 +882,7 @@ ShaderHandle CommandBuffer::CreateShader(GLenum type)
 {
 	m_Buffer.write_command(CommandId::CreateShader);
 
-	auto handle = m_ResourceManager.Shaders.create();
+	auto handle = m_ResourceManager.Shaders.create(0);
 	m_Buffer.write(handle);
 	m_Buffer.write<GLenum>(type);
 	return handle;
@@ -1024,15 +952,6 @@ void CommandBuffer::GetAttachedShaders(ShaderProgramHandle program, GLsizei maxC
 	m_Buffer.write(shaders);
 }
 
-GLint CommandBuffer::GetAttribLocation(ShaderProgramHandle program, const GLchar * name)
-{
-	m_Buffer.write_command(CommandId::GetAttribLocation);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
-}
-
 void CommandBuffer::GetProgramiv(ShaderProgramHandle program, GLenum pname, GLint * params)
 {
 	m_Buffer.write_command(CommandId::GetProgramiv);
@@ -1074,15 +993,6 @@ void CommandBuffer::GetShaderSource(ShaderHandle shader, GLsizei bufSize, GLsize
 	m_Buffer.write(bufSize);
 	m_Buffer.write(length);
 	m_Buffer.write(source);
-}
-
-GLint CommandBuffer::GetUniformLocation(ShaderProgramHandle program, const GLchar * name)
-{
-	m_Buffer.write_command(CommandId::GetUniformLocation);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
 }
 
 void CommandBuffer::GetUniformfv(ShaderProgramHandle program, GLint location, GLfloat * params)
@@ -1131,24 +1041,6 @@ void CommandBuffer::GetVertexAttribPointerv(GLuint index, GLenum pname, void ** 
 	m_Buffer.write(index);
 	m_Buffer.write(pname);
 	m_Buffer.write(pointer);
-}
-
-GLboolean CommandBuffer::IsProgram(ShaderProgramHandle program)
-{
-	m_Buffer.write_command(CommandId::IsProgram);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
-}
-
-GLboolean CommandBuffer::IsShader(ShaderHandle shader)
-{
-	m_Buffer.write_command(CommandId::IsShader);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
 }
 
 void CommandBuffer::LinkProgram(ShaderProgramHandle program)
@@ -1714,15 +1606,6 @@ void CommandBuffer::Disablei(GLenum target, GLuint index)
 	m_Buffer.write(index);
 }
 
-GLboolean CommandBuffer::IsEnabledi(GLenum target, GLuint index)
-{
-	m_Buffer.write_command(CommandId::IsEnabledi);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
-}
-
 void CommandBuffer::BeginTransformFeedback(GLenum primitiveMode)
 {
 	m_Buffer.write_command(CommandId::BeginTransformFeedback);
@@ -1986,15 +1869,6 @@ void CommandBuffer::BindFragDataLocation(ShaderProgramHandle program, GLuint col
 	m_Buffer.write(name);
 }
 
-GLint CommandBuffer::GetFragDataLocation(ShaderProgramHandle program, const GLchar * name)
-{
-	m_Buffer.write_command(CommandId::GetFragDataLocation);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
-}
-
 void CommandBuffer::Uniform1ui(GLint location, GLuint v0)
 {
 	m_Buffer.write_command(CommandId::Uniform1ui);
@@ -2126,24 +2000,6 @@ void CommandBuffer::ClearBufferfi(BufferHandle buffer, GLint drawbuffer, GLfloat
 	m_Buffer.write(stencil);
 }
 
-const GLubyte * CommandBuffer::GetStringi(GLenum name, GLuint index)
-{
-	m_Buffer.write_command(CommandId::GetStringi);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
-}
-
-GLboolean CommandBuffer::IsRenderbuffer(RenderbufferHandle renderbuffer)
-{
-	m_Buffer.write_command(CommandId::IsRenderbuffer);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
-}
-
 void CommandBuffer::BindRenderbuffer(GLenum target, RenderbufferHandle renderbuffer)
 {
 	m_Buffer.write_command(CommandId::BindRenderbuffer);
@@ -2162,7 +2018,7 @@ RenderbufferHandle CommandBuffer::GenRenderbuffer()
 {
 	m_Buffer.write_command(CommandId::GenRenderbuffer);
 
-	auto handle = m_ResourceManager.Renderbuffers.create();
+	auto handle = m_ResourceManager.Renderbuffers.create(0);
 	m_Buffer.write<RenderbufferHandle>(handle);
 	return handle;
 }
@@ -2184,15 +2040,6 @@ void CommandBuffer::GetRenderbufferParameteriv(GLenum target, GLenum pname, GLin
 	m_Buffer.write(params);
 }
 
-GLboolean CommandBuffer::IsFramebuffer(FramebufferHandle framebuffer)
-{
-	m_Buffer.write_command(CommandId::IsFramebuffer);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
-}
-
 void CommandBuffer::BindFramebuffer(GLenum target, FramebufferHandle framebuffer)
 {
 	m_Buffer.write_command(CommandId::BindFramebuffer);
@@ -2211,18 +2058,9 @@ FramebufferHandle CommandBuffer::GenFramebuffer()
 {
 	m_Buffer.write_command(CommandId::GenFramebuffer);
 
-	auto handle = m_ResourceManager.Framebuffers.create();
+	auto handle = m_ResourceManager.Framebuffers.create(0);
 	m_Buffer.write<FramebufferHandle>(handle);
 	return handle;
-}
-
-GLenum CommandBuffer::CheckFramebufferStatus(GLenum target)
-{
-	m_Buffer.write_command(CommandId::CheckFramebufferStatus);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
 }
 
 void CommandBuffer::FramebufferTexture1D(GLenum target, GLenum attachment, GLenum textarget, TextureHandle texture, GLint level)
@@ -2315,15 +2153,6 @@ void CommandBuffer::FramebufferTextureLayer(GLenum target, GLenum attachment, Te
 	m_Buffer.write(layer);
 }
 
-void * CommandBuffer::MapBufferRange(GLenum target, GLintptr offset, GLsizeiptr length, GLbitfield access)
-{
-	m_Buffer.write_command(CommandId::MapBufferRange);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
-}
-
 void CommandBuffer::FlushMappedBufferRange(GLenum target, GLintptr offset, GLsizeiptr length)
 {
 	m_Buffer.write_command(CommandId::FlushMappedBufferRange);
@@ -2349,18 +2178,9 @@ VertexArrayHandle CommandBuffer::GenVertexArray()
 {
 	m_Buffer.write_command(CommandId::GenVertexArray);
 
-	auto handle = m_ResourceManager.VertexArrays.create();
+	auto handle = m_ResourceManager.VertexArrays.create(0);
 	m_Buffer.write<VertexArrayHandle>(handle);
 	return handle;
-}
-
-GLboolean CommandBuffer::IsVertexArray(GLuint array)
-{
-	m_Buffer.write_command(CommandId::IsVertexArray);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
 }
 
 void CommandBuffer::DrawArraysInstanced(GLenum mode, GLint first, GLsizei count, GLsizei instancecount)
@@ -2433,15 +2253,6 @@ void CommandBuffer::GetActiveUniformName(ShaderProgramHandle program, GLuint uni
 	m_Buffer.write(bufSize);
 	m_Buffer.write(length);
 	m_Buffer.write(uniformName);
-}
-
-GLuint CommandBuffer::GetUniformBlockIndex(ShaderProgramHandle program, const GLchar * uniformBlockName)
-{
-	m_Buffer.write_command(CommandId::GetUniformBlockIndex);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
 }
 
 void CommandBuffer::GetActiveUniformBlockiv(ShaderProgramHandle program, GLuint uniformBlockIndex, GLenum pname, GLint * params)
@@ -2521,37 +2332,10 @@ void CommandBuffer::ProvokingVertex(GLenum mode)
 	m_Buffer.write(mode);
 }
 
-GLsync CommandBuffer::FenceSync(GLenum condition, GLbitfield flags)
-{
-	m_Buffer.write_command(CommandId::FenceSync);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
-}
-
-GLboolean CommandBuffer::IsSync(GLsync sync)
-{
-	m_Buffer.write_command(CommandId::IsSync);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
-}
-
 void CommandBuffer::DeleteSync(GLsync sync)
 {
 	m_Buffer.write_command(CommandId::DeleteSync);
 	m_Buffer.write(sync);
-}
-
-GLenum CommandBuffer::ClientWaitSync(GLsync sync, GLbitfield flags, GLuint64 timeout)
-{
-	m_Buffer.write_command(CommandId::ClientWaitSync);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
 }
 
 void CommandBuffer::WaitSync(GLsync sync, GLbitfield flags, GLuint64 timeout)
@@ -2651,15 +2435,6 @@ void CommandBuffer::BindFragDataLocationIndexed(ShaderProgramHandle program, GLu
 	m_Buffer.write(name);
 }
 
-GLint CommandBuffer::GetFragDataIndex(ShaderProgramHandle program, const GLchar * name)
-{
-	m_Buffer.write_command(CommandId::GetFragDataIndex);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
-}
-
 void CommandBuffer::GenSamplers(GLsizei count, GLuint * samplers)
 {
 	m_Buffer.write_command(CommandId::GenSamplers);
@@ -2672,15 +2447,6 @@ void CommandBuffer::DeleteSamplers(GLsizei count, const GLuint * samplers)
 	m_Buffer.write_command(CommandId::DeleteSamplers);
 	m_Buffer.write(count);
 	m_Buffer.write(samplers);
-}
-
-GLboolean CommandBuffer::IsSampler(GLuint sampler)
-{
-	m_Buffer.write_command(CommandId::IsSampler);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
 }
 
 void CommandBuffer::BindSampler(GLuint unit, GLuint sampler)
@@ -3299,24 +3065,6 @@ void CommandBuffer::GetUniformdv(ShaderProgramHandle program, GLint location, GL
 	m_Buffer.write(params);
 }
 
-GLint CommandBuffer::GetSubroutineUniformLocation(ShaderProgramHandle program, GLenum shadertype, const GLchar * name)
-{
-	m_Buffer.write_command(CommandId::GetSubroutineUniformLocation);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
-}
-
-GLuint CommandBuffer::GetSubroutineIndex(ShaderProgramHandle program, GLenum shadertype, const GLchar * name)
-{
-	m_Buffer.write_command(CommandId::GetSubroutineIndex);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
-}
-
 void CommandBuffer::GetActiveSubroutineUniformiv(ShaderProgramHandle program, GLenum shadertype, GLuint index, GLenum pname, GLint * values)
 {
 	m_Buffer.write_command(CommandId::GetActiveSubroutineUniformiv);
@@ -3407,15 +3155,6 @@ void CommandBuffer::GenTransformFeedbacks(GLsizei n, GLuint * ids)
 	m_Buffer.write_command(CommandId::GenTransformFeedbacks);
 	m_Buffer.write(n);
 	m_Buffer.write(ids);
-}
-
-GLboolean CommandBuffer::IsTransformFeedback(GLuint id)
-{
-	m_Buffer.write_command(CommandId::IsTransformFeedback);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
 }
 
 void CommandBuffer::PauseTransformFeedback()
@@ -3546,15 +3285,6 @@ void CommandBuffer::ActiveShaderProgram(GLuint pipeline, ShaderProgramHandle pro
 	m_Buffer.write(program);
 }
 
-GLuint CommandBuffer::CreateShaderProgramv(GLenum type, GLsizei count, const GLchar *const* strings)
-{
-	m_Buffer.write_command(CommandId::CreateShaderProgramv);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
-}
-
 void CommandBuffer::BindProgramPipeline(GLuint pipeline)
 {
 	m_Buffer.write_command(CommandId::BindProgramPipeline);
@@ -3573,15 +3303,6 @@ void CommandBuffer::GenProgramPipelines(GLsizei n, GLuint * pipelines)
 	m_Buffer.write_command(CommandId::GenProgramPipelines);
 	m_Buffer.write(n);
 	m_Buffer.write(pipelines);
-}
-
-GLboolean CommandBuffer::IsProgramPipeline(GLuint pipeline)
-{
-	m_Buffer.write_command(CommandId::IsProgramPipeline);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
 }
 
 void CommandBuffer::GetProgramPipelineiv(GLuint pipeline, GLenum pname, GLint * params)
@@ -4526,15 +4247,6 @@ void CommandBuffer::GetProgramInterfaceiv(ShaderProgramHandle program, GLenum pr
 	m_Buffer.write(params);
 }
 
-GLuint CommandBuffer::GetProgramResourceIndex(ShaderProgramHandle program, GLenum programInterface, const GLchar * name)
-{
-	m_Buffer.write_command(CommandId::GetProgramResourceIndex);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
-}
-
 void CommandBuffer::GetProgramResourceName(ShaderProgramHandle program, GLenum programInterface, GLuint index, GLsizei bufSize, GLsizei * length, GLchar * name)
 {
 	m_Buffer.write_command(CommandId::GetProgramResourceName);
@@ -4557,24 +4269,6 @@ void CommandBuffer::GetProgramResourceiv(ShaderProgramHandle program, GLenum pro
 	m_Buffer.write(count);
 	m_Buffer.write(length);
 	m_Buffer.write(params);
-}
-
-GLint CommandBuffer::GetProgramResourceLocation(ShaderProgramHandle program, GLenum programInterface, const GLchar * name)
-{
-	m_Buffer.write_command(CommandId::GetProgramResourceLocation);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
-}
-
-GLint CommandBuffer::GetProgramResourceLocationIndex(ShaderProgramHandle program, GLenum programInterface, const GLchar * name)
-{
-	m_Buffer.write_command(CommandId::GetProgramResourceLocationIndex);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
 }
 
 void CommandBuffer::ShaderStorageBlockBinding(ShaderProgramHandle program, GLuint storageBlockIndex, GLuint storageBlockBinding)
@@ -4709,15 +4403,6 @@ void CommandBuffer::DebugMessageCallback(GLDEBUGPROC callback, const void * user
 	m_Buffer.write_command(CommandId::DebugMessageCallback);
 	m_Buffer.write(callback);
 	m_Buffer.write(userParam);
-}
-
-GLuint CommandBuffer::GetDebugMessageLog(GLuint count, GLsizei bufSize, GLenum * sources, GLenum * types, GLuint * ids, GLenum * severities, GLsizei * lengths, GLchar * messageLog)
-{
-	m_Buffer.write_command(CommandId::GetDebugMessageLog);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
 }
 
 void CommandBuffer::PushDebugGroup(GLenum source, GLuint id, GLsizei length, const GLchar * message)
@@ -4928,7 +4613,7 @@ BufferHandle CommandBuffer::CreateBuffer()
 {
 	m_Buffer.write_command(CommandId::CreateBuffer);
 
-	auto handle = m_ResourceManager.Buffers.create();
+	auto handle = m_ResourceManager.Buffers.create(0);
 	m_Buffer.write<BufferHandle>(handle);
 	return handle;
 }
@@ -4992,33 +4677,6 @@ void CommandBuffer::ClearNamedBufferSubData(BufferHandle buffer, GLenum internal
 	m_Buffer.write(data);
 }
 
-void * CommandBuffer::MapNamedBuffer(BufferHandle buffer, GLenum access)
-{
-	m_Buffer.write_command(CommandId::MapNamedBuffer);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
-}
-
-void * CommandBuffer::MapNamedBufferRange(BufferHandle buffer, GLintptr offset, GLsizeiptr length, GLbitfield access)
-{
-	m_Buffer.write_command(CommandId::MapNamedBufferRange);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
-}
-
-GLboolean CommandBuffer::UnmapNamedBuffer(BufferHandle buffer)
-{
-	m_Buffer.write_command(CommandId::UnmapNamedBuffer);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
-}
-
 void CommandBuffer::FlushMappedNamedBufferRange(BufferHandle buffer, GLintptr offset, GLsizeiptr length)
 {
 	m_Buffer.write_command(CommandId::FlushMappedNamedBufferRange);
@@ -5064,7 +4722,7 @@ FramebufferHandle CommandBuffer::CreateFramebuffer()
 {
 	m_Buffer.write_command(CommandId::CreateFramebuffer);
 
-	auto handle = m_ResourceManager.Framebuffers.create();
+	auto handle = m_ResourceManager.Framebuffers.create(0);
 	m_Buffer.write<FramebufferHandle>(handle);
 	return handle;
 }
@@ -5201,15 +4859,6 @@ void CommandBuffer::BlitNamedFramebuffer(GLuint readFramebuffer, GLuint drawFram
 	m_Buffer.write(filter);
 }
 
-GLenum CommandBuffer::CheckNamedFramebufferStatus(FramebufferHandle framebuffer, GLenum target)
-{
-	m_Buffer.write_command(CommandId::CheckNamedFramebufferStatus);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
-}
-
 void CommandBuffer::GetNamedFramebufferParameteriv(FramebufferHandle framebuffer, GLenum pname, GLint * param)
 {
 	m_Buffer.write_command(CommandId::GetNamedFramebufferParameteriv);
@@ -5231,7 +4880,7 @@ RenderbufferHandle CommandBuffer::CreateRenderbuffer()
 {
 	m_Buffer.write_command(CommandId::CreateRenderbuffer);
 
-	auto handle = m_ResourceManager.Renderbuffers.create();
+	auto handle = m_ResourceManager.Renderbuffers.create(0);
 	m_Buffer.write<RenderbufferHandle>(handle);
 	return handle;
 }
@@ -5268,7 +4917,7 @@ TextureHandle CommandBuffer::CreateTexture(GLenum target)
 	m_Buffer.write_command(CommandId::CreateTexture);
 
 	m_Buffer.write(target);
-	auto handle = m_ResourceManager.Textures.create();
+	auto handle = m_ResourceManager.Textures.create(0);
 	m_Buffer.write(handle);
 	return handle;
 }
@@ -5601,7 +5250,7 @@ VertexArrayHandle CommandBuffer::CreateVertexArray()
 {
 	m_Buffer.write_command(CommandId::CreateVertexArray);
 
-	auto handle = m_ResourceManager.VertexArrays.create();
+	auto handle = m_ResourceManager.VertexArrays.create(0);
 	m_Buffer.write<VertexArrayHandle>(handle);
 	return handle;
 }
@@ -5815,15 +5464,6 @@ void CommandBuffer::GetCompressedTextureSubImage(TextureHandle texture, GLint le
 	m_Buffer.write(depth);
 	m_Buffer.write(bufSize);
 	m_Buffer.write(pixels);
-}
-
-GLenum CommandBuffer::GetGraphicsResetStatus()
-{
-	m_Buffer.write_command(CommandId::GetGraphicsResetStatus);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
 }
 
 void CommandBuffer::GetnCompressedTexImage(GLenum target, GLint lod, GLsizei bufSize, void * pixels)
