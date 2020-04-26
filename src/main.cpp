@@ -59,10 +59,14 @@ int main(int argc, char** argv)
 	auto start = hr_clock::now();
 	bool running = true;
 	
-	multigl::CommandBuffer buffer;
 	multigl::ResourceManager resources;
+	multigl::CommandBuffer commandBuffer(resources);
+
+	auto vertexShader = commandBuffer.CreateShader(GL_VERTEX_SHADER);
+	auto fragShader = commandBuffer.CreateShader(GL_FRAGMENT_SHADER);
+
+	auto program = commandBuffer.CreateProgram();
 	
-	auto buf = resources.Buffers.create();
 	while (running)
 	{
 		auto curTime = hr_clock::now();
@@ -70,10 +74,10 @@ int main(int argc, char** argv)
 
 		sdlPumpEvents(running);
 
-		buffer.ClearColor(0, sinf(float(timeSinceStart)), 0, 1);
-		buffer.Clear(GL_COLOR_BUFFER_BIT);
+		commandBuffer.ClearColor(0, sinf(float(timeSinceStart)), 0, 1);
+		commandBuffer.Clear(GL_COLOR_BUFFER_BIT);
 
-		buffer.ProcessCommands();
+		commandBuffer.ProcessCommands(resources);
 		SDL_GL_SwapWindow(window);
 	}
 

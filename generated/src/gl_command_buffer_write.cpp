@@ -1,7 +1,7 @@
 #include <gl_command_buffer.hpp>
 
 using namespace multigl;
-CommandBuffer::CommandBuffer(){}
+CommandBuffer::CommandBuffer(ResourceManager& mgr) : m_ResourceManager(mgr) {}
 CommandBuffer::~CommandBuffer(){}
 
 void CommandBuffer::CullFace(GLenum mode)
@@ -269,6 +269,10 @@ void CommandBuffer::GetDoublev(GLenum pname, GLdouble * data)
 
 GLenum CommandBuffer::GetError()
 {
+	m_Buffer.write_command(CommandId::GetError);
+	#if defined(MGL_STRICT_COMPILATION)
+	#error Unimplemented function with return value
+	#endif
 	return 0;
 }
 
@@ -288,6 +292,10 @@ void CommandBuffer::GetIntegerv(GLenum pname, GLint * data)
 
 const GLubyte * CommandBuffer::GetString(GLenum name)
 {
+	m_Buffer.write_command(CommandId::GetString);
+	#if defined(MGL_STRICT_COMPILATION)
+	#error Unimplemented function with return value
+	#endif
 	return 0;
 }
 
@@ -337,6 +345,10 @@ void CommandBuffer::GetTexLevelParameteriv(GLenum target, GLint level, GLenum pn
 
 GLboolean CommandBuffer::IsEnabled(GLenum cap)
 {
+	m_Buffer.write_command(CommandId::IsEnabled);
+	#if defined(MGL_STRICT_COMPILATION)
+	#error Unimplemented function with return value
+	#endif
 	return 0;
 }
 
@@ -455,7 +467,7 @@ void CommandBuffer::TexSubImage2D(GLenum target, GLint level, GLint xoffset, GLi
 	m_Buffer.write(pixels);
 }
 
-void CommandBuffer::BindTexture(GLenum target, GLuint texture)
+void CommandBuffer::BindTexture(GLenum target, TextureHandle texture)
 {
 	m_Buffer.write_command(CommandId::BindTexture);
 	m_Buffer.write(target);
@@ -476,8 +488,12 @@ void CommandBuffer::GenTextures(GLsizei n, GLuint * textures)
 	m_Buffer.write(textures);
 }
 
-GLboolean CommandBuffer::IsTexture(GLuint texture)
+GLboolean CommandBuffer::IsTexture(TextureHandle texture)
 {
+	m_Buffer.write_command(CommandId::IsTexture);
+	#if defined(MGL_STRICT_COMPILATION)
+	#error Unimplemented function with return value
+	#endif
 	return 0;
 }
 
@@ -537,7 +553,7 @@ void CommandBuffer::CopyTexSubImage3D(GLenum target, GLint level, GLint xoffset,
 	m_Buffer.write(height);
 }
 
-void CommandBuffer::ActiveTexture(GLenum texture)
+void CommandBuffer::ActiveTexture(TextureHandle texture)
 {
 	m_Buffer.write_command(CommandId::ActiveTexture);
 	m_Buffer.write(texture);
@@ -726,6 +742,10 @@ void CommandBuffer::DeleteQueries(GLsizei n, const GLuint * ids)
 
 GLboolean CommandBuffer::IsQuery(GLuint id)
 {
+	m_Buffer.write_command(CommandId::IsQuery);
+	#if defined(MGL_STRICT_COMPILATION)
+	#error Unimplemented function with return value
+	#endif
 	return 0;
 }
 
@@ -766,7 +786,7 @@ void CommandBuffer::GetQueryObjectuiv(GLuint id, GLenum pname, GLuint * params)
 	m_Buffer.write(params);
 }
 
-void CommandBuffer::BindBuffer(GLenum target, GLuint buffer)
+void CommandBuffer::BindBuffer(GLenum target, BufferHandle buffer)
 {
 	m_Buffer.write_command(CommandId::BindBuffer);
 	m_Buffer.write(target);
@@ -780,15 +800,21 @@ void CommandBuffer::DeleteBuffers(GLsizei n, const GLuint * buffers)
 	m_Buffer.write(buffers);
 }
 
-void CommandBuffer::GenBuffers(GLsizei n, GLuint * buffers)
+BufferHandle CommandBuffer::GenBuffer()
 {
-	m_Buffer.write_command(CommandId::GenBuffers);
-	m_Buffer.write(n);
-	m_Buffer.write(buffers);
+	m_Buffer.write_command(CommandId::GenBuffer);
+
+	auto handle = m_ResourceManager.Buffers.create();
+	m_Buffer.write<BufferHandle>(handle);
+	return handle;
 }
 
-GLboolean CommandBuffer::IsBuffer(GLuint buffer)
+GLboolean CommandBuffer::IsBuffer(BufferHandle buffer)
 {
+	m_Buffer.write_command(CommandId::IsBuffer);
+	#if defined(MGL_STRICT_COMPILATION)
+	#error Unimplemented function with return value
+	#endif
 	return 0;
 }
 
@@ -821,11 +847,19 @@ void CommandBuffer::GetBufferSubData(GLenum target, GLintptr offset, GLsizeiptr 
 
 void * CommandBuffer::MapBuffer(GLenum target, GLenum access)
 {
+	m_Buffer.write_command(CommandId::MapBuffer);
+	#if defined(MGL_STRICT_COMPILATION)
+	#error Unimplemented function with return value
+	#endif
 	return 0;
 }
 
 GLboolean CommandBuffer::UnmapBuffer(GLenum target)
 {
+	m_Buffer.write_command(CommandId::UnmapBuffer);
+	#if defined(MGL_STRICT_COMPILATION)
+	#error Unimplemented function with return value
+	#endif
 	return 0;
 }
 
@@ -884,14 +918,14 @@ void CommandBuffer::StencilMaskSeparate(GLenum face, GLuint mask)
 	m_Buffer.write(mask);
 }
 
-void CommandBuffer::AttachShader(GLuint program, GLuint shader)
+void CommandBuffer::AttachShader(ShaderHandle program, ShaderHandle shader)
 {
 	m_Buffer.write_command(CommandId::AttachShader);
 	m_Buffer.write(program);
 	m_Buffer.write(shader);
 }
 
-void CommandBuffer::BindAttribLocation(GLuint program, GLuint index, const GLchar * name)
+void CommandBuffer::BindAttribLocation(ShaderProgramHandle program, GLuint index, const GLchar * name)
 {
 	m_Buffer.write_command(CommandId::BindAttribLocation);
 	m_Buffer.write(program);
@@ -899,35 +933,44 @@ void CommandBuffer::BindAttribLocation(GLuint program, GLuint index, const GLcha
 	m_Buffer.write(name);
 }
 
-void CommandBuffer::CompileShader(GLuint shader)
+void CommandBuffer::CompileShader(ShaderHandle shader)
 {
 	m_Buffer.write_command(CommandId::CompileShader);
 	m_Buffer.write(shader);
 }
 
-GLuint CommandBuffer::CreateProgram()
+ShaderProgramHandle CommandBuffer::CreateProgram()
 {
-	return 0;
+	m_Buffer.write_command(CommandId::CreateProgram);
+
+	auto handle = m_ResourceManager.ShaderPrograms.create();
+	m_Buffer.write(handle);
+	return handle;
 }
 
-GLuint CommandBuffer::CreateShader(GLenum type)
+ShaderHandle CommandBuffer::CreateShader(GLenum type)
 {
-	return 0;
+	m_Buffer.write_command(CommandId::CreateShader);
+
+	auto handle = m_ResourceManager.Shaders.create();
+	m_Buffer.write(handle);
+	m_Buffer.write<GLenum>(type);
+	return handle;
 }
 
-void CommandBuffer::DeleteProgram(GLuint program)
+void CommandBuffer::DeleteProgram(ShaderProgramHandle program)
 {
 	m_Buffer.write_command(CommandId::DeleteProgram);
 	m_Buffer.write(program);
 }
 
-void CommandBuffer::DeleteShader(GLuint shader)
+void CommandBuffer::DeleteShader(ShaderHandle shader)
 {
 	m_Buffer.write_command(CommandId::DeleteShader);
 	m_Buffer.write(shader);
 }
 
-void CommandBuffer::DetachShader(GLuint program, GLuint shader)
+void CommandBuffer::DetachShader(ShaderProgramHandle program, ShaderHandle shader)
 {
 	m_Buffer.write_command(CommandId::DetachShader);
 	m_Buffer.write(program);
@@ -946,7 +989,7 @@ void CommandBuffer::EnableVertexAttribArray(GLuint index)
 	m_Buffer.write(index);
 }
 
-void CommandBuffer::GetActiveAttrib(GLuint program, GLuint index, GLsizei bufSize, GLsizei * length, GLint * size, GLenum * type, GLchar * name)
+void CommandBuffer::GetActiveAttrib(ShaderProgramHandle program, GLuint index, GLsizei bufSize, GLsizei * length, GLint * size, GLenum * type, GLchar * name)
 {
 	m_Buffer.write_command(CommandId::GetActiveAttrib);
 	m_Buffer.write(program);
@@ -958,7 +1001,7 @@ void CommandBuffer::GetActiveAttrib(GLuint program, GLuint index, GLsizei bufSiz
 	m_Buffer.write(name);
 }
 
-void CommandBuffer::GetActiveUniform(GLuint program, GLuint index, GLsizei bufSize, GLsizei * length, GLint * size, GLenum * type, GLchar * name)
+void CommandBuffer::GetActiveUniform(ShaderProgramHandle program, GLuint index, GLsizei bufSize, GLsizei * length, GLint * size, GLenum * type, GLchar * name)
 {
 	m_Buffer.write_command(CommandId::GetActiveUniform);
 	m_Buffer.write(program);
@@ -970,7 +1013,7 @@ void CommandBuffer::GetActiveUniform(GLuint program, GLuint index, GLsizei bufSi
 	m_Buffer.write(name);
 }
 
-void CommandBuffer::GetAttachedShaders(GLuint program, GLsizei maxCount, GLsizei * count, GLuint * shaders)
+void CommandBuffer::GetAttachedShaders(ShaderProgramHandle program, GLsizei maxCount, GLsizei * count, GLuint * shaders)
 {
 	m_Buffer.write_command(CommandId::GetAttachedShaders);
 	m_Buffer.write(program);
@@ -979,12 +1022,16 @@ void CommandBuffer::GetAttachedShaders(GLuint program, GLsizei maxCount, GLsizei
 	m_Buffer.write(shaders);
 }
 
-GLint CommandBuffer::GetAttribLocation(GLuint program, const GLchar * name)
+GLint CommandBuffer::GetAttribLocation(ShaderProgramHandle program, const GLchar * name)
 {
+	m_Buffer.write_command(CommandId::GetAttribLocation);
+	#if defined(MGL_STRICT_COMPILATION)
+	#error Unimplemented function with return value
+	#endif
 	return 0;
 }
 
-void CommandBuffer::GetProgramiv(GLuint program, GLenum pname, GLint * params)
+void CommandBuffer::GetProgramiv(ShaderProgramHandle program, GLenum pname, GLint * params)
 {
 	m_Buffer.write_command(CommandId::GetProgramiv);
 	m_Buffer.write(program);
@@ -992,7 +1039,7 @@ void CommandBuffer::GetProgramiv(GLuint program, GLenum pname, GLint * params)
 	m_Buffer.write(params);
 }
 
-void CommandBuffer::GetProgramInfoLog(GLuint program, GLsizei bufSize, GLsizei * length, GLchar * infoLog)
+void CommandBuffer::GetProgramInfoLog(ShaderProgramHandle program, GLsizei bufSize, GLsizei * length, GLchar * infoLog)
 {
 	m_Buffer.write_command(CommandId::GetProgramInfoLog);
 	m_Buffer.write(program);
@@ -1001,7 +1048,7 @@ void CommandBuffer::GetProgramInfoLog(GLuint program, GLsizei bufSize, GLsizei *
 	m_Buffer.write(infoLog);
 }
 
-void CommandBuffer::GetShaderiv(GLuint shader, GLenum pname, GLint * params)
+void CommandBuffer::GetShaderiv(ShaderHandle shader, GLenum pname, GLint * params)
 {
 	m_Buffer.write_command(CommandId::GetShaderiv);
 	m_Buffer.write(shader);
@@ -1009,7 +1056,7 @@ void CommandBuffer::GetShaderiv(GLuint shader, GLenum pname, GLint * params)
 	m_Buffer.write(params);
 }
 
-void CommandBuffer::GetShaderInfoLog(GLuint shader, GLsizei bufSize, GLsizei * length, GLchar * infoLog)
+void CommandBuffer::GetShaderInfoLog(ShaderHandle shader, GLsizei bufSize, GLsizei * length, GLchar * infoLog)
 {
 	m_Buffer.write_command(CommandId::GetShaderInfoLog);
 	m_Buffer.write(shader);
@@ -1018,7 +1065,7 @@ void CommandBuffer::GetShaderInfoLog(GLuint shader, GLsizei bufSize, GLsizei * l
 	m_Buffer.write(infoLog);
 }
 
-void CommandBuffer::GetShaderSource(GLuint shader, GLsizei bufSize, GLsizei * length, GLchar * source)
+void CommandBuffer::GetShaderSource(ShaderHandle shader, GLsizei bufSize, GLsizei * length, GLchar * source)
 {
 	m_Buffer.write_command(CommandId::GetShaderSource);
 	m_Buffer.write(shader);
@@ -1027,12 +1074,16 @@ void CommandBuffer::GetShaderSource(GLuint shader, GLsizei bufSize, GLsizei * le
 	m_Buffer.write(source);
 }
 
-GLint CommandBuffer::GetUniformLocation(GLuint program, const GLchar * name)
+GLint CommandBuffer::GetUniformLocation(ShaderProgramHandle program, const GLchar * name)
 {
+	m_Buffer.write_command(CommandId::GetUniformLocation);
+	#if defined(MGL_STRICT_COMPILATION)
+	#error Unimplemented function with return value
+	#endif
 	return 0;
 }
 
-void CommandBuffer::GetUniformfv(GLuint program, GLint location, GLfloat * params)
+void CommandBuffer::GetUniformfv(ShaderProgramHandle program, GLint location, GLfloat * params)
 {
 	m_Buffer.write_command(CommandId::GetUniformfv);
 	m_Buffer.write(program);
@@ -1040,7 +1091,7 @@ void CommandBuffer::GetUniformfv(GLuint program, GLint location, GLfloat * param
 	m_Buffer.write(params);
 }
 
-void CommandBuffer::GetUniformiv(GLuint program, GLint location, GLint * params)
+void CommandBuffer::GetUniformiv(ShaderProgramHandle program, GLint location, GLint * params)
 {
 	m_Buffer.write_command(CommandId::GetUniformiv);
 	m_Buffer.write(program);
@@ -1080,23 +1131,31 @@ void CommandBuffer::GetVertexAttribPointerv(GLuint index, GLenum pname, void ** 
 	m_Buffer.write(pointer);
 }
 
-GLboolean CommandBuffer::IsProgram(GLuint program)
+GLboolean CommandBuffer::IsProgram(ShaderProgramHandle program)
 {
+	m_Buffer.write_command(CommandId::IsProgram);
+	#if defined(MGL_STRICT_COMPILATION)
+	#error Unimplemented function with return value
+	#endif
 	return 0;
 }
 
-GLboolean CommandBuffer::IsShader(GLuint shader)
+GLboolean CommandBuffer::IsShader(ShaderHandle shader)
 {
+	m_Buffer.write_command(CommandId::IsShader);
+	#if defined(MGL_STRICT_COMPILATION)
+	#error Unimplemented function with return value
+	#endif
 	return 0;
 }
 
-void CommandBuffer::LinkProgram(GLuint program)
+void CommandBuffer::LinkProgram(ShaderProgramHandle program)
 {
 	m_Buffer.write_command(CommandId::LinkProgram);
 	m_Buffer.write(program);
 }
 
-void CommandBuffer::ShaderSource(GLuint shader, GLsizei count, const GLchar *const* string, const GLint * length)
+void CommandBuffer::ShaderSource(ShaderHandle shader, GLsizei count, const GLchar *const* string, const GLint * length)
 {
 	m_Buffer.write_command(CommandId::ShaderSource);
 	m_Buffer.write(shader);
@@ -1105,7 +1164,7 @@ void CommandBuffer::ShaderSource(GLuint shader, GLsizei count, const GLchar *con
 	m_Buffer.write(length);
 }
 
-void CommandBuffer::UseProgram(GLuint program)
+void CommandBuffer::UseProgram(ShaderProgramHandle program)
 {
 	m_Buffer.write_command(CommandId::UseProgram);
 	m_Buffer.write(program);
@@ -1270,7 +1329,7 @@ void CommandBuffer::UniformMatrix4fv(GLint location, GLsizei count, GLboolean tr
 	m_Buffer.write(value);
 }
 
-void CommandBuffer::ValidateProgram(GLuint program)
+void CommandBuffer::ValidateProgram(ShaderProgramHandle program)
 {
 	m_Buffer.write_command(CommandId::ValidateProgram);
 	m_Buffer.write(program);
@@ -1656,6 +1715,10 @@ void CommandBuffer::Disablei(GLenum target, GLuint index)
 
 GLboolean CommandBuffer::IsEnabledi(GLenum target, GLuint index)
 {
+	m_Buffer.write_command(CommandId::IsEnabledi);
+	#if defined(MGL_STRICT_COMPILATION)
+	#error Unimplemented function with return value
+	#endif
 	return 0;
 }
 
@@ -1670,7 +1733,7 @@ void CommandBuffer::EndTransformFeedback()
 	m_Buffer.write_command(CommandId::EndTransformFeedback);
 }
 
-void CommandBuffer::BindBufferRange(GLenum target, GLuint index, GLuint buffer, GLintptr offset, GLsizeiptr size)
+void CommandBuffer::BindBufferRange(GLenum target, GLuint index, BufferHandle buffer, GLintptr offset, GLsizeiptr size)
 {
 	m_Buffer.write_command(CommandId::BindBufferRange);
 	m_Buffer.write(target);
@@ -1680,7 +1743,7 @@ void CommandBuffer::BindBufferRange(GLenum target, GLuint index, GLuint buffer, 
 	m_Buffer.write(size);
 }
 
-void CommandBuffer::BindBufferBase(GLenum target, GLuint index, GLuint buffer)
+void CommandBuffer::BindBufferBase(GLenum target, GLuint index, BufferHandle buffer)
 {
 	m_Buffer.write_command(CommandId::BindBufferBase);
 	m_Buffer.write(target);
@@ -1688,7 +1751,7 @@ void CommandBuffer::BindBufferBase(GLenum target, GLuint index, GLuint buffer)
 	m_Buffer.write(buffer);
 }
 
-void CommandBuffer::TransformFeedbackVaryings(GLuint program, GLsizei count, const GLchar *const* varyings, GLenum bufferMode)
+void CommandBuffer::TransformFeedbackVaryings(ShaderProgramHandle program, GLsizei count, const GLchar *const* varyings, GLenum bufferMode)
 {
 	m_Buffer.write_command(CommandId::TransformFeedbackVaryings);
 	m_Buffer.write(program);
@@ -1697,7 +1760,7 @@ void CommandBuffer::TransformFeedbackVaryings(GLuint program, GLsizei count, con
 	m_Buffer.write(bufferMode);
 }
 
-void CommandBuffer::GetTransformFeedbackVarying(GLuint program, GLuint index, GLsizei bufSize, GLsizei * length, GLsizei * size, GLenum * type, GLchar * name)
+void CommandBuffer::GetTransformFeedbackVarying(ShaderProgramHandle program, GLuint index, GLsizei bufSize, GLsizei * length, GLsizei * size, GLenum * type, GLchar * name)
 {
 	m_Buffer.write_command(CommandId::GetTransformFeedbackVarying);
 	m_Buffer.write(program);
@@ -1906,7 +1969,7 @@ void CommandBuffer::VertexAttribI4usv(GLuint index, const GLushort * v)
 	m_Buffer.write(v);
 }
 
-void CommandBuffer::GetUniformuiv(GLuint program, GLint location, GLuint * params)
+void CommandBuffer::GetUniformuiv(ShaderProgramHandle program, GLint location, GLuint * params)
 {
 	m_Buffer.write_command(CommandId::GetUniformuiv);
 	m_Buffer.write(program);
@@ -1914,7 +1977,7 @@ void CommandBuffer::GetUniformuiv(GLuint program, GLint location, GLuint * param
 	m_Buffer.write(params);
 }
 
-void CommandBuffer::BindFragDataLocation(GLuint program, GLuint color, const GLchar * name)
+void CommandBuffer::BindFragDataLocation(ShaderProgramHandle program, GLuint color, const GLchar * name)
 {
 	m_Buffer.write_command(CommandId::BindFragDataLocation);
 	m_Buffer.write(program);
@@ -1922,8 +1985,12 @@ void CommandBuffer::BindFragDataLocation(GLuint program, GLuint color, const GLc
 	m_Buffer.write(name);
 }
 
-GLint CommandBuffer::GetFragDataLocation(GLuint program, const GLchar * name)
+GLint CommandBuffer::GetFragDataLocation(ShaderProgramHandle program, const GLchar * name)
 {
+	m_Buffer.write_command(CommandId::GetFragDataLocation);
+	#if defined(MGL_STRICT_COMPILATION)
+	#error Unimplemented function with return value
+	#endif
 	return 0;
 }
 
@@ -2025,7 +2092,7 @@ void CommandBuffer::GetTexParameterIuiv(GLenum target, GLenum pname, GLuint * pa
 	m_Buffer.write(params);
 }
 
-void CommandBuffer::ClearBufferiv(GLenum buffer, GLint drawbuffer, const GLint * value)
+void CommandBuffer::ClearBufferiv(BufferHandle buffer, GLint drawbuffer, const GLint * value)
 {
 	m_Buffer.write_command(CommandId::ClearBufferiv);
 	m_Buffer.write(buffer);
@@ -2033,7 +2100,7 @@ void CommandBuffer::ClearBufferiv(GLenum buffer, GLint drawbuffer, const GLint *
 	m_Buffer.write(value);
 }
 
-void CommandBuffer::ClearBufferuiv(GLenum buffer, GLint drawbuffer, const GLuint * value)
+void CommandBuffer::ClearBufferuiv(BufferHandle buffer, GLint drawbuffer, const GLuint * value)
 {
 	m_Buffer.write_command(CommandId::ClearBufferuiv);
 	m_Buffer.write(buffer);
@@ -2041,7 +2108,7 @@ void CommandBuffer::ClearBufferuiv(GLenum buffer, GLint drawbuffer, const GLuint
 	m_Buffer.write(value);
 }
 
-void CommandBuffer::ClearBufferfv(GLenum buffer, GLint drawbuffer, const GLfloat * value)
+void CommandBuffer::ClearBufferfv(BufferHandle buffer, GLint drawbuffer, const GLfloat * value)
 {
 	m_Buffer.write_command(CommandId::ClearBufferfv);
 	m_Buffer.write(buffer);
@@ -2049,7 +2116,7 @@ void CommandBuffer::ClearBufferfv(GLenum buffer, GLint drawbuffer, const GLfloat
 	m_Buffer.write(value);
 }
 
-void CommandBuffer::ClearBufferfi(GLenum buffer, GLint drawbuffer, GLfloat depth, GLint stencil)
+void CommandBuffer::ClearBufferfi(BufferHandle buffer, GLint drawbuffer, GLfloat depth, GLint stencil)
 {
 	m_Buffer.write_command(CommandId::ClearBufferfi);
 	m_Buffer.write(buffer);
@@ -2060,11 +2127,19 @@ void CommandBuffer::ClearBufferfi(GLenum buffer, GLint drawbuffer, GLfloat depth
 
 const GLubyte * CommandBuffer::GetStringi(GLenum name, GLuint index)
 {
+	m_Buffer.write_command(CommandId::GetStringi);
+	#if defined(MGL_STRICT_COMPILATION)
+	#error Unimplemented function with return value
+	#endif
 	return 0;
 }
 
 GLboolean CommandBuffer::IsRenderbuffer(GLuint renderbuffer)
 {
+	m_Buffer.write_command(CommandId::IsRenderbuffer);
+	#if defined(MGL_STRICT_COMPILATION)
+	#error Unimplemented function with return value
+	#endif
 	return 0;
 }
 
@@ -2108,6 +2183,10 @@ void CommandBuffer::GetRenderbufferParameteriv(GLenum target, GLenum pname, GLin
 
 GLboolean CommandBuffer::IsFramebuffer(GLuint framebuffer)
 {
+	m_Buffer.write_command(CommandId::IsFramebuffer);
+	#if defined(MGL_STRICT_COMPILATION)
+	#error Unimplemented function with return value
+	#endif
 	return 0;
 }
 
@@ -2134,10 +2213,14 @@ void CommandBuffer::GenFramebuffers(GLsizei n, GLuint * framebuffers)
 
 GLenum CommandBuffer::CheckFramebufferStatus(GLenum target)
 {
+	m_Buffer.write_command(CommandId::CheckFramebufferStatus);
+	#if defined(MGL_STRICT_COMPILATION)
+	#error Unimplemented function with return value
+	#endif
 	return 0;
 }
 
-void CommandBuffer::FramebufferTexture1D(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level)
+void CommandBuffer::FramebufferTexture1D(GLenum target, GLenum attachment, GLenum textarget, TextureHandle texture, GLint level)
 {
 	m_Buffer.write_command(CommandId::FramebufferTexture1D);
 	m_Buffer.write(target);
@@ -2147,7 +2230,7 @@ void CommandBuffer::FramebufferTexture1D(GLenum target, GLenum attachment, GLenu
 	m_Buffer.write(level);
 }
 
-void CommandBuffer::FramebufferTexture2D(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level)
+void CommandBuffer::FramebufferTexture2D(GLenum target, GLenum attachment, GLenum textarget, TextureHandle texture, GLint level)
 {
 	m_Buffer.write_command(CommandId::FramebufferTexture2D);
 	m_Buffer.write(target);
@@ -2157,7 +2240,7 @@ void CommandBuffer::FramebufferTexture2D(GLenum target, GLenum attachment, GLenu
 	m_Buffer.write(level);
 }
 
-void CommandBuffer::FramebufferTexture3D(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level, GLint zoffset)
+void CommandBuffer::FramebufferTexture3D(GLenum target, GLenum attachment, GLenum textarget, TextureHandle texture, GLint level, GLint zoffset)
 {
 	m_Buffer.write_command(CommandId::FramebufferTexture3D);
 	m_Buffer.write(target);
@@ -2217,7 +2300,7 @@ void CommandBuffer::RenderbufferStorageMultisample(GLenum target, GLsizei sample
 	m_Buffer.write(height);
 }
 
-void CommandBuffer::FramebufferTextureLayer(GLenum target, GLenum attachment, GLuint texture, GLint level, GLint layer)
+void CommandBuffer::FramebufferTextureLayer(GLenum target, GLenum attachment, TextureHandle texture, GLint level, GLint layer)
 {
 	m_Buffer.write_command(CommandId::FramebufferTextureLayer);
 	m_Buffer.write(target);
@@ -2229,6 +2312,10 @@ void CommandBuffer::FramebufferTextureLayer(GLenum target, GLenum attachment, GL
 
 void * CommandBuffer::MapBufferRange(GLenum target, GLintptr offset, GLsizeiptr length, GLbitfield access)
 {
+	m_Buffer.write_command(CommandId::MapBufferRange);
+	#if defined(MGL_STRICT_COMPILATION)
+	#error Unimplemented function with return value
+	#endif
 	return 0;
 }
 
@@ -2262,6 +2349,10 @@ void CommandBuffer::GenVertexArrays(GLsizei n, GLuint * arrays)
 
 GLboolean CommandBuffer::IsVertexArray(GLuint array)
 {
+	m_Buffer.write_command(CommandId::IsVertexArray);
+	#if defined(MGL_STRICT_COMPILATION)
+	#error Unimplemented function with return value
+	#endif
 	return 0;
 }
 
@@ -2284,7 +2375,7 @@ void CommandBuffer::DrawElementsInstanced(GLenum mode, GLsizei count, GLenum typ
 	m_Buffer.write(instancecount);
 }
 
-void CommandBuffer::TexBuffer(GLenum target, GLenum internalformat, GLuint buffer)
+void CommandBuffer::TexBuffer(GLenum target, GLenum internalformat, BufferHandle buffer)
 {
 	m_Buffer.write_command(CommandId::TexBuffer);
 	m_Buffer.write(target);
@@ -2308,7 +2399,7 @@ void CommandBuffer::CopyBufferSubData(GLenum readTarget, GLenum writeTarget, GLi
 	m_Buffer.write(size);
 }
 
-void CommandBuffer::GetUniformIndices(GLuint program, GLsizei uniformCount, const GLchar *const* uniformNames, GLuint * uniformIndices)
+void CommandBuffer::GetUniformIndices(ShaderProgramHandle program, GLsizei uniformCount, const GLchar *const* uniformNames, GLuint * uniformIndices)
 {
 	m_Buffer.write_command(CommandId::GetUniformIndices);
 	m_Buffer.write(program);
@@ -2317,7 +2408,7 @@ void CommandBuffer::GetUniformIndices(GLuint program, GLsizei uniformCount, cons
 	m_Buffer.write(uniformIndices);
 }
 
-void CommandBuffer::GetActiveUniformsiv(GLuint program, GLsizei uniformCount, const GLuint * uniformIndices, GLenum pname, GLint * params)
+void CommandBuffer::GetActiveUniformsiv(ShaderProgramHandle program, GLsizei uniformCount, const GLuint * uniformIndices, GLenum pname, GLint * params)
 {
 	m_Buffer.write_command(CommandId::GetActiveUniformsiv);
 	m_Buffer.write(program);
@@ -2327,7 +2418,7 @@ void CommandBuffer::GetActiveUniformsiv(GLuint program, GLsizei uniformCount, co
 	m_Buffer.write(params);
 }
 
-void CommandBuffer::GetActiveUniformName(GLuint program, GLuint uniformIndex, GLsizei bufSize, GLsizei * length, GLchar * uniformName)
+void CommandBuffer::GetActiveUniformName(ShaderProgramHandle program, GLuint uniformIndex, GLsizei bufSize, GLsizei * length, GLchar * uniformName)
 {
 	m_Buffer.write_command(CommandId::GetActiveUniformName);
 	m_Buffer.write(program);
@@ -2337,12 +2428,16 @@ void CommandBuffer::GetActiveUniformName(GLuint program, GLuint uniformIndex, GL
 	m_Buffer.write(uniformName);
 }
 
-GLuint CommandBuffer::GetUniformBlockIndex(GLuint program, const GLchar * uniformBlockName)
+GLuint CommandBuffer::GetUniformBlockIndex(ShaderProgramHandle program, const GLchar * uniformBlockName)
 {
+	m_Buffer.write_command(CommandId::GetUniformBlockIndex);
+	#if defined(MGL_STRICT_COMPILATION)
+	#error Unimplemented function with return value
+	#endif
 	return 0;
 }
 
-void CommandBuffer::GetActiveUniformBlockiv(GLuint program, GLuint uniformBlockIndex, GLenum pname, GLint * params)
+void CommandBuffer::GetActiveUniformBlockiv(ShaderProgramHandle program, GLuint uniformBlockIndex, GLenum pname, GLint * params)
 {
 	m_Buffer.write_command(CommandId::GetActiveUniformBlockiv);
 	m_Buffer.write(program);
@@ -2351,7 +2446,7 @@ void CommandBuffer::GetActiveUniformBlockiv(GLuint program, GLuint uniformBlockI
 	m_Buffer.write(params);
 }
 
-void CommandBuffer::GetActiveUniformBlockName(GLuint program, GLuint uniformBlockIndex, GLsizei bufSize, GLsizei * length, GLchar * uniformBlockName)
+void CommandBuffer::GetActiveUniformBlockName(ShaderProgramHandle program, GLuint uniformBlockIndex, GLsizei bufSize, GLsizei * length, GLchar * uniformBlockName)
 {
 	m_Buffer.write_command(CommandId::GetActiveUniformBlockName);
 	m_Buffer.write(program);
@@ -2361,7 +2456,7 @@ void CommandBuffer::GetActiveUniformBlockName(GLuint program, GLuint uniformBloc
 	m_Buffer.write(uniformBlockName);
 }
 
-void CommandBuffer::UniformBlockBinding(GLuint program, GLuint uniformBlockIndex, GLuint uniformBlockBinding)
+void CommandBuffer::UniformBlockBinding(ShaderProgramHandle program, GLuint uniformBlockIndex, GLuint uniformBlockBinding)
 {
 	m_Buffer.write_command(CommandId::UniformBlockBinding);
 	m_Buffer.write(program);
@@ -2421,11 +2516,19 @@ void CommandBuffer::ProvokingVertex(GLenum mode)
 
 GLsync CommandBuffer::FenceSync(GLenum condition, GLbitfield flags)
 {
+	m_Buffer.write_command(CommandId::FenceSync);
+	#if defined(MGL_STRICT_COMPILATION)
+	#error Unimplemented function with return value
+	#endif
 	return 0;
 }
 
 GLboolean CommandBuffer::IsSync(GLsync sync)
 {
+	m_Buffer.write_command(CommandId::IsSync);
+	#if defined(MGL_STRICT_COMPILATION)
+	#error Unimplemented function with return value
+	#endif
 	return 0;
 }
 
@@ -2437,6 +2540,10 @@ void CommandBuffer::DeleteSync(GLsync sync)
 
 GLenum CommandBuffer::ClientWaitSync(GLsync sync, GLbitfield flags, GLuint64 timeout)
 {
+	m_Buffer.write_command(CommandId::ClientWaitSync);
+	#if defined(MGL_STRICT_COMPILATION)
+	#error Unimplemented function with return value
+	#endif
 	return 0;
 }
 
@@ -2481,7 +2588,7 @@ void CommandBuffer::GetBufferParameteri64v(GLenum target, GLenum pname, GLint64 
 	m_Buffer.write(params);
 }
 
-void CommandBuffer::FramebufferTexture(GLenum target, GLenum attachment, GLuint texture, GLint level)
+void CommandBuffer::FramebufferTexture(GLenum target, GLenum attachment, TextureHandle texture, GLint level)
 {
 	m_Buffer.write_command(CommandId::FramebufferTexture);
 	m_Buffer.write(target);
@@ -2528,7 +2635,7 @@ void CommandBuffer::SampleMaski(GLuint maskNumber, GLbitfield mask)
 	m_Buffer.write(mask);
 }
 
-void CommandBuffer::BindFragDataLocationIndexed(GLuint program, GLuint colorNumber, GLuint index, const GLchar * name)
+void CommandBuffer::BindFragDataLocationIndexed(ShaderProgramHandle program, GLuint colorNumber, GLuint index, const GLchar * name)
 {
 	m_Buffer.write_command(CommandId::BindFragDataLocationIndexed);
 	m_Buffer.write(program);
@@ -2537,8 +2644,12 @@ void CommandBuffer::BindFragDataLocationIndexed(GLuint program, GLuint colorNumb
 	m_Buffer.write(name);
 }
 
-GLint CommandBuffer::GetFragDataIndex(GLuint program, const GLchar * name)
+GLint CommandBuffer::GetFragDataIndex(ShaderProgramHandle program, const GLchar * name)
 {
+	m_Buffer.write_command(CommandId::GetFragDataIndex);
+	#if defined(MGL_STRICT_COMPILATION)
+	#error Unimplemented function with return value
+	#endif
 	return 0;
 }
 
@@ -2558,6 +2669,10 @@ void CommandBuffer::DeleteSamplers(GLsizei count, const GLuint * samplers)
 
 GLboolean CommandBuffer::IsSampler(GLuint sampler)
 {
+	m_Buffer.write_command(CommandId::IsSampler);
+	#if defined(MGL_STRICT_COMPILATION)
+	#error Unimplemented function with return value
+	#endif
 	return 0;
 }
 
@@ -2848,7 +2963,7 @@ void CommandBuffer::TexCoordP4uiv(GLenum type, const GLuint * coords)
 	m_Buffer.write(coords);
 }
 
-void CommandBuffer::MultiTexCoordP1ui(GLenum texture, GLenum type, GLuint coords)
+void CommandBuffer::MultiTexCoordP1ui(TextureHandle texture, GLenum type, GLuint coords)
 {
 	m_Buffer.write_command(CommandId::MultiTexCoordP1ui);
 	m_Buffer.write(texture);
@@ -2856,7 +2971,7 @@ void CommandBuffer::MultiTexCoordP1ui(GLenum texture, GLenum type, GLuint coords
 	m_Buffer.write(coords);
 }
 
-void CommandBuffer::MultiTexCoordP1uiv(GLenum texture, GLenum type, const GLuint * coords)
+void CommandBuffer::MultiTexCoordP1uiv(TextureHandle texture, GLenum type, const GLuint * coords)
 {
 	m_Buffer.write_command(CommandId::MultiTexCoordP1uiv);
 	m_Buffer.write(texture);
@@ -2864,7 +2979,7 @@ void CommandBuffer::MultiTexCoordP1uiv(GLenum texture, GLenum type, const GLuint
 	m_Buffer.write(coords);
 }
 
-void CommandBuffer::MultiTexCoordP2ui(GLenum texture, GLenum type, GLuint coords)
+void CommandBuffer::MultiTexCoordP2ui(TextureHandle texture, GLenum type, GLuint coords)
 {
 	m_Buffer.write_command(CommandId::MultiTexCoordP2ui);
 	m_Buffer.write(texture);
@@ -2872,7 +2987,7 @@ void CommandBuffer::MultiTexCoordP2ui(GLenum texture, GLenum type, GLuint coords
 	m_Buffer.write(coords);
 }
 
-void CommandBuffer::MultiTexCoordP2uiv(GLenum texture, GLenum type, const GLuint * coords)
+void CommandBuffer::MultiTexCoordP2uiv(TextureHandle texture, GLenum type, const GLuint * coords)
 {
 	m_Buffer.write_command(CommandId::MultiTexCoordP2uiv);
 	m_Buffer.write(texture);
@@ -2880,7 +2995,7 @@ void CommandBuffer::MultiTexCoordP2uiv(GLenum texture, GLenum type, const GLuint
 	m_Buffer.write(coords);
 }
 
-void CommandBuffer::MultiTexCoordP3ui(GLenum texture, GLenum type, GLuint coords)
+void CommandBuffer::MultiTexCoordP3ui(TextureHandle texture, GLenum type, GLuint coords)
 {
 	m_Buffer.write_command(CommandId::MultiTexCoordP3ui);
 	m_Buffer.write(texture);
@@ -2888,7 +3003,7 @@ void CommandBuffer::MultiTexCoordP3ui(GLenum texture, GLenum type, GLuint coords
 	m_Buffer.write(coords);
 }
 
-void CommandBuffer::MultiTexCoordP3uiv(GLenum texture, GLenum type, const GLuint * coords)
+void CommandBuffer::MultiTexCoordP3uiv(TextureHandle texture, GLenum type, const GLuint * coords)
 {
 	m_Buffer.write_command(CommandId::MultiTexCoordP3uiv);
 	m_Buffer.write(texture);
@@ -2896,7 +3011,7 @@ void CommandBuffer::MultiTexCoordP3uiv(GLenum texture, GLenum type, const GLuint
 	m_Buffer.write(coords);
 }
 
-void CommandBuffer::MultiTexCoordP4ui(GLenum texture, GLenum type, GLuint coords)
+void CommandBuffer::MultiTexCoordP4ui(TextureHandle texture, GLenum type, GLuint coords)
 {
 	m_Buffer.write_command(CommandId::MultiTexCoordP4ui);
 	m_Buffer.write(texture);
@@ -2904,7 +3019,7 @@ void CommandBuffer::MultiTexCoordP4ui(GLenum texture, GLenum type, GLuint coords
 	m_Buffer.write(coords);
 }
 
-void CommandBuffer::MultiTexCoordP4uiv(GLenum texture, GLenum type, const GLuint * coords)
+void CommandBuffer::MultiTexCoordP4uiv(TextureHandle texture, GLenum type, const GLuint * coords)
 {
 	m_Buffer.write_command(CommandId::MultiTexCoordP4uiv);
 	m_Buffer.write(texture);
@@ -3169,7 +3284,7 @@ void CommandBuffer::UniformMatrix4x3dv(GLint location, GLsizei count, GLboolean 
 	m_Buffer.write(value);
 }
 
-void CommandBuffer::GetUniformdv(GLuint program, GLint location, GLdouble * params)
+void CommandBuffer::GetUniformdv(ShaderProgramHandle program, GLint location, GLdouble * params)
 {
 	m_Buffer.write_command(CommandId::GetUniformdv);
 	m_Buffer.write(program);
@@ -3177,17 +3292,25 @@ void CommandBuffer::GetUniformdv(GLuint program, GLint location, GLdouble * para
 	m_Buffer.write(params);
 }
 
-GLint CommandBuffer::GetSubroutineUniformLocation(GLuint program, GLenum shadertype, const GLchar * name)
+GLint CommandBuffer::GetSubroutineUniformLocation(ShaderProgramHandle program, GLenum shadertype, const GLchar * name)
 {
+	m_Buffer.write_command(CommandId::GetSubroutineUniformLocation);
+	#if defined(MGL_STRICT_COMPILATION)
+	#error Unimplemented function with return value
+	#endif
 	return 0;
 }
 
-GLuint CommandBuffer::GetSubroutineIndex(GLuint program, GLenum shadertype, const GLchar * name)
+GLuint CommandBuffer::GetSubroutineIndex(ShaderProgramHandle program, GLenum shadertype, const GLchar * name)
 {
+	m_Buffer.write_command(CommandId::GetSubroutineIndex);
+	#if defined(MGL_STRICT_COMPILATION)
+	#error Unimplemented function with return value
+	#endif
 	return 0;
 }
 
-void CommandBuffer::GetActiveSubroutineUniformiv(GLuint program, GLenum shadertype, GLuint index, GLenum pname, GLint * values)
+void CommandBuffer::GetActiveSubroutineUniformiv(ShaderProgramHandle program, GLenum shadertype, GLuint index, GLenum pname, GLint * values)
 {
 	m_Buffer.write_command(CommandId::GetActiveSubroutineUniformiv);
 	m_Buffer.write(program);
@@ -3197,7 +3320,7 @@ void CommandBuffer::GetActiveSubroutineUniformiv(GLuint program, GLenum shaderty
 	m_Buffer.write(values);
 }
 
-void CommandBuffer::GetActiveSubroutineUniformName(GLuint program, GLenum shadertype, GLuint index, GLsizei bufSize, GLsizei * length, GLchar * name)
+void CommandBuffer::GetActiveSubroutineUniformName(ShaderProgramHandle program, GLenum shadertype, GLuint index, GLsizei bufSize, GLsizei * length, GLchar * name)
 {
 	m_Buffer.write_command(CommandId::GetActiveSubroutineUniformName);
 	m_Buffer.write(program);
@@ -3208,7 +3331,7 @@ void CommandBuffer::GetActiveSubroutineUniformName(GLuint program, GLenum shader
 	m_Buffer.write(name);
 }
 
-void CommandBuffer::GetActiveSubroutineName(GLuint program, GLenum shadertype, GLuint index, GLsizei bufSize, GLsizei * length, GLchar * name)
+void CommandBuffer::GetActiveSubroutineName(ShaderProgramHandle program, GLenum shadertype, GLuint index, GLsizei bufSize, GLsizei * length, GLchar * name)
 {
 	m_Buffer.write_command(CommandId::GetActiveSubroutineName);
 	m_Buffer.write(program);
@@ -3235,7 +3358,7 @@ void CommandBuffer::GetUniformSubroutineuiv(GLenum shadertype, GLint location, G
 	m_Buffer.write(params);
 }
 
-void CommandBuffer::GetProgramStageiv(GLuint program, GLenum shadertype, GLenum pname, GLint * values)
+void CommandBuffer::GetProgramStageiv(ShaderProgramHandle program, GLenum shadertype, GLenum pname, GLint * values)
 {
 	m_Buffer.write_command(CommandId::GetProgramStageiv);
 	m_Buffer.write(program);
@@ -3281,6 +3404,10 @@ void CommandBuffer::GenTransformFeedbacks(GLsizei n, GLuint * ids)
 
 GLboolean CommandBuffer::IsTransformFeedback(GLuint id)
 {
+	m_Buffer.write_command(CommandId::IsTransformFeedback);
+	#if defined(MGL_STRICT_COMPILATION)
+	#error Unimplemented function with return value
+	#endif
 	return 0;
 }
 
@@ -3370,7 +3497,7 @@ void CommandBuffer::ClearDepthf(GLfloat d)
 	m_Buffer.write(d);
 }
 
-void CommandBuffer::GetProgramBinary(GLuint program, GLsizei bufSize, GLsizei * length, GLenum * binaryFormat, void * binary)
+void CommandBuffer::GetProgramBinary(ShaderProgramHandle program, GLsizei bufSize, GLsizei * length, GLenum * binaryFormat, void * binary)
 {
 	m_Buffer.write_command(CommandId::GetProgramBinary);
 	m_Buffer.write(program);
@@ -3380,7 +3507,7 @@ void CommandBuffer::GetProgramBinary(GLuint program, GLsizei bufSize, GLsizei * 
 	m_Buffer.write(binary);
 }
 
-void CommandBuffer::ProgramBinary(GLuint program, GLenum binaryFormat, const void * binary, GLsizei length)
+void CommandBuffer::ProgramBinary(ShaderProgramHandle program, GLenum binaryFormat, const void * binary, GLsizei length)
 {
 	m_Buffer.write_command(CommandId::ProgramBinary);
 	m_Buffer.write(program);
@@ -3389,7 +3516,7 @@ void CommandBuffer::ProgramBinary(GLuint program, GLenum binaryFormat, const voi
 	m_Buffer.write(length);
 }
 
-void CommandBuffer::ProgramParameteri(GLuint program, GLenum pname, GLint value)
+void CommandBuffer::ProgramParameteri(ShaderProgramHandle program, GLenum pname, GLint value)
 {
 	m_Buffer.write_command(CommandId::ProgramParameteri);
 	m_Buffer.write(program);
@@ -3397,7 +3524,7 @@ void CommandBuffer::ProgramParameteri(GLuint program, GLenum pname, GLint value)
 	m_Buffer.write(value);
 }
 
-void CommandBuffer::UseProgramStages(GLuint pipeline, GLbitfield stages, GLuint program)
+void CommandBuffer::UseProgramStages(GLuint pipeline, GLbitfield stages, ShaderProgramHandle program)
 {
 	m_Buffer.write_command(CommandId::UseProgramStages);
 	m_Buffer.write(pipeline);
@@ -3405,7 +3532,7 @@ void CommandBuffer::UseProgramStages(GLuint pipeline, GLbitfield stages, GLuint 
 	m_Buffer.write(program);
 }
 
-void CommandBuffer::ActiveShaderProgram(GLuint pipeline, GLuint program)
+void CommandBuffer::ActiveShaderProgram(GLuint pipeline, ShaderProgramHandle program)
 {
 	m_Buffer.write_command(CommandId::ActiveShaderProgram);
 	m_Buffer.write(pipeline);
@@ -3414,6 +3541,10 @@ void CommandBuffer::ActiveShaderProgram(GLuint pipeline, GLuint program)
 
 GLuint CommandBuffer::CreateShaderProgramv(GLenum type, GLsizei count, const GLchar *const* strings)
 {
+	m_Buffer.write_command(CommandId::CreateShaderProgramv);
+	#if defined(MGL_STRICT_COMPILATION)
+	#error Unimplemented function with return value
+	#endif
 	return 0;
 }
 
@@ -3439,6 +3570,10 @@ void CommandBuffer::GenProgramPipelines(GLsizei n, GLuint * pipelines)
 
 GLboolean CommandBuffer::IsProgramPipeline(GLuint pipeline)
 {
+	m_Buffer.write_command(CommandId::IsProgramPipeline);
+	#if defined(MGL_STRICT_COMPILATION)
+	#error Unimplemented function with return value
+	#endif
 	return 0;
 }
 
@@ -3450,7 +3585,7 @@ void CommandBuffer::GetProgramPipelineiv(GLuint pipeline, GLenum pname, GLint * 
 	m_Buffer.write(params);
 }
 
-void CommandBuffer::ProgramUniform1i(GLuint program, GLint location, GLint v0)
+void CommandBuffer::ProgramUniform1i(ShaderProgramHandle program, GLint location, GLint v0)
 {
 	m_Buffer.write_command(CommandId::ProgramUniform1i);
 	m_Buffer.write(program);
@@ -3458,7 +3593,7 @@ void CommandBuffer::ProgramUniform1i(GLuint program, GLint location, GLint v0)
 	m_Buffer.write(v0);
 }
 
-void CommandBuffer::ProgramUniform1iv(GLuint program, GLint location, GLsizei count, const GLint * value)
+void CommandBuffer::ProgramUniform1iv(ShaderProgramHandle program, GLint location, GLsizei count, const GLint * value)
 {
 	m_Buffer.write_command(CommandId::ProgramUniform1iv);
 	m_Buffer.write(program);
@@ -3467,7 +3602,7 @@ void CommandBuffer::ProgramUniform1iv(GLuint program, GLint location, GLsizei co
 	m_Buffer.write(value);
 }
 
-void CommandBuffer::ProgramUniform1f(GLuint program, GLint location, GLfloat v0)
+void CommandBuffer::ProgramUniform1f(ShaderProgramHandle program, GLint location, GLfloat v0)
 {
 	m_Buffer.write_command(CommandId::ProgramUniform1f);
 	m_Buffer.write(program);
@@ -3475,7 +3610,7 @@ void CommandBuffer::ProgramUniform1f(GLuint program, GLint location, GLfloat v0)
 	m_Buffer.write(v0);
 }
 
-void CommandBuffer::ProgramUniform1fv(GLuint program, GLint location, GLsizei count, const GLfloat * value)
+void CommandBuffer::ProgramUniform1fv(ShaderProgramHandle program, GLint location, GLsizei count, const GLfloat * value)
 {
 	m_Buffer.write_command(CommandId::ProgramUniform1fv);
 	m_Buffer.write(program);
@@ -3484,7 +3619,7 @@ void CommandBuffer::ProgramUniform1fv(GLuint program, GLint location, GLsizei co
 	m_Buffer.write(value);
 }
 
-void CommandBuffer::ProgramUniform1d(GLuint program, GLint location, GLdouble v0)
+void CommandBuffer::ProgramUniform1d(ShaderProgramHandle program, GLint location, GLdouble v0)
 {
 	m_Buffer.write_command(CommandId::ProgramUniform1d);
 	m_Buffer.write(program);
@@ -3492,7 +3627,7 @@ void CommandBuffer::ProgramUniform1d(GLuint program, GLint location, GLdouble v0
 	m_Buffer.write(v0);
 }
 
-void CommandBuffer::ProgramUniform1dv(GLuint program, GLint location, GLsizei count, const GLdouble * value)
+void CommandBuffer::ProgramUniform1dv(ShaderProgramHandle program, GLint location, GLsizei count, const GLdouble * value)
 {
 	m_Buffer.write_command(CommandId::ProgramUniform1dv);
 	m_Buffer.write(program);
@@ -3501,7 +3636,7 @@ void CommandBuffer::ProgramUniform1dv(GLuint program, GLint location, GLsizei co
 	m_Buffer.write(value);
 }
 
-void CommandBuffer::ProgramUniform1ui(GLuint program, GLint location, GLuint v0)
+void CommandBuffer::ProgramUniform1ui(ShaderProgramHandle program, GLint location, GLuint v0)
 {
 	m_Buffer.write_command(CommandId::ProgramUniform1ui);
 	m_Buffer.write(program);
@@ -3509,7 +3644,7 @@ void CommandBuffer::ProgramUniform1ui(GLuint program, GLint location, GLuint v0)
 	m_Buffer.write(v0);
 }
 
-void CommandBuffer::ProgramUniform1uiv(GLuint program, GLint location, GLsizei count, const GLuint * value)
+void CommandBuffer::ProgramUniform1uiv(ShaderProgramHandle program, GLint location, GLsizei count, const GLuint * value)
 {
 	m_Buffer.write_command(CommandId::ProgramUniform1uiv);
 	m_Buffer.write(program);
@@ -3518,7 +3653,7 @@ void CommandBuffer::ProgramUniform1uiv(GLuint program, GLint location, GLsizei c
 	m_Buffer.write(value);
 }
 
-void CommandBuffer::ProgramUniform2i(GLuint program, GLint location, GLint v0, GLint v1)
+void CommandBuffer::ProgramUniform2i(ShaderProgramHandle program, GLint location, GLint v0, GLint v1)
 {
 	m_Buffer.write_command(CommandId::ProgramUniform2i);
 	m_Buffer.write(program);
@@ -3527,7 +3662,7 @@ void CommandBuffer::ProgramUniform2i(GLuint program, GLint location, GLint v0, G
 	m_Buffer.write(v1);
 }
 
-void CommandBuffer::ProgramUniform2iv(GLuint program, GLint location, GLsizei count, const GLint * value)
+void CommandBuffer::ProgramUniform2iv(ShaderProgramHandle program, GLint location, GLsizei count, const GLint * value)
 {
 	m_Buffer.write_command(CommandId::ProgramUniform2iv);
 	m_Buffer.write(program);
@@ -3536,7 +3671,7 @@ void CommandBuffer::ProgramUniform2iv(GLuint program, GLint location, GLsizei co
 	m_Buffer.write(value);
 }
 
-void CommandBuffer::ProgramUniform2f(GLuint program, GLint location, GLfloat v0, GLfloat v1)
+void CommandBuffer::ProgramUniform2f(ShaderProgramHandle program, GLint location, GLfloat v0, GLfloat v1)
 {
 	m_Buffer.write_command(CommandId::ProgramUniform2f);
 	m_Buffer.write(program);
@@ -3545,7 +3680,7 @@ void CommandBuffer::ProgramUniform2f(GLuint program, GLint location, GLfloat v0,
 	m_Buffer.write(v1);
 }
 
-void CommandBuffer::ProgramUniform2fv(GLuint program, GLint location, GLsizei count, const GLfloat * value)
+void CommandBuffer::ProgramUniform2fv(ShaderProgramHandle program, GLint location, GLsizei count, const GLfloat * value)
 {
 	m_Buffer.write_command(CommandId::ProgramUniform2fv);
 	m_Buffer.write(program);
@@ -3554,7 +3689,7 @@ void CommandBuffer::ProgramUniform2fv(GLuint program, GLint location, GLsizei co
 	m_Buffer.write(value);
 }
 
-void CommandBuffer::ProgramUniform2d(GLuint program, GLint location, GLdouble v0, GLdouble v1)
+void CommandBuffer::ProgramUniform2d(ShaderProgramHandle program, GLint location, GLdouble v0, GLdouble v1)
 {
 	m_Buffer.write_command(CommandId::ProgramUniform2d);
 	m_Buffer.write(program);
@@ -3563,7 +3698,7 @@ void CommandBuffer::ProgramUniform2d(GLuint program, GLint location, GLdouble v0
 	m_Buffer.write(v1);
 }
 
-void CommandBuffer::ProgramUniform2dv(GLuint program, GLint location, GLsizei count, const GLdouble * value)
+void CommandBuffer::ProgramUniform2dv(ShaderProgramHandle program, GLint location, GLsizei count, const GLdouble * value)
 {
 	m_Buffer.write_command(CommandId::ProgramUniform2dv);
 	m_Buffer.write(program);
@@ -3572,7 +3707,7 @@ void CommandBuffer::ProgramUniform2dv(GLuint program, GLint location, GLsizei co
 	m_Buffer.write(value);
 }
 
-void CommandBuffer::ProgramUniform2ui(GLuint program, GLint location, GLuint v0, GLuint v1)
+void CommandBuffer::ProgramUniform2ui(ShaderProgramHandle program, GLint location, GLuint v0, GLuint v1)
 {
 	m_Buffer.write_command(CommandId::ProgramUniform2ui);
 	m_Buffer.write(program);
@@ -3581,7 +3716,7 @@ void CommandBuffer::ProgramUniform2ui(GLuint program, GLint location, GLuint v0,
 	m_Buffer.write(v1);
 }
 
-void CommandBuffer::ProgramUniform2uiv(GLuint program, GLint location, GLsizei count, const GLuint * value)
+void CommandBuffer::ProgramUniform2uiv(ShaderProgramHandle program, GLint location, GLsizei count, const GLuint * value)
 {
 	m_Buffer.write_command(CommandId::ProgramUniform2uiv);
 	m_Buffer.write(program);
@@ -3590,7 +3725,7 @@ void CommandBuffer::ProgramUniform2uiv(GLuint program, GLint location, GLsizei c
 	m_Buffer.write(value);
 }
 
-void CommandBuffer::ProgramUniform3i(GLuint program, GLint location, GLint v0, GLint v1, GLint v2)
+void CommandBuffer::ProgramUniform3i(ShaderProgramHandle program, GLint location, GLint v0, GLint v1, GLint v2)
 {
 	m_Buffer.write_command(CommandId::ProgramUniform3i);
 	m_Buffer.write(program);
@@ -3600,7 +3735,7 @@ void CommandBuffer::ProgramUniform3i(GLuint program, GLint location, GLint v0, G
 	m_Buffer.write(v2);
 }
 
-void CommandBuffer::ProgramUniform3iv(GLuint program, GLint location, GLsizei count, const GLint * value)
+void CommandBuffer::ProgramUniform3iv(ShaderProgramHandle program, GLint location, GLsizei count, const GLint * value)
 {
 	m_Buffer.write_command(CommandId::ProgramUniform3iv);
 	m_Buffer.write(program);
@@ -3609,7 +3744,7 @@ void CommandBuffer::ProgramUniform3iv(GLuint program, GLint location, GLsizei co
 	m_Buffer.write(value);
 }
 
-void CommandBuffer::ProgramUniform3f(GLuint program, GLint location, GLfloat v0, GLfloat v1, GLfloat v2)
+void CommandBuffer::ProgramUniform3f(ShaderProgramHandle program, GLint location, GLfloat v0, GLfloat v1, GLfloat v2)
 {
 	m_Buffer.write_command(CommandId::ProgramUniform3f);
 	m_Buffer.write(program);
@@ -3619,7 +3754,7 @@ void CommandBuffer::ProgramUniform3f(GLuint program, GLint location, GLfloat v0,
 	m_Buffer.write(v2);
 }
 
-void CommandBuffer::ProgramUniform3fv(GLuint program, GLint location, GLsizei count, const GLfloat * value)
+void CommandBuffer::ProgramUniform3fv(ShaderProgramHandle program, GLint location, GLsizei count, const GLfloat * value)
 {
 	m_Buffer.write_command(CommandId::ProgramUniform3fv);
 	m_Buffer.write(program);
@@ -3628,7 +3763,7 @@ void CommandBuffer::ProgramUniform3fv(GLuint program, GLint location, GLsizei co
 	m_Buffer.write(value);
 }
 
-void CommandBuffer::ProgramUniform3d(GLuint program, GLint location, GLdouble v0, GLdouble v1, GLdouble v2)
+void CommandBuffer::ProgramUniform3d(ShaderProgramHandle program, GLint location, GLdouble v0, GLdouble v1, GLdouble v2)
 {
 	m_Buffer.write_command(CommandId::ProgramUniform3d);
 	m_Buffer.write(program);
@@ -3638,7 +3773,7 @@ void CommandBuffer::ProgramUniform3d(GLuint program, GLint location, GLdouble v0
 	m_Buffer.write(v2);
 }
 
-void CommandBuffer::ProgramUniform3dv(GLuint program, GLint location, GLsizei count, const GLdouble * value)
+void CommandBuffer::ProgramUniform3dv(ShaderProgramHandle program, GLint location, GLsizei count, const GLdouble * value)
 {
 	m_Buffer.write_command(CommandId::ProgramUniform3dv);
 	m_Buffer.write(program);
@@ -3647,7 +3782,7 @@ void CommandBuffer::ProgramUniform3dv(GLuint program, GLint location, GLsizei co
 	m_Buffer.write(value);
 }
 
-void CommandBuffer::ProgramUniform3ui(GLuint program, GLint location, GLuint v0, GLuint v1, GLuint v2)
+void CommandBuffer::ProgramUniform3ui(ShaderProgramHandle program, GLint location, GLuint v0, GLuint v1, GLuint v2)
 {
 	m_Buffer.write_command(CommandId::ProgramUniform3ui);
 	m_Buffer.write(program);
@@ -3657,7 +3792,7 @@ void CommandBuffer::ProgramUniform3ui(GLuint program, GLint location, GLuint v0,
 	m_Buffer.write(v2);
 }
 
-void CommandBuffer::ProgramUniform3uiv(GLuint program, GLint location, GLsizei count, const GLuint * value)
+void CommandBuffer::ProgramUniform3uiv(ShaderProgramHandle program, GLint location, GLsizei count, const GLuint * value)
 {
 	m_Buffer.write_command(CommandId::ProgramUniform3uiv);
 	m_Buffer.write(program);
@@ -3666,7 +3801,7 @@ void CommandBuffer::ProgramUniform3uiv(GLuint program, GLint location, GLsizei c
 	m_Buffer.write(value);
 }
 
-void CommandBuffer::ProgramUniform4i(GLuint program, GLint location, GLint v0, GLint v1, GLint v2, GLint v3)
+void CommandBuffer::ProgramUniform4i(ShaderProgramHandle program, GLint location, GLint v0, GLint v1, GLint v2, GLint v3)
 {
 	m_Buffer.write_command(CommandId::ProgramUniform4i);
 	m_Buffer.write(program);
@@ -3677,7 +3812,7 @@ void CommandBuffer::ProgramUniform4i(GLuint program, GLint location, GLint v0, G
 	m_Buffer.write(v3);
 }
 
-void CommandBuffer::ProgramUniform4iv(GLuint program, GLint location, GLsizei count, const GLint * value)
+void CommandBuffer::ProgramUniform4iv(ShaderProgramHandle program, GLint location, GLsizei count, const GLint * value)
 {
 	m_Buffer.write_command(CommandId::ProgramUniform4iv);
 	m_Buffer.write(program);
@@ -3686,7 +3821,7 @@ void CommandBuffer::ProgramUniform4iv(GLuint program, GLint location, GLsizei co
 	m_Buffer.write(value);
 }
 
-void CommandBuffer::ProgramUniform4f(GLuint program, GLint location, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3)
+void CommandBuffer::ProgramUniform4f(ShaderProgramHandle program, GLint location, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3)
 {
 	m_Buffer.write_command(CommandId::ProgramUniform4f);
 	m_Buffer.write(program);
@@ -3697,7 +3832,7 @@ void CommandBuffer::ProgramUniform4f(GLuint program, GLint location, GLfloat v0,
 	m_Buffer.write(v3);
 }
 
-void CommandBuffer::ProgramUniform4fv(GLuint program, GLint location, GLsizei count, const GLfloat * value)
+void CommandBuffer::ProgramUniform4fv(ShaderProgramHandle program, GLint location, GLsizei count, const GLfloat * value)
 {
 	m_Buffer.write_command(CommandId::ProgramUniform4fv);
 	m_Buffer.write(program);
@@ -3706,7 +3841,7 @@ void CommandBuffer::ProgramUniform4fv(GLuint program, GLint location, GLsizei co
 	m_Buffer.write(value);
 }
 
-void CommandBuffer::ProgramUniform4d(GLuint program, GLint location, GLdouble v0, GLdouble v1, GLdouble v2, GLdouble v3)
+void CommandBuffer::ProgramUniform4d(ShaderProgramHandle program, GLint location, GLdouble v0, GLdouble v1, GLdouble v2, GLdouble v3)
 {
 	m_Buffer.write_command(CommandId::ProgramUniform4d);
 	m_Buffer.write(program);
@@ -3717,7 +3852,7 @@ void CommandBuffer::ProgramUniform4d(GLuint program, GLint location, GLdouble v0
 	m_Buffer.write(v3);
 }
 
-void CommandBuffer::ProgramUniform4dv(GLuint program, GLint location, GLsizei count, const GLdouble * value)
+void CommandBuffer::ProgramUniform4dv(ShaderProgramHandle program, GLint location, GLsizei count, const GLdouble * value)
 {
 	m_Buffer.write_command(CommandId::ProgramUniform4dv);
 	m_Buffer.write(program);
@@ -3726,7 +3861,7 @@ void CommandBuffer::ProgramUniform4dv(GLuint program, GLint location, GLsizei co
 	m_Buffer.write(value);
 }
 
-void CommandBuffer::ProgramUniform4ui(GLuint program, GLint location, GLuint v0, GLuint v1, GLuint v2, GLuint v3)
+void CommandBuffer::ProgramUniform4ui(ShaderProgramHandle program, GLint location, GLuint v0, GLuint v1, GLuint v2, GLuint v3)
 {
 	m_Buffer.write_command(CommandId::ProgramUniform4ui);
 	m_Buffer.write(program);
@@ -3737,7 +3872,7 @@ void CommandBuffer::ProgramUniform4ui(GLuint program, GLint location, GLuint v0,
 	m_Buffer.write(v3);
 }
 
-void CommandBuffer::ProgramUniform4uiv(GLuint program, GLint location, GLsizei count, const GLuint * value)
+void CommandBuffer::ProgramUniform4uiv(ShaderProgramHandle program, GLint location, GLsizei count, const GLuint * value)
 {
 	m_Buffer.write_command(CommandId::ProgramUniform4uiv);
 	m_Buffer.write(program);
@@ -3746,7 +3881,7 @@ void CommandBuffer::ProgramUniform4uiv(GLuint program, GLint location, GLsizei c
 	m_Buffer.write(value);
 }
 
-void CommandBuffer::ProgramUniformMatrix2fv(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLfloat * value)
+void CommandBuffer::ProgramUniformMatrix2fv(ShaderProgramHandle program, GLint location, GLsizei count, GLboolean transpose, const GLfloat * value)
 {
 	m_Buffer.write_command(CommandId::ProgramUniformMatrix2fv);
 	m_Buffer.write(program);
@@ -3756,7 +3891,7 @@ void CommandBuffer::ProgramUniformMatrix2fv(GLuint program, GLint location, GLsi
 	m_Buffer.write(value);
 }
 
-void CommandBuffer::ProgramUniformMatrix3fv(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLfloat * value)
+void CommandBuffer::ProgramUniformMatrix3fv(ShaderProgramHandle program, GLint location, GLsizei count, GLboolean transpose, const GLfloat * value)
 {
 	m_Buffer.write_command(CommandId::ProgramUniformMatrix3fv);
 	m_Buffer.write(program);
@@ -3766,7 +3901,7 @@ void CommandBuffer::ProgramUniformMatrix3fv(GLuint program, GLint location, GLsi
 	m_Buffer.write(value);
 }
 
-void CommandBuffer::ProgramUniformMatrix4fv(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLfloat * value)
+void CommandBuffer::ProgramUniformMatrix4fv(ShaderProgramHandle program, GLint location, GLsizei count, GLboolean transpose, const GLfloat * value)
 {
 	m_Buffer.write_command(CommandId::ProgramUniformMatrix4fv);
 	m_Buffer.write(program);
@@ -3776,7 +3911,7 @@ void CommandBuffer::ProgramUniformMatrix4fv(GLuint program, GLint location, GLsi
 	m_Buffer.write(value);
 }
 
-void CommandBuffer::ProgramUniformMatrix2dv(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLdouble * value)
+void CommandBuffer::ProgramUniformMatrix2dv(ShaderProgramHandle program, GLint location, GLsizei count, GLboolean transpose, const GLdouble * value)
 {
 	m_Buffer.write_command(CommandId::ProgramUniformMatrix2dv);
 	m_Buffer.write(program);
@@ -3786,7 +3921,7 @@ void CommandBuffer::ProgramUniformMatrix2dv(GLuint program, GLint location, GLsi
 	m_Buffer.write(value);
 }
 
-void CommandBuffer::ProgramUniformMatrix3dv(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLdouble * value)
+void CommandBuffer::ProgramUniformMatrix3dv(ShaderProgramHandle program, GLint location, GLsizei count, GLboolean transpose, const GLdouble * value)
 {
 	m_Buffer.write_command(CommandId::ProgramUniformMatrix3dv);
 	m_Buffer.write(program);
@@ -3796,7 +3931,7 @@ void CommandBuffer::ProgramUniformMatrix3dv(GLuint program, GLint location, GLsi
 	m_Buffer.write(value);
 }
 
-void CommandBuffer::ProgramUniformMatrix4dv(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLdouble * value)
+void CommandBuffer::ProgramUniformMatrix4dv(ShaderProgramHandle program, GLint location, GLsizei count, GLboolean transpose, const GLdouble * value)
 {
 	m_Buffer.write_command(CommandId::ProgramUniformMatrix4dv);
 	m_Buffer.write(program);
@@ -3806,7 +3941,7 @@ void CommandBuffer::ProgramUniformMatrix4dv(GLuint program, GLint location, GLsi
 	m_Buffer.write(value);
 }
 
-void CommandBuffer::ProgramUniformMatrix2x3fv(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLfloat * value)
+void CommandBuffer::ProgramUniformMatrix2x3fv(ShaderProgramHandle program, GLint location, GLsizei count, GLboolean transpose, const GLfloat * value)
 {
 	m_Buffer.write_command(CommandId::ProgramUniformMatrix2x3fv);
 	m_Buffer.write(program);
@@ -3816,7 +3951,7 @@ void CommandBuffer::ProgramUniformMatrix2x3fv(GLuint program, GLint location, GL
 	m_Buffer.write(value);
 }
 
-void CommandBuffer::ProgramUniformMatrix3x2fv(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLfloat * value)
+void CommandBuffer::ProgramUniformMatrix3x2fv(ShaderProgramHandle program, GLint location, GLsizei count, GLboolean transpose, const GLfloat * value)
 {
 	m_Buffer.write_command(CommandId::ProgramUniformMatrix3x2fv);
 	m_Buffer.write(program);
@@ -3826,7 +3961,7 @@ void CommandBuffer::ProgramUniformMatrix3x2fv(GLuint program, GLint location, GL
 	m_Buffer.write(value);
 }
 
-void CommandBuffer::ProgramUniformMatrix2x4fv(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLfloat * value)
+void CommandBuffer::ProgramUniformMatrix2x4fv(ShaderProgramHandle program, GLint location, GLsizei count, GLboolean transpose, const GLfloat * value)
 {
 	m_Buffer.write_command(CommandId::ProgramUniformMatrix2x4fv);
 	m_Buffer.write(program);
@@ -3836,7 +3971,7 @@ void CommandBuffer::ProgramUniformMatrix2x4fv(GLuint program, GLint location, GL
 	m_Buffer.write(value);
 }
 
-void CommandBuffer::ProgramUniformMatrix4x2fv(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLfloat * value)
+void CommandBuffer::ProgramUniformMatrix4x2fv(ShaderProgramHandle program, GLint location, GLsizei count, GLboolean transpose, const GLfloat * value)
 {
 	m_Buffer.write_command(CommandId::ProgramUniformMatrix4x2fv);
 	m_Buffer.write(program);
@@ -3846,7 +3981,7 @@ void CommandBuffer::ProgramUniformMatrix4x2fv(GLuint program, GLint location, GL
 	m_Buffer.write(value);
 }
 
-void CommandBuffer::ProgramUniformMatrix3x4fv(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLfloat * value)
+void CommandBuffer::ProgramUniformMatrix3x4fv(ShaderProgramHandle program, GLint location, GLsizei count, GLboolean transpose, const GLfloat * value)
 {
 	m_Buffer.write_command(CommandId::ProgramUniformMatrix3x4fv);
 	m_Buffer.write(program);
@@ -3856,7 +3991,7 @@ void CommandBuffer::ProgramUniformMatrix3x4fv(GLuint program, GLint location, GL
 	m_Buffer.write(value);
 }
 
-void CommandBuffer::ProgramUniformMatrix4x3fv(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLfloat * value)
+void CommandBuffer::ProgramUniformMatrix4x3fv(ShaderProgramHandle program, GLint location, GLsizei count, GLboolean transpose, const GLfloat * value)
 {
 	m_Buffer.write_command(CommandId::ProgramUniformMatrix4x3fv);
 	m_Buffer.write(program);
@@ -3866,7 +4001,7 @@ void CommandBuffer::ProgramUniformMatrix4x3fv(GLuint program, GLint location, GL
 	m_Buffer.write(value);
 }
 
-void CommandBuffer::ProgramUniformMatrix2x3dv(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLdouble * value)
+void CommandBuffer::ProgramUniformMatrix2x3dv(ShaderProgramHandle program, GLint location, GLsizei count, GLboolean transpose, const GLdouble * value)
 {
 	m_Buffer.write_command(CommandId::ProgramUniformMatrix2x3dv);
 	m_Buffer.write(program);
@@ -3876,7 +4011,7 @@ void CommandBuffer::ProgramUniformMatrix2x3dv(GLuint program, GLint location, GL
 	m_Buffer.write(value);
 }
 
-void CommandBuffer::ProgramUniformMatrix3x2dv(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLdouble * value)
+void CommandBuffer::ProgramUniformMatrix3x2dv(ShaderProgramHandle program, GLint location, GLsizei count, GLboolean transpose, const GLdouble * value)
 {
 	m_Buffer.write_command(CommandId::ProgramUniformMatrix3x2dv);
 	m_Buffer.write(program);
@@ -3886,7 +4021,7 @@ void CommandBuffer::ProgramUniformMatrix3x2dv(GLuint program, GLint location, GL
 	m_Buffer.write(value);
 }
 
-void CommandBuffer::ProgramUniformMatrix2x4dv(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLdouble * value)
+void CommandBuffer::ProgramUniformMatrix2x4dv(ShaderProgramHandle program, GLint location, GLsizei count, GLboolean transpose, const GLdouble * value)
 {
 	m_Buffer.write_command(CommandId::ProgramUniformMatrix2x4dv);
 	m_Buffer.write(program);
@@ -3896,7 +4031,7 @@ void CommandBuffer::ProgramUniformMatrix2x4dv(GLuint program, GLint location, GL
 	m_Buffer.write(value);
 }
 
-void CommandBuffer::ProgramUniformMatrix4x2dv(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLdouble * value)
+void CommandBuffer::ProgramUniformMatrix4x2dv(ShaderProgramHandle program, GLint location, GLsizei count, GLboolean transpose, const GLdouble * value)
 {
 	m_Buffer.write_command(CommandId::ProgramUniformMatrix4x2dv);
 	m_Buffer.write(program);
@@ -3906,7 +4041,7 @@ void CommandBuffer::ProgramUniformMatrix4x2dv(GLuint program, GLint location, GL
 	m_Buffer.write(value);
 }
 
-void CommandBuffer::ProgramUniformMatrix3x4dv(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLdouble * value)
+void CommandBuffer::ProgramUniformMatrix3x4dv(ShaderProgramHandle program, GLint location, GLsizei count, GLboolean transpose, const GLdouble * value)
 {
 	m_Buffer.write_command(CommandId::ProgramUniformMatrix3x4dv);
 	m_Buffer.write(program);
@@ -3916,7 +4051,7 @@ void CommandBuffer::ProgramUniformMatrix3x4dv(GLuint program, GLint location, GL
 	m_Buffer.write(value);
 }
 
-void CommandBuffer::ProgramUniformMatrix4x3dv(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLdouble * value)
+void CommandBuffer::ProgramUniformMatrix4x3dv(ShaderProgramHandle program, GLint location, GLsizei count, GLboolean transpose, const GLdouble * value)
 {
 	m_Buffer.write_command(CommandId::ProgramUniformMatrix4x3dv);
 	m_Buffer.write(program);
@@ -4146,7 +4281,7 @@ void CommandBuffer::GetInternalformativ(GLenum target, GLenum internalformat, GL
 	m_Buffer.write(params);
 }
 
-void CommandBuffer::GetActiveAtomicCounterBufferiv(GLuint program, GLuint bufferIndex, GLenum pname, GLint * params)
+void CommandBuffer::GetActiveAtomicCounterBufferiv(ShaderProgramHandle program, GLuint bufferIndex, GLenum pname, GLint * params)
 {
 	m_Buffer.write_command(CommandId::GetActiveAtomicCounterBufferiv);
 	m_Buffer.write(program);
@@ -4155,7 +4290,7 @@ void CommandBuffer::GetActiveAtomicCounterBufferiv(GLuint program, GLuint buffer
 	m_Buffer.write(params);
 }
 
-void CommandBuffer::BindImageTexture(GLuint unit, GLuint texture, GLint level, GLboolean layered, GLint layer, GLenum access, GLenum format)
+void CommandBuffer::BindImageTexture(GLuint unit, TextureHandle texture, GLint level, GLboolean layered, GLint layer, GLenum access, GLenum format)
 {
 	m_Buffer.write_command(CommandId::BindImageTexture);
 	m_Buffer.write(unit);
@@ -4302,7 +4437,7 @@ void CommandBuffer::GetInternalformati64v(GLenum target, GLenum internalformat, 
 	m_Buffer.write(params);
 }
 
-void CommandBuffer::InvalidateTexSubImage(GLuint texture, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth)
+void CommandBuffer::InvalidateTexSubImage(TextureHandle texture, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth)
 {
 	m_Buffer.write_command(CommandId::InvalidateTexSubImage);
 	m_Buffer.write(texture);
@@ -4315,14 +4450,14 @@ void CommandBuffer::InvalidateTexSubImage(GLuint texture, GLint level, GLint xof
 	m_Buffer.write(depth);
 }
 
-void CommandBuffer::InvalidateTexImage(GLuint texture, GLint level)
+void CommandBuffer::InvalidateTexImage(TextureHandle texture, GLint level)
 {
 	m_Buffer.write_command(CommandId::InvalidateTexImage);
 	m_Buffer.write(texture);
 	m_Buffer.write(level);
 }
 
-void CommandBuffer::InvalidateBufferSubData(GLuint buffer, GLintptr offset, GLsizeiptr length)
+void CommandBuffer::InvalidateBufferSubData(BufferHandle buffer, GLintptr offset, GLsizeiptr length)
 {
 	m_Buffer.write_command(CommandId::InvalidateBufferSubData);
 	m_Buffer.write(buffer);
@@ -4330,7 +4465,7 @@ void CommandBuffer::InvalidateBufferSubData(GLuint buffer, GLintptr offset, GLsi
 	m_Buffer.write(length);
 }
 
-void CommandBuffer::InvalidateBufferData(GLuint buffer)
+void CommandBuffer::InvalidateBufferData(BufferHandle buffer)
 {
 	m_Buffer.write_command(CommandId::InvalidateBufferData);
 	m_Buffer.write(buffer);
@@ -4375,7 +4510,7 @@ void CommandBuffer::MultiDrawElementsIndirect(GLenum mode, GLenum type, const vo
 	m_Buffer.write(stride);
 }
 
-void CommandBuffer::GetProgramInterfaceiv(GLuint program, GLenum programInterface, GLenum pname, GLint * params)
+void CommandBuffer::GetProgramInterfaceiv(ShaderProgramHandle program, GLenum programInterface, GLenum pname, GLint * params)
 {
 	m_Buffer.write_command(CommandId::GetProgramInterfaceiv);
 	m_Buffer.write(program);
@@ -4384,12 +4519,16 @@ void CommandBuffer::GetProgramInterfaceiv(GLuint program, GLenum programInterfac
 	m_Buffer.write(params);
 }
 
-GLuint CommandBuffer::GetProgramResourceIndex(GLuint program, GLenum programInterface, const GLchar * name)
+GLuint CommandBuffer::GetProgramResourceIndex(ShaderProgramHandle program, GLenum programInterface, const GLchar * name)
 {
+	m_Buffer.write_command(CommandId::GetProgramResourceIndex);
+	#if defined(MGL_STRICT_COMPILATION)
+	#error Unimplemented function with return value
+	#endif
 	return 0;
 }
 
-void CommandBuffer::GetProgramResourceName(GLuint program, GLenum programInterface, GLuint index, GLsizei bufSize, GLsizei * length, GLchar * name)
+void CommandBuffer::GetProgramResourceName(ShaderProgramHandle program, GLenum programInterface, GLuint index, GLsizei bufSize, GLsizei * length, GLchar * name)
 {
 	m_Buffer.write_command(CommandId::GetProgramResourceName);
 	m_Buffer.write(program);
@@ -4400,7 +4539,7 @@ void CommandBuffer::GetProgramResourceName(GLuint program, GLenum programInterfa
 	m_Buffer.write(name);
 }
 
-void CommandBuffer::GetProgramResourceiv(GLuint program, GLenum programInterface, GLuint index, GLsizei propCount, const GLenum * props, GLsizei count, GLsizei * length, GLint * params)
+void CommandBuffer::GetProgramResourceiv(ShaderProgramHandle program, GLenum programInterface, GLuint index, GLsizei propCount, const GLenum * props, GLsizei count, GLsizei * length, GLint * params)
 {
 	m_Buffer.write_command(CommandId::GetProgramResourceiv);
 	m_Buffer.write(program);
@@ -4413,17 +4552,25 @@ void CommandBuffer::GetProgramResourceiv(GLuint program, GLenum programInterface
 	m_Buffer.write(params);
 }
 
-GLint CommandBuffer::GetProgramResourceLocation(GLuint program, GLenum programInterface, const GLchar * name)
+GLint CommandBuffer::GetProgramResourceLocation(ShaderProgramHandle program, GLenum programInterface, const GLchar * name)
 {
+	m_Buffer.write_command(CommandId::GetProgramResourceLocation);
+	#if defined(MGL_STRICT_COMPILATION)
+	#error Unimplemented function with return value
+	#endif
 	return 0;
 }
 
-GLint CommandBuffer::GetProgramResourceLocationIndex(GLuint program, GLenum programInterface, const GLchar * name)
+GLint CommandBuffer::GetProgramResourceLocationIndex(ShaderProgramHandle program, GLenum programInterface, const GLchar * name)
 {
+	m_Buffer.write_command(CommandId::GetProgramResourceLocationIndex);
+	#if defined(MGL_STRICT_COMPILATION)
+	#error Unimplemented function with return value
+	#endif
 	return 0;
 }
 
-void CommandBuffer::ShaderStorageBlockBinding(GLuint program, GLuint storageBlockIndex, GLuint storageBlockBinding)
+void CommandBuffer::ShaderStorageBlockBinding(ShaderProgramHandle program, GLuint storageBlockIndex, GLuint storageBlockBinding)
 {
 	m_Buffer.write_command(CommandId::ShaderStorageBlockBinding);
 	m_Buffer.write(program);
@@ -4431,7 +4578,7 @@ void CommandBuffer::ShaderStorageBlockBinding(GLuint program, GLuint storageBloc
 	m_Buffer.write(storageBlockBinding);
 }
 
-void CommandBuffer::TexBufferRange(GLenum target, GLenum internalformat, GLuint buffer, GLintptr offset, GLsizeiptr size)
+void CommandBuffer::TexBufferRange(GLenum target, GLenum internalformat, BufferHandle buffer, GLintptr offset, GLsizeiptr size)
 {
 	m_Buffer.write_command(CommandId::TexBufferRange);
 	m_Buffer.write(target);
@@ -4464,7 +4611,7 @@ void CommandBuffer::TexStorage3DMultisample(GLenum target, GLsizei samples, GLen
 	m_Buffer.write(fixedsamplelocations);
 }
 
-void CommandBuffer::TextureView(GLuint texture, GLenum target, GLuint origtexture, GLenum internalformat, GLuint minlevel, GLuint numlevels, GLuint minlayer, GLuint numlayers)
+void CommandBuffer::TextureView(TextureHandle texture, GLenum target, GLuint origtexture, GLenum internalformat, GLuint minlevel, GLuint numlevels, GLuint minlayer, GLuint numlayers)
 {
 	m_Buffer.write_command(CommandId::TextureView);
 	m_Buffer.write(texture);
@@ -4477,7 +4624,7 @@ void CommandBuffer::TextureView(GLuint texture, GLenum target, GLuint origtextur
 	m_Buffer.write(numlayers);
 }
 
-void CommandBuffer::BindVertexBuffer(GLuint bindingindex, GLuint buffer, GLintptr offset, GLsizei stride)
+void CommandBuffer::BindVertexBuffer(GLuint bindingindex, BufferHandle buffer, GLintptr offset, GLsizei stride)
 {
 	m_Buffer.write_command(CommandId::BindVertexBuffer);
 	m_Buffer.write(bindingindex);
@@ -4559,6 +4706,10 @@ void CommandBuffer::DebugMessageCallback(GLDEBUGPROC callback, const void * user
 
 GLuint CommandBuffer::GetDebugMessageLog(GLuint count, GLsizei bufSize, GLenum * sources, GLenum * types, GLuint * ids, GLenum * severities, GLsizei * lengths, GLchar * messageLog)
 {
+	m_Buffer.write_command(CommandId::GetDebugMessageLog);
+	#if defined(MGL_STRICT_COMPILATION)
+	#error Unimplemented function with return value
+	#endif
 	return 0;
 }
 
@@ -4628,7 +4779,7 @@ void CommandBuffer::BufferStorage(GLenum target, GLsizeiptr size, const void * d
 	m_Buffer.write(flags);
 }
 
-void CommandBuffer::ClearTexImage(GLuint texture, GLint level, GLenum format, GLenum type, const void * data)
+void CommandBuffer::ClearTexImage(TextureHandle texture, GLint level, GLenum format, GLenum type, const void * data)
 {
 	m_Buffer.write_command(CommandId::ClearTexImage);
 	m_Buffer.write(texture);
@@ -4638,7 +4789,7 @@ void CommandBuffer::ClearTexImage(GLuint texture, GLint level, GLenum format, GL
 	m_Buffer.write(data);
 }
 
-void CommandBuffer::ClearTexSubImage(GLuint texture, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const void * data)
+void CommandBuffer::ClearTexSubImage(TextureHandle texture, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const void * data)
 {
 	m_Buffer.write_command(CommandId::ClearTexSubImage);
 	m_Buffer.write(texture);
@@ -4722,7 +4873,7 @@ void CommandBuffer::CreateTransformFeedbacks(GLsizei n, GLuint * ids)
 	m_Buffer.write(ids);
 }
 
-void CommandBuffer::TransformFeedbackBufferBase(GLuint xfb, GLuint index, GLuint buffer)
+void CommandBuffer::TransformFeedbackBufferBase(GLuint xfb, GLuint index, BufferHandle buffer)
 {
 	m_Buffer.write_command(CommandId::TransformFeedbackBufferBase);
 	m_Buffer.write(xfb);
@@ -4730,7 +4881,7 @@ void CommandBuffer::TransformFeedbackBufferBase(GLuint xfb, GLuint index, GLuint
 	m_Buffer.write(buffer);
 }
 
-void CommandBuffer::TransformFeedbackBufferRange(GLuint xfb, GLuint index, GLuint buffer, GLintptr offset, GLsizeiptr size)
+void CommandBuffer::TransformFeedbackBufferRange(GLuint xfb, GLuint index, BufferHandle buffer, GLintptr offset, GLsizeiptr size)
 {
 	m_Buffer.write_command(CommandId::TransformFeedbackBufferRange);
 	m_Buffer.write(xfb);
@@ -4766,14 +4917,16 @@ void CommandBuffer::GetTransformFeedbacki64_v(GLuint xfb, GLenum pname, GLuint i
 	m_Buffer.write(param);
 }
 
-void CommandBuffer::CreateBuffers(GLsizei n, GLuint * buffers)
+BufferHandle CommandBuffer::CreateBuffer()
 {
-	m_Buffer.write_command(CommandId::CreateBuffers);
-	m_Buffer.write(n);
-	m_Buffer.write(buffers);
+	m_Buffer.write_command(CommandId::CreateBuffer);
+
+	auto handle = m_ResourceManager.Buffers.create();
+	m_Buffer.write<BufferHandle>(handle);
+	return handle;
 }
 
-void CommandBuffer::NamedBufferStorage(GLuint buffer, GLsizeiptr size, const void * data, GLbitfield flags)
+void CommandBuffer::NamedBufferStorage(BufferHandle buffer, GLsizeiptr size, const void * data, GLbitfield flags)
 {
 	m_Buffer.write_command(CommandId::NamedBufferStorage);
 	m_Buffer.write(buffer);
@@ -4782,7 +4935,7 @@ void CommandBuffer::NamedBufferStorage(GLuint buffer, GLsizeiptr size, const voi
 	m_Buffer.write(flags);
 }
 
-void CommandBuffer::NamedBufferData(GLuint buffer, GLsizeiptr size, const void * data, GLenum usage)
+void CommandBuffer::NamedBufferData(BufferHandle buffer, GLsizeiptr size, const void * data, GLenum usage)
 {
 	m_Buffer.write_command(CommandId::NamedBufferData);
 	m_Buffer.write(buffer);
@@ -4791,7 +4944,7 @@ void CommandBuffer::NamedBufferData(GLuint buffer, GLsizeiptr size, const void *
 	m_Buffer.write(usage);
 }
 
-void CommandBuffer::NamedBufferSubData(GLuint buffer, GLintptr offset, GLsizeiptr size, const void * data)
+void CommandBuffer::NamedBufferSubData(BufferHandle buffer, GLintptr offset, GLsizeiptr size, const void * data)
 {
 	m_Buffer.write_command(CommandId::NamedBufferSubData);
 	m_Buffer.write(buffer);
@@ -4810,7 +4963,7 @@ void CommandBuffer::CopyNamedBufferSubData(GLuint readBuffer, GLuint writeBuffer
 	m_Buffer.write(size);
 }
 
-void CommandBuffer::ClearNamedBufferData(GLuint buffer, GLenum internalformat, GLenum format, GLenum type, const void * data)
+void CommandBuffer::ClearNamedBufferData(BufferHandle buffer, GLenum internalformat, GLenum format, GLenum type, const void * data)
 {
 	m_Buffer.write_command(CommandId::ClearNamedBufferData);
 	m_Buffer.write(buffer);
@@ -4820,7 +4973,7 @@ void CommandBuffer::ClearNamedBufferData(GLuint buffer, GLenum internalformat, G
 	m_Buffer.write(data);
 }
 
-void CommandBuffer::ClearNamedBufferSubData(GLuint buffer, GLenum internalformat, GLintptr offset, GLsizeiptr size, GLenum format, GLenum type, const void * data)
+void CommandBuffer::ClearNamedBufferSubData(BufferHandle buffer, GLenum internalformat, GLintptr offset, GLsizeiptr size, GLenum format, GLenum type, const void * data)
 {
 	m_Buffer.write_command(CommandId::ClearNamedBufferSubData);
 	m_Buffer.write(buffer);
@@ -4832,22 +4985,34 @@ void CommandBuffer::ClearNamedBufferSubData(GLuint buffer, GLenum internalformat
 	m_Buffer.write(data);
 }
 
-void * CommandBuffer::MapNamedBuffer(GLuint buffer, GLenum access)
+void * CommandBuffer::MapNamedBuffer(BufferHandle buffer, GLenum access)
 {
+	m_Buffer.write_command(CommandId::MapNamedBuffer);
+	#if defined(MGL_STRICT_COMPILATION)
+	#error Unimplemented function with return value
+	#endif
 	return 0;
 }
 
-void * CommandBuffer::MapNamedBufferRange(GLuint buffer, GLintptr offset, GLsizeiptr length, GLbitfield access)
+void * CommandBuffer::MapNamedBufferRange(BufferHandle buffer, GLintptr offset, GLsizeiptr length, GLbitfield access)
 {
+	m_Buffer.write_command(CommandId::MapNamedBufferRange);
+	#if defined(MGL_STRICT_COMPILATION)
+	#error Unimplemented function with return value
+	#endif
 	return 0;
 }
 
-GLboolean CommandBuffer::UnmapNamedBuffer(GLuint buffer)
+GLboolean CommandBuffer::UnmapNamedBuffer(BufferHandle buffer)
 {
+	m_Buffer.write_command(CommandId::UnmapNamedBuffer);
+	#if defined(MGL_STRICT_COMPILATION)
+	#error Unimplemented function with return value
+	#endif
 	return 0;
 }
 
-void CommandBuffer::FlushMappedNamedBufferRange(GLuint buffer, GLintptr offset, GLsizeiptr length)
+void CommandBuffer::FlushMappedNamedBufferRange(BufferHandle buffer, GLintptr offset, GLsizeiptr length)
 {
 	m_Buffer.write_command(CommandId::FlushMappedNamedBufferRange);
 	m_Buffer.write(buffer);
@@ -4855,7 +5020,7 @@ void CommandBuffer::FlushMappedNamedBufferRange(GLuint buffer, GLintptr offset, 
 	m_Buffer.write(length);
 }
 
-void CommandBuffer::GetNamedBufferParameteriv(GLuint buffer, GLenum pname, GLint * params)
+void CommandBuffer::GetNamedBufferParameteriv(BufferHandle buffer, GLenum pname, GLint * params)
 {
 	m_Buffer.write_command(CommandId::GetNamedBufferParameteriv);
 	m_Buffer.write(buffer);
@@ -4863,7 +5028,7 @@ void CommandBuffer::GetNamedBufferParameteriv(GLuint buffer, GLenum pname, GLint
 	m_Buffer.write(params);
 }
 
-void CommandBuffer::GetNamedBufferParameteri64v(GLuint buffer, GLenum pname, GLint64 * params)
+void CommandBuffer::GetNamedBufferParameteri64v(BufferHandle buffer, GLenum pname, GLint64 * params)
 {
 	m_Buffer.write_command(CommandId::GetNamedBufferParameteri64v);
 	m_Buffer.write(buffer);
@@ -4871,7 +5036,7 @@ void CommandBuffer::GetNamedBufferParameteri64v(GLuint buffer, GLenum pname, GLi
 	m_Buffer.write(params);
 }
 
-void CommandBuffer::GetNamedBufferPointerv(GLuint buffer, GLenum pname, void ** params)
+void CommandBuffer::GetNamedBufferPointerv(BufferHandle buffer, GLenum pname, void ** params)
 {
 	m_Buffer.write_command(CommandId::GetNamedBufferPointerv);
 	m_Buffer.write(buffer);
@@ -4879,7 +5044,7 @@ void CommandBuffer::GetNamedBufferPointerv(GLuint buffer, GLenum pname, void ** 
 	m_Buffer.write(params);
 }
 
-void CommandBuffer::GetNamedBufferSubData(GLuint buffer, GLintptr offset, GLsizeiptr size, void * data)
+void CommandBuffer::GetNamedBufferSubData(BufferHandle buffer, GLintptr offset, GLsizeiptr size, void * data)
 {
 	m_Buffer.write_command(CommandId::GetNamedBufferSubData);
 	m_Buffer.write(buffer);
@@ -4912,7 +5077,7 @@ void CommandBuffer::NamedFramebufferParameteri(GLuint framebuffer, GLenum pname,
 	m_Buffer.write(param);
 }
 
-void CommandBuffer::NamedFramebufferTexture(GLuint framebuffer, GLenum attachment, GLuint texture, GLint level)
+void CommandBuffer::NamedFramebufferTexture(GLuint framebuffer, GLenum attachment, TextureHandle texture, GLint level)
 {
 	m_Buffer.write_command(CommandId::NamedFramebufferTexture);
 	m_Buffer.write(framebuffer);
@@ -4921,7 +5086,7 @@ void CommandBuffer::NamedFramebufferTexture(GLuint framebuffer, GLenum attachmen
 	m_Buffer.write(level);
 }
 
-void CommandBuffer::NamedFramebufferTextureLayer(GLuint framebuffer, GLenum attachment, GLuint texture, GLint level, GLint layer)
+void CommandBuffer::NamedFramebufferTextureLayer(GLuint framebuffer, GLenum attachment, TextureHandle texture, GLint level, GLint layer)
 {
 	m_Buffer.write_command(CommandId::NamedFramebufferTextureLayer);
 	m_Buffer.write(framebuffer);
@@ -4973,7 +5138,7 @@ void CommandBuffer::InvalidateNamedFramebufferSubData(GLuint framebuffer, GLsize
 	m_Buffer.write(height);
 }
 
-void CommandBuffer::ClearNamedFramebufferiv(GLuint framebuffer, GLenum buffer, GLint drawbuffer, const GLint * value)
+void CommandBuffer::ClearNamedFramebufferiv(GLuint framebuffer, BufferHandle buffer, GLint drawbuffer, const GLint * value)
 {
 	m_Buffer.write_command(CommandId::ClearNamedFramebufferiv);
 	m_Buffer.write(framebuffer);
@@ -4982,7 +5147,7 @@ void CommandBuffer::ClearNamedFramebufferiv(GLuint framebuffer, GLenum buffer, G
 	m_Buffer.write(value);
 }
 
-void CommandBuffer::ClearNamedFramebufferuiv(GLuint framebuffer, GLenum buffer, GLint drawbuffer, const GLuint * value)
+void CommandBuffer::ClearNamedFramebufferuiv(GLuint framebuffer, BufferHandle buffer, GLint drawbuffer, const GLuint * value)
 {
 	m_Buffer.write_command(CommandId::ClearNamedFramebufferuiv);
 	m_Buffer.write(framebuffer);
@@ -4991,7 +5156,7 @@ void CommandBuffer::ClearNamedFramebufferuiv(GLuint framebuffer, GLenum buffer, 
 	m_Buffer.write(value);
 }
 
-void CommandBuffer::ClearNamedFramebufferfv(GLuint framebuffer, GLenum buffer, GLint drawbuffer, const GLfloat * value)
+void CommandBuffer::ClearNamedFramebufferfv(GLuint framebuffer, BufferHandle buffer, GLint drawbuffer, const GLfloat * value)
 {
 	m_Buffer.write_command(CommandId::ClearNamedFramebufferfv);
 	m_Buffer.write(framebuffer);
@@ -5000,7 +5165,7 @@ void CommandBuffer::ClearNamedFramebufferfv(GLuint framebuffer, GLenum buffer, G
 	m_Buffer.write(value);
 }
 
-void CommandBuffer::ClearNamedFramebufferfi(GLuint framebuffer, GLenum buffer, GLint drawbuffer, GLfloat depth, GLint stencil)
+void CommandBuffer::ClearNamedFramebufferfi(GLuint framebuffer, BufferHandle buffer, GLint drawbuffer, GLfloat depth, GLint stencil)
 {
 	m_Buffer.write_command(CommandId::ClearNamedFramebufferfi);
 	m_Buffer.write(framebuffer);
@@ -5029,6 +5194,10 @@ void CommandBuffer::BlitNamedFramebuffer(GLuint readFramebuffer, GLuint drawFram
 
 GLenum CommandBuffer::CheckNamedFramebufferStatus(GLuint framebuffer, GLenum target)
 {
+	m_Buffer.write_command(CommandId::CheckNamedFramebufferStatus);
+	#if defined(MGL_STRICT_COMPILATION)
+	#error Unimplemented function with return value
+	#endif
 	return 0;
 }
 
@@ -5083,15 +5252,17 @@ void CommandBuffer::GetNamedRenderbufferParameteriv(GLuint renderbuffer, GLenum 
 	m_Buffer.write(params);
 }
 
-void CommandBuffer::CreateTextures(GLenum target, GLsizei n, GLuint * textures)
+TextureHandle CommandBuffer::CreateTexture(GLenum target)
 {
-	m_Buffer.write_command(CommandId::CreateTextures);
+	m_Buffer.write_command(CommandId::CreateTexture);
+
 	m_Buffer.write(target);
-	m_Buffer.write(n);
-	m_Buffer.write(textures);
+	auto handle = m_ResourceManager.Textures.create();
+	m_Buffer.write(handle);
+	return handle;
 }
 
-void CommandBuffer::TextureBuffer(GLuint texture, GLenum internalformat, GLuint buffer)
+void CommandBuffer::TextureBuffer(TextureHandle texture, GLenum internalformat, BufferHandle buffer)
 {
 	m_Buffer.write_command(CommandId::TextureBuffer);
 	m_Buffer.write(texture);
@@ -5099,7 +5270,7 @@ void CommandBuffer::TextureBuffer(GLuint texture, GLenum internalformat, GLuint 
 	m_Buffer.write(buffer);
 }
 
-void CommandBuffer::TextureBufferRange(GLuint texture, GLenum internalformat, GLuint buffer, GLintptr offset, GLsizeiptr size)
+void CommandBuffer::TextureBufferRange(TextureHandle texture, GLenum internalformat, BufferHandle buffer, GLintptr offset, GLsizeiptr size)
 {
 	m_Buffer.write_command(CommandId::TextureBufferRange);
 	m_Buffer.write(texture);
@@ -5109,7 +5280,7 @@ void CommandBuffer::TextureBufferRange(GLuint texture, GLenum internalformat, GL
 	m_Buffer.write(size);
 }
 
-void CommandBuffer::TextureStorage1D(GLuint texture, GLsizei levels, GLenum internalformat, GLsizei width)
+void CommandBuffer::TextureStorage1D(TextureHandle texture, GLsizei levels, GLenum internalformat, GLsizei width)
 {
 	m_Buffer.write_command(CommandId::TextureStorage1D);
 	m_Buffer.write(texture);
@@ -5118,7 +5289,7 @@ void CommandBuffer::TextureStorage1D(GLuint texture, GLsizei levels, GLenum inte
 	m_Buffer.write(width);
 }
 
-void CommandBuffer::TextureStorage2D(GLuint texture, GLsizei levels, GLenum internalformat, GLsizei width, GLsizei height)
+void CommandBuffer::TextureStorage2D(TextureHandle texture, GLsizei levels, GLenum internalformat, GLsizei width, GLsizei height)
 {
 	m_Buffer.write_command(CommandId::TextureStorage2D);
 	m_Buffer.write(texture);
@@ -5128,7 +5299,7 @@ void CommandBuffer::TextureStorage2D(GLuint texture, GLsizei levels, GLenum inte
 	m_Buffer.write(height);
 }
 
-void CommandBuffer::TextureStorage3D(GLuint texture, GLsizei levels, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth)
+void CommandBuffer::TextureStorage3D(TextureHandle texture, GLsizei levels, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth)
 {
 	m_Buffer.write_command(CommandId::TextureStorage3D);
 	m_Buffer.write(texture);
@@ -5139,7 +5310,7 @@ void CommandBuffer::TextureStorage3D(GLuint texture, GLsizei levels, GLenum inte
 	m_Buffer.write(depth);
 }
 
-void CommandBuffer::TextureStorage2DMultisample(GLuint texture, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height, GLboolean fixedsamplelocations)
+void CommandBuffer::TextureStorage2DMultisample(TextureHandle texture, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height, GLboolean fixedsamplelocations)
 {
 	m_Buffer.write_command(CommandId::TextureStorage2DMultisample);
 	m_Buffer.write(texture);
@@ -5150,7 +5321,7 @@ void CommandBuffer::TextureStorage2DMultisample(GLuint texture, GLsizei samples,
 	m_Buffer.write(fixedsamplelocations);
 }
 
-void CommandBuffer::TextureStorage3DMultisample(GLuint texture, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLboolean fixedsamplelocations)
+void CommandBuffer::TextureStorage3DMultisample(TextureHandle texture, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLboolean fixedsamplelocations)
 {
 	m_Buffer.write_command(CommandId::TextureStorage3DMultisample);
 	m_Buffer.write(texture);
@@ -5162,7 +5333,7 @@ void CommandBuffer::TextureStorage3DMultisample(GLuint texture, GLsizei samples,
 	m_Buffer.write(fixedsamplelocations);
 }
 
-void CommandBuffer::TextureSubImage1D(GLuint texture, GLint level, GLint xoffset, GLsizei width, GLenum format, GLenum type, const void * pixels)
+void CommandBuffer::TextureSubImage1D(TextureHandle texture, GLint level, GLint xoffset, GLsizei width, GLenum format, GLenum type, const void * pixels)
 {
 	m_Buffer.write_command(CommandId::TextureSubImage1D);
 	m_Buffer.write(texture);
@@ -5174,7 +5345,7 @@ void CommandBuffer::TextureSubImage1D(GLuint texture, GLint level, GLint xoffset
 	m_Buffer.write(pixels);
 }
 
-void CommandBuffer::TextureSubImage2D(GLuint texture, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, const void * pixels)
+void CommandBuffer::TextureSubImage2D(TextureHandle texture, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, const void * pixels)
 {
 	m_Buffer.write_command(CommandId::TextureSubImage2D);
 	m_Buffer.write(texture);
@@ -5188,7 +5359,7 @@ void CommandBuffer::TextureSubImage2D(GLuint texture, GLint level, GLint xoffset
 	m_Buffer.write(pixels);
 }
 
-void CommandBuffer::TextureSubImage3D(GLuint texture, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const void * pixels)
+void CommandBuffer::TextureSubImage3D(TextureHandle texture, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const void * pixels)
 {
 	m_Buffer.write_command(CommandId::TextureSubImage3D);
 	m_Buffer.write(texture);
@@ -5204,7 +5375,7 @@ void CommandBuffer::TextureSubImage3D(GLuint texture, GLint level, GLint xoffset
 	m_Buffer.write(pixels);
 }
 
-void CommandBuffer::CompressedTextureSubImage1D(GLuint texture, GLint level, GLint xoffset, GLsizei width, GLenum format, GLsizei imageSize, const void * data)
+void CommandBuffer::CompressedTextureSubImage1D(TextureHandle texture, GLint level, GLint xoffset, GLsizei width, GLenum format, GLsizei imageSize, const void * data)
 {
 	m_Buffer.write_command(CommandId::CompressedTextureSubImage1D);
 	m_Buffer.write(texture);
@@ -5216,7 +5387,7 @@ void CommandBuffer::CompressedTextureSubImage1D(GLuint texture, GLint level, GLi
 	m_Buffer.write(data);
 }
 
-void CommandBuffer::CompressedTextureSubImage2D(GLuint texture, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, const void * data)
+void CommandBuffer::CompressedTextureSubImage2D(TextureHandle texture, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, const void * data)
 {
 	m_Buffer.write_command(CommandId::CompressedTextureSubImage2D);
 	m_Buffer.write(texture);
@@ -5230,7 +5401,7 @@ void CommandBuffer::CompressedTextureSubImage2D(GLuint texture, GLint level, GLi
 	m_Buffer.write(data);
 }
 
-void CommandBuffer::CompressedTextureSubImage3D(GLuint texture, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLsizei imageSize, const void * data)
+void CommandBuffer::CompressedTextureSubImage3D(TextureHandle texture, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLsizei imageSize, const void * data)
 {
 	m_Buffer.write_command(CommandId::CompressedTextureSubImage3D);
 	m_Buffer.write(texture);
@@ -5246,7 +5417,7 @@ void CommandBuffer::CompressedTextureSubImage3D(GLuint texture, GLint level, GLi
 	m_Buffer.write(data);
 }
 
-void CommandBuffer::CopyTextureSubImage1D(GLuint texture, GLint level, GLint xoffset, GLint x, GLint y, GLsizei width)
+void CommandBuffer::CopyTextureSubImage1D(TextureHandle texture, GLint level, GLint xoffset, GLint x, GLint y, GLsizei width)
 {
 	m_Buffer.write_command(CommandId::CopyTextureSubImage1D);
 	m_Buffer.write(texture);
@@ -5257,7 +5428,7 @@ void CommandBuffer::CopyTextureSubImage1D(GLuint texture, GLint level, GLint xof
 	m_Buffer.write(width);
 }
 
-void CommandBuffer::CopyTextureSubImage2D(GLuint texture, GLint level, GLint xoffset, GLint yoffset, GLint x, GLint y, GLsizei width, GLsizei height)
+void CommandBuffer::CopyTextureSubImage2D(TextureHandle texture, GLint level, GLint xoffset, GLint yoffset, GLint x, GLint y, GLsizei width, GLsizei height)
 {
 	m_Buffer.write_command(CommandId::CopyTextureSubImage2D);
 	m_Buffer.write(texture);
@@ -5270,7 +5441,7 @@ void CommandBuffer::CopyTextureSubImage2D(GLuint texture, GLint level, GLint xof
 	m_Buffer.write(height);
 }
 
-void CommandBuffer::CopyTextureSubImage3D(GLuint texture, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height)
+void CommandBuffer::CopyTextureSubImage3D(TextureHandle texture, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height)
 {
 	m_Buffer.write_command(CommandId::CopyTextureSubImage3D);
 	m_Buffer.write(texture);
@@ -5284,7 +5455,7 @@ void CommandBuffer::CopyTextureSubImage3D(GLuint texture, GLint level, GLint xof
 	m_Buffer.write(height);
 }
 
-void CommandBuffer::TextureParameterf(GLuint texture, GLenum pname, GLfloat param)
+void CommandBuffer::TextureParameterf(TextureHandle texture, GLenum pname, GLfloat param)
 {
 	m_Buffer.write_command(CommandId::TextureParameterf);
 	m_Buffer.write(texture);
@@ -5292,7 +5463,7 @@ void CommandBuffer::TextureParameterf(GLuint texture, GLenum pname, GLfloat para
 	m_Buffer.write(param);
 }
 
-void CommandBuffer::TextureParameterfv(GLuint texture, GLenum pname, const GLfloat * param)
+void CommandBuffer::TextureParameterfv(TextureHandle texture, GLenum pname, const GLfloat * param)
 {
 	m_Buffer.write_command(CommandId::TextureParameterfv);
 	m_Buffer.write(texture);
@@ -5300,7 +5471,7 @@ void CommandBuffer::TextureParameterfv(GLuint texture, GLenum pname, const GLflo
 	m_Buffer.write(param);
 }
 
-void CommandBuffer::TextureParameteri(GLuint texture, GLenum pname, GLint param)
+void CommandBuffer::TextureParameteri(TextureHandle texture, GLenum pname, GLint param)
 {
 	m_Buffer.write_command(CommandId::TextureParameteri);
 	m_Buffer.write(texture);
@@ -5308,7 +5479,7 @@ void CommandBuffer::TextureParameteri(GLuint texture, GLenum pname, GLint param)
 	m_Buffer.write(param);
 }
 
-void CommandBuffer::TextureParameterIiv(GLuint texture, GLenum pname, const GLint * params)
+void CommandBuffer::TextureParameterIiv(TextureHandle texture, GLenum pname, const GLint * params)
 {
 	m_Buffer.write_command(CommandId::TextureParameterIiv);
 	m_Buffer.write(texture);
@@ -5316,7 +5487,7 @@ void CommandBuffer::TextureParameterIiv(GLuint texture, GLenum pname, const GLin
 	m_Buffer.write(params);
 }
 
-void CommandBuffer::TextureParameterIuiv(GLuint texture, GLenum pname, const GLuint * params)
+void CommandBuffer::TextureParameterIuiv(TextureHandle texture, GLenum pname, const GLuint * params)
 {
 	m_Buffer.write_command(CommandId::TextureParameterIuiv);
 	m_Buffer.write(texture);
@@ -5324,7 +5495,7 @@ void CommandBuffer::TextureParameterIuiv(GLuint texture, GLenum pname, const GLu
 	m_Buffer.write(params);
 }
 
-void CommandBuffer::TextureParameteriv(GLuint texture, GLenum pname, const GLint * param)
+void CommandBuffer::TextureParameteriv(TextureHandle texture, GLenum pname, const GLint * param)
 {
 	m_Buffer.write_command(CommandId::TextureParameteriv);
 	m_Buffer.write(texture);
@@ -5332,20 +5503,20 @@ void CommandBuffer::TextureParameteriv(GLuint texture, GLenum pname, const GLint
 	m_Buffer.write(param);
 }
 
-void CommandBuffer::GenerateTextureMipmap(GLuint texture)
+void CommandBuffer::GenerateTextureMipmap(TextureHandle texture)
 {
 	m_Buffer.write_command(CommandId::GenerateTextureMipmap);
 	m_Buffer.write(texture);
 }
 
-void CommandBuffer::BindTextureUnit(GLuint unit, GLuint texture)
+void CommandBuffer::BindTextureUnit(GLuint unit, TextureHandle texture)
 {
 	m_Buffer.write_command(CommandId::BindTextureUnit);
 	m_Buffer.write(unit);
 	m_Buffer.write(texture);
 }
 
-void CommandBuffer::GetTextureImage(GLuint texture, GLint level, GLenum format, GLenum type, GLsizei bufSize, void * pixels)
+void CommandBuffer::GetTextureImage(TextureHandle texture, GLint level, GLenum format, GLenum type, GLsizei bufSize, void * pixels)
 {
 	m_Buffer.write_command(CommandId::GetTextureImage);
 	m_Buffer.write(texture);
@@ -5356,7 +5527,7 @@ void CommandBuffer::GetTextureImage(GLuint texture, GLint level, GLenum format, 
 	m_Buffer.write(pixels);
 }
 
-void CommandBuffer::GetCompressedTextureImage(GLuint texture, GLint level, GLsizei bufSize, void * pixels)
+void CommandBuffer::GetCompressedTextureImage(TextureHandle texture, GLint level, GLsizei bufSize, void * pixels)
 {
 	m_Buffer.write_command(CommandId::GetCompressedTextureImage);
 	m_Buffer.write(texture);
@@ -5365,7 +5536,7 @@ void CommandBuffer::GetCompressedTextureImage(GLuint texture, GLint level, GLsiz
 	m_Buffer.write(pixels);
 }
 
-void CommandBuffer::GetTextureLevelParameterfv(GLuint texture, GLint level, GLenum pname, GLfloat * params)
+void CommandBuffer::GetTextureLevelParameterfv(TextureHandle texture, GLint level, GLenum pname, GLfloat * params)
 {
 	m_Buffer.write_command(CommandId::GetTextureLevelParameterfv);
 	m_Buffer.write(texture);
@@ -5374,7 +5545,7 @@ void CommandBuffer::GetTextureLevelParameterfv(GLuint texture, GLint level, GLen
 	m_Buffer.write(params);
 }
 
-void CommandBuffer::GetTextureLevelParameteriv(GLuint texture, GLint level, GLenum pname, GLint * params)
+void CommandBuffer::GetTextureLevelParameteriv(TextureHandle texture, GLint level, GLenum pname, GLint * params)
 {
 	m_Buffer.write_command(CommandId::GetTextureLevelParameteriv);
 	m_Buffer.write(texture);
@@ -5383,7 +5554,7 @@ void CommandBuffer::GetTextureLevelParameteriv(GLuint texture, GLint level, GLen
 	m_Buffer.write(params);
 }
 
-void CommandBuffer::GetTextureParameterfv(GLuint texture, GLenum pname, GLfloat * params)
+void CommandBuffer::GetTextureParameterfv(TextureHandle texture, GLenum pname, GLfloat * params)
 {
 	m_Buffer.write_command(CommandId::GetTextureParameterfv);
 	m_Buffer.write(texture);
@@ -5391,7 +5562,7 @@ void CommandBuffer::GetTextureParameterfv(GLuint texture, GLenum pname, GLfloat 
 	m_Buffer.write(params);
 }
 
-void CommandBuffer::GetTextureParameterIiv(GLuint texture, GLenum pname, GLint * params)
+void CommandBuffer::GetTextureParameterIiv(TextureHandle texture, GLenum pname, GLint * params)
 {
 	m_Buffer.write_command(CommandId::GetTextureParameterIiv);
 	m_Buffer.write(texture);
@@ -5399,7 +5570,7 @@ void CommandBuffer::GetTextureParameterIiv(GLuint texture, GLenum pname, GLint *
 	m_Buffer.write(params);
 }
 
-void CommandBuffer::GetTextureParameterIuiv(GLuint texture, GLenum pname, GLuint * params)
+void CommandBuffer::GetTextureParameterIuiv(TextureHandle texture, GLenum pname, GLuint * params)
 {
 	m_Buffer.write_command(CommandId::GetTextureParameterIuiv);
 	m_Buffer.write(texture);
@@ -5407,7 +5578,7 @@ void CommandBuffer::GetTextureParameterIuiv(GLuint texture, GLenum pname, GLuint
 	m_Buffer.write(params);
 }
 
-void CommandBuffer::GetTextureParameteriv(GLuint texture, GLenum pname, GLint * params)
+void CommandBuffer::GetTextureParameteriv(TextureHandle texture, GLenum pname, GLint * params)
 {
 	m_Buffer.write_command(CommandId::GetTextureParameteriv);
 	m_Buffer.write(texture);
@@ -5436,14 +5607,14 @@ void CommandBuffer::EnableVertexArrayAttrib(GLuint vaobj, GLuint index)
 	m_Buffer.write(index);
 }
 
-void CommandBuffer::VertexArrayElementBuffer(GLuint vaobj, GLuint buffer)
+void CommandBuffer::VertexArrayElementBuffer(GLuint vaobj, BufferHandle buffer)
 {
 	m_Buffer.write_command(CommandId::VertexArrayElementBuffer);
 	m_Buffer.write(vaobj);
 	m_Buffer.write(buffer);
 }
 
-void CommandBuffer::VertexArrayVertexBuffer(GLuint vaobj, GLuint bindingindex, GLuint buffer, GLintptr offset, GLsizei stride)
+void CommandBuffer::VertexArrayVertexBuffer(GLuint vaobj, GLuint bindingindex, BufferHandle buffer, GLintptr offset, GLsizei stride)
 {
 	m_Buffer.write_command(CommandId::VertexArrayVertexBuffer);
 	m_Buffer.write(vaobj);
@@ -5559,7 +5730,7 @@ void CommandBuffer::CreateQueries(GLenum target, GLsizei n, GLuint * ids)
 	m_Buffer.write(ids);
 }
 
-void CommandBuffer::GetQueryBufferObjecti64v(GLuint id, GLuint buffer, GLenum pname, GLintptr offset)
+void CommandBuffer::GetQueryBufferObjecti64v(GLuint id, BufferHandle buffer, GLenum pname, GLintptr offset)
 {
 	m_Buffer.write_command(CommandId::GetQueryBufferObjecti64v);
 	m_Buffer.write(id);
@@ -5568,7 +5739,7 @@ void CommandBuffer::GetQueryBufferObjecti64v(GLuint id, GLuint buffer, GLenum pn
 	m_Buffer.write(offset);
 }
 
-void CommandBuffer::GetQueryBufferObjectiv(GLuint id, GLuint buffer, GLenum pname, GLintptr offset)
+void CommandBuffer::GetQueryBufferObjectiv(GLuint id, BufferHandle buffer, GLenum pname, GLintptr offset)
 {
 	m_Buffer.write_command(CommandId::GetQueryBufferObjectiv);
 	m_Buffer.write(id);
@@ -5577,7 +5748,7 @@ void CommandBuffer::GetQueryBufferObjectiv(GLuint id, GLuint buffer, GLenum pnam
 	m_Buffer.write(offset);
 }
 
-void CommandBuffer::GetQueryBufferObjectui64v(GLuint id, GLuint buffer, GLenum pname, GLintptr offset)
+void CommandBuffer::GetQueryBufferObjectui64v(GLuint id, BufferHandle buffer, GLenum pname, GLintptr offset)
 {
 	m_Buffer.write_command(CommandId::GetQueryBufferObjectui64v);
 	m_Buffer.write(id);
@@ -5586,7 +5757,7 @@ void CommandBuffer::GetQueryBufferObjectui64v(GLuint id, GLuint buffer, GLenum p
 	m_Buffer.write(offset);
 }
 
-void CommandBuffer::GetQueryBufferObjectuiv(GLuint id, GLuint buffer, GLenum pname, GLintptr offset)
+void CommandBuffer::GetQueryBufferObjectuiv(GLuint id, BufferHandle buffer, GLenum pname, GLintptr offset)
 {
 	m_Buffer.write_command(CommandId::GetQueryBufferObjectuiv);
 	m_Buffer.write(id);
@@ -5601,7 +5772,7 @@ void CommandBuffer::MemoryBarrierByRegion(GLbitfield barriers)
 	m_Buffer.write(barriers);
 }
 
-void CommandBuffer::GetTextureSubImage(GLuint texture, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, GLsizei bufSize, void * pixels)
+void CommandBuffer::GetTextureSubImage(TextureHandle texture, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, GLsizei bufSize, void * pixels)
 {
 	m_Buffer.write_command(CommandId::GetTextureSubImage);
 	m_Buffer.write(texture);
@@ -5618,7 +5789,7 @@ void CommandBuffer::GetTextureSubImage(GLuint texture, GLint level, GLint xoffse
 	m_Buffer.write(pixels);
 }
 
-void CommandBuffer::GetCompressedTextureSubImage(GLuint texture, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLsizei bufSize, void * pixels)
+void CommandBuffer::GetCompressedTextureSubImage(TextureHandle texture, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLsizei bufSize, void * pixels)
 {
 	m_Buffer.write_command(CommandId::GetCompressedTextureSubImage);
 	m_Buffer.write(texture);
@@ -5635,6 +5806,10 @@ void CommandBuffer::GetCompressedTextureSubImage(GLuint texture, GLint level, GL
 
 GLenum CommandBuffer::GetGraphicsResetStatus()
 {
+	m_Buffer.write_command(CommandId::GetGraphicsResetStatus);
+	#if defined(MGL_STRICT_COMPILATION)
+	#error Unimplemented function with return value
+	#endif
 	return 0;
 }
 
@@ -5658,7 +5833,7 @@ void CommandBuffer::GetnTexImage(GLenum target, GLint level, GLenum format, GLen
 	m_Buffer.write(pixels);
 }
 
-void CommandBuffer::GetnUniformdv(GLuint program, GLint location, GLsizei bufSize, GLdouble * params)
+void CommandBuffer::GetnUniformdv(ShaderProgramHandle program, GLint location, GLsizei bufSize, GLdouble * params)
 {
 	m_Buffer.write_command(CommandId::GetnUniformdv);
 	m_Buffer.write(program);
@@ -5667,7 +5842,7 @@ void CommandBuffer::GetnUniformdv(GLuint program, GLint location, GLsizei bufSiz
 	m_Buffer.write(params);
 }
 
-void CommandBuffer::GetnUniformfv(GLuint program, GLint location, GLsizei bufSize, GLfloat * params)
+void CommandBuffer::GetnUniformfv(ShaderProgramHandle program, GLint location, GLsizei bufSize, GLfloat * params)
 {
 	m_Buffer.write_command(CommandId::GetnUniformfv);
 	m_Buffer.write(program);
@@ -5676,7 +5851,7 @@ void CommandBuffer::GetnUniformfv(GLuint program, GLint location, GLsizei bufSiz
 	m_Buffer.write(params);
 }
 
-void CommandBuffer::GetnUniformiv(GLuint program, GLint location, GLsizei bufSize, GLint * params)
+void CommandBuffer::GetnUniformiv(ShaderProgramHandle program, GLint location, GLsizei bufSize, GLint * params)
 {
 	m_Buffer.write_command(CommandId::GetnUniformiv);
 	m_Buffer.write(program);
@@ -5685,7 +5860,7 @@ void CommandBuffer::GetnUniformiv(GLuint program, GLint location, GLsizei bufSiz
 	m_Buffer.write(params);
 }
 
-void CommandBuffer::GetnUniformuiv(GLuint program, GLint location, GLsizei bufSize, GLuint * params)
+void CommandBuffer::GetnUniformuiv(ShaderProgramHandle program, GLint location, GLsizei bufSize, GLuint * params)
 {
 	m_Buffer.write_command(CommandId::GetnUniformuiv);
 	m_Buffer.write(program);
