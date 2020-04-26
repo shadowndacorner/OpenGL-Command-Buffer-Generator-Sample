@@ -12,6 +12,8 @@ add_executable(
     "src/stbi.cpp"
     "generated/src/gl_command_buffer_write.cpp"
     "generated/src/gl_command_buffer_read.cpp"
+    "generated/src/gl_immediate_buffer_write.cpp"
+    "generated/src/gl_immediate_buffer_read.cpp"
 )
 
 target_include_directories(test PUBLIC "include" "generated/include" "thirdparty/glm/")

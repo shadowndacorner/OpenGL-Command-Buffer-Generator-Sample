@@ -1,7 +1,10 @@
 #include <gl_command_buffer.hpp>
 
 using namespace multigl;
-CommandBuffer::CommandBuffer(ResourceManager& mgr) : m_ResourceManager(mgr) {}
+CommandBuffer::CommandBuffer(ResourceManager& mgr) : m_ResourceManager(mgr)
+{
+}
+
 CommandBuffer::~CommandBuffer(){}
 
 void CommandBuffer::CullFace(GLenum mode)

@@ -1,34 +1,38 @@
 #include <gl_immediate_buffer.hpp>
 
 using namespace multigl;
-ImmediateCommandBuffer::ImmediateCommandBuffer(ResourceManager& mgr) : m_ResourceManager(mgr) {}
-ImmediateCommandBuffer::~ImmediateCommandBuffer(){}
+ImmediateCommandBuffer::ImmediateCommandBuffer(ResourceManager& mgr) : m_ResourceManager(mgr)
+	, m_HasSubmittedWork(false)
+{
+}
 
-GLenum ImmediateCommandBuffer::GetError()
+ImmediateCommandBuffer::~ImmediateCommandBuffer()
+{
+	if (!m_HasSubmittedWork)
+	{
+		// TODO: Submit queue to main thread
+	}
+	// TODO: Wait on job system task here
+}
+
+void ImmediateCommandBuffer::GetError(GLenum* returnVal)
 {
 	m_Buffer.write_command(CommandId::GetError);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
+	m_Buffer.write(returnVal);
 }
 
-const GLubyte * ImmediateCommandBuffer::GetString(GLenum name)
+void ImmediateCommandBuffer::GetString(GLenum name, const GLubyte ** returnVal)
 {
 	m_Buffer.write_command(CommandId::GetString);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
+	m_Buffer.write(name);
+	m_Buffer.write(returnVal);
 }
 
-GLboolean ImmediateCommandBuffer::IsEnabled(GLenum cap)
+void ImmediateCommandBuffer::IsEnabled(GLenum cap, GLboolean* returnVal)
 {
 	m_Buffer.write_command(CommandId::IsEnabled);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
+	m_Buffer.write(cap);
+	m_Buffer.write(returnVal);
 }
 
 TextureHandle ImmediateCommandBuffer::GenTexture()
@@ -40,22 +44,18 @@ TextureHandle ImmediateCommandBuffer::GenTexture()
 	return handle;
 }
 
-GLboolean ImmediateCommandBuffer::IsTexture(TextureHandle texture)
+void ImmediateCommandBuffer::IsTexture(TextureHandle texture, GLboolean* returnVal)
 {
 	m_Buffer.write_command(CommandId::IsTexture);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
+	m_Buffer.write(texture);
+	m_Buffer.write(returnVal);
 }
 
-GLboolean ImmediateCommandBuffer::IsQuery(GLuint id)
+void ImmediateCommandBuffer::IsQuery(GLuint id, GLboolean* returnVal)
 {
 	m_Buffer.write_command(CommandId::IsQuery);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
+	m_Buffer.write(id);
+	m_Buffer.write(returnVal);
 }
 
 BufferHandle ImmediateCommandBuffer::GenBuffer()
@@ -67,31 +67,26 @@ BufferHandle ImmediateCommandBuffer::GenBuffer()
 	return handle;
 }
 
-GLboolean ImmediateCommandBuffer::IsBuffer(BufferHandle buffer)
+void ImmediateCommandBuffer::IsBuffer(BufferHandle buffer, GLboolean* returnVal)
 {
 	m_Buffer.write_command(CommandId::IsBuffer);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
+	m_Buffer.write(buffer);
+	m_Buffer.write(returnVal);
 }
 
-void * ImmediateCommandBuffer::MapBuffer(GLenum target, GLenum access)
+void ImmediateCommandBuffer::MapBuffer(GLenum target, GLenum access, void ** returnVal)
 {
 	m_Buffer.write_command(CommandId::MapBuffer);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
+	m_Buffer.write(target);
+	m_Buffer.write(access);
+	m_Buffer.write(returnVal);
 }
 
-GLboolean ImmediateCommandBuffer::UnmapBuffer(GLenum target)
+void ImmediateCommandBuffer::UnmapBuffer(GLenum target, GLboolean* returnVal)
 {
 	m_Buffer.write_command(CommandId::UnmapBuffer);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
+	m_Buffer.write(target);
+	m_Buffer.write(returnVal);
 }
 
 ShaderProgramHandle ImmediateCommandBuffer::CreateProgram()
@@ -113,76 +108,65 @@ ShaderHandle ImmediateCommandBuffer::CreateShader(GLenum type)
 	return handle;
 }
 
-GLint ImmediateCommandBuffer::GetAttribLocation(ShaderProgramHandle program, const GLchar * name)
+void ImmediateCommandBuffer::GetAttribLocation(ShaderProgramHandle program, const GLchar * name, GLint* returnVal)
 {
 	m_Buffer.write_command(CommandId::GetAttribLocation);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
+	m_Buffer.write(program);
+	m_Buffer.write(name);
+	m_Buffer.write(returnVal);
 }
 
-GLint ImmediateCommandBuffer::GetUniformLocation(ShaderProgramHandle program, const GLchar * name)
+void ImmediateCommandBuffer::GetUniformLocation(ShaderProgramHandle program, const GLchar * name, GLint* returnVal)
 {
 	m_Buffer.write_command(CommandId::GetUniformLocation);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
+	m_Buffer.write(program);
+	m_Buffer.write(name);
+	m_Buffer.write(returnVal);
 }
 
-GLboolean ImmediateCommandBuffer::IsProgram(ShaderProgramHandle program)
+void ImmediateCommandBuffer::IsProgram(ShaderProgramHandle program, GLboolean* returnVal)
 {
 	m_Buffer.write_command(CommandId::IsProgram);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
+	m_Buffer.write(program);
+	m_Buffer.write(returnVal);
 }
 
-GLboolean ImmediateCommandBuffer::IsShader(ShaderHandle shader)
+void ImmediateCommandBuffer::IsShader(ShaderHandle shader, GLboolean* returnVal)
 {
 	m_Buffer.write_command(CommandId::IsShader);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
+	m_Buffer.write(shader);
+	m_Buffer.write(returnVal);
 }
 
-GLboolean ImmediateCommandBuffer::IsEnabledi(GLenum target, GLuint index)
+void ImmediateCommandBuffer::IsEnabledi(GLenum target, GLuint index, GLboolean* returnVal)
 {
 	m_Buffer.write_command(CommandId::IsEnabledi);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
+	m_Buffer.write(target);
+	m_Buffer.write(index);
+	m_Buffer.write(returnVal);
 }
 
-GLint ImmediateCommandBuffer::GetFragDataLocation(ShaderProgramHandle program, const GLchar * name)
+void ImmediateCommandBuffer::GetFragDataLocation(ShaderProgramHandle program, const GLchar * name, GLint* returnVal)
 {
 	m_Buffer.write_command(CommandId::GetFragDataLocation);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
+	m_Buffer.write(program);
+	m_Buffer.write(name);
+	m_Buffer.write(returnVal);
 }
 
-const GLubyte * ImmediateCommandBuffer::GetStringi(GLenum name, GLuint index)
+void ImmediateCommandBuffer::GetStringi(GLenum name, GLuint index, const GLubyte ** returnVal)
 {
 	m_Buffer.write_command(CommandId::GetStringi);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
+	m_Buffer.write(name);
+	m_Buffer.write(index);
+	m_Buffer.write(returnVal);
 }
 
-GLboolean ImmediateCommandBuffer::IsRenderbuffer(RenderbufferHandle renderbuffer)
+void ImmediateCommandBuffer::IsRenderbuffer(RenderbufferHandle renderbuffer, GLboolean* returnVal)
 {
 	m_Buffer.write_command(CommandId::IsRenderbuffer);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
+	m_Buffer.write(renderbuffer);
+	m_Buffer.write(returnVal);
 }
 
 RenderbufferHandle ImmediateCommandBuffer::GenRenderbuffer()
@@ -194,13 +178,11 @@ RenderbufferHandle ImmediateCommandBuffer::GenRenderbuffer()
 	return handle;
 }
 
-GLboolean ImmediateCommandBuffer::IsFramebuffer(FramebufferHandle framebuffer)
+void ImmediateCommandBuffer::IsFramebuffer(FramebufferHandle framebuffer, GLboolean* returnVal)
 {
 	m_Buffer.write_command(CommandId::IsFramebuffer);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
+	m_Buffer.write(framebuffer);
+	m_Buffer.write(returnVal);
 }
 
 FramebufferHandle ImmediateCommandBuffer::GenFramebuffer()
@@ -212,22 +194,21 @@ FramebufferHandle ImmediateCommandBuffer::GenFramebuffer()
 	return handle;
 }
 
-GLenum ImmediateCommandBuffer::CheckFramebufferStatus(GLenum target)
+void ImmediateCommandBuffer::CheckFramebufferStatus(GLenum target, GLenum* returnVal)
 {
 	m_Buffer.write_command(CommandId::CheckFramebufferStatus);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
+	m_Buffer.write(target);
+	m_Buffer.write(returnVal);
 }
 
-void * ImmediateCommandBuffer::MapBufferRange(GLenum target, GLintptr offset, GLsizeiptr length, GLbitfield access)
+void ImmediateCommandBuffer::MapBufferRange(GLenum target, GLintptr offset, GLsizeiptr length, GLbitfield access, void ** returnVal)
 {
 	m_Buffer.write_command(CommandId::MapBufferRange);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
+	m_Buffer.write(target);
+	m_Buffer.write(offset);
+	m_Buffer.write(length);
+	m_Buffer.write(access);
+	m_Buffer.write(returnVal);
 }
 
 VertexArrayHandle ImmediateCommandBuffer::GenVertexArray()
@@ -239,148 +220,140 @@ VertexArrayHandle ImmediateCommandBuffer::GenVertexArray()
 	return handle;
 }
 
-GLboolean ImmediateCommandBuffer::IsVertexArray(GLuint array)
+void ImmediateCommandBuffer::IsVertexArray(GLuint array, GLboolean* returnVal)
 {
 	m_Buffer.write_command(CommandId::IsVertexArray);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
+	m_Buffer.write(array);
+	m_Buffer.write(returnVal);
 }
 
-GLuint ImmediateCommandBuffer::GetUniformBlockIndex(ShaderProgramHandle program, const GLchar * uniformBlockName)
+void ImmediateCommandBuffer::GetUniformBlockIndex(ShaderProgramHandle program, const GLchar * uniformBlockName, GLuint* returnVal)
 {
 	m_Buffer.write_command(CommandId::GetUniformBlockIndex);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
+	m_Buffer.write(program);
+	m_Buffer.write(uniformBlockName);
+	m_Buffer.write(returnVal);
 }
 
-GLsync ImmediateCommandBuffer::FenceSync(GLenum condition, GLbitfield flags)
+void ImmediateCommandBuffer::FenceSync(GLenum condition, GLbitfield flags, GLsync* returnVal)
 {
 	m_Buffer.write_command(CommandId::FenceSync);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
+	m_Buffer.write(condition);
+	m_Buffer.write(flags);
+	m_Buffer.write(returnVal);
 }
 
-GLboolean ImmediateCommandBuffer::IsSync(GLsync sync)
+void ImmediateCommandBuffer::IsSync(GLsync sync, GLboolean* returnVal)
 {
 	m_Buffer.write_command(CommandId::IsSync);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
+	m_Buffer.write(sync);
+	m_Buffer.write(returnVal);
 }
 
-GLenum ImmediateCommandBuffer::ClientWaitSync(GLsync sync, GLbitfield flags, GLuint64 timeout)
+void ImmediateCommandBuffer::ClientWaitSync(GLsync sync, GLbitfield flags, GLuint64 timeout, GLenum* returnVal)
 {
 	m_Buffer.write_command(CommandId::ClientWaitSync);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
+	m_Buffer.write(sync);
+	m_Buffer.write(flags);
+	m_Buffer.write(timeout);
+	m_Buffer.write(returnVal);
 }
 
-GLint ImmediateCommandBuffer::GetFragDataIndex(ShaderProgramHandle program, const GLchar * name)
+void ImmediateCommandBuffer::GetFragDataIndex(ShaderProgramHandle program, const GLchar * name, GLint* returnVal)
 {
 	m_Buffer.write_command(CommandId::GetFragDataIndex);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
+	m_Buffer.write(program);
+	m_Buffer.write(name);
+	m_Buffer.write(returnVal);
 }
 
-GLboolean ImmediateCommandBuffer::IsSampler(GLuint sampler)
+void ImmediateCommandBuffer::IsSampler(GLuint sampler, GLboolean* returnVal)
 {
 	m_Buffer.write_command(CommandId::IsSampler);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
+	m_Buffer.write(sampler);
+	m_Buffer.write(returnVal);
 }
 
-GLint ImmediateCommandBuffer::GetSubroutineUniformLocation(ShaderProgramHandle program, GLenum shadertype, const GLchar * name)
+void ImmediateCommandBuffer::GetSubroutineUniformLocation(ShaderProgramHandle program, GLenum shadertype, const GLchar * name, GLint* returnVal)
 {
 	m_Buffer.write_command(CommandId::GetSubroutineUniformLocation);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
+	m_Buffer.write(program);
+	m_Buffer.write(shadertype);
+	m_Buffer.write(name);
+	m_Buffer.write(returnVal);
 }
 
-GLuint ImmediateCommandBuffer::GetSubroutineIndex(ShaderProgramHandle program, GLenum shadertype, const GLchar * name)
+void ImmediateCommandBuffer::GetSubroutineIndex(ShaderProgramHandle program, GLenum shadertype, const GLchar * name, GLuint* returnVal)
 {
 	m_Buffer.write_command(CommandId::GetSubroutineIndex);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
+	m_Buffer.write(program);
+	m_Buffer.write(shadertype);
+	m_Buffer.write(name);
+	m_Buffer.write(returnVal);
 }
 
-GLboolean ImmediateCommandBuffer::IsTransformFeedback(GLuint id)
+void ImmediateCommandBuffer::IsTransformFeedback(GLuint id, GLboolean* returnVal)
 {
 	m_Buffer.write_command(CommandId::IsTransformFeedback);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
+	m_Buffer.write(id);
+	m_Buffer.write(returnVal);
 }
 
-GLuint ImmediateCommandBuffer::CreateShaderProgramv(GLenum type, GLsizei count, const GLchar *const* strings)
+void ImmediateCommandBuffer::CreateShaderProgramv(GLenum type, GLsizei count, const GLchar *const* strings, GLuint* returnVal)
 {
 	m_Buffer.write_command(CommandId::CreateShaderProgramv);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
+	m_Buffer.write(type);
+	m_Buffer.write(count);
+	m_Buffer.write(strings);
+	m_Buffer.write(returnVal);
 }
 
-GLboolean ImmediateCommandBuffer::IsProgramPipeline(GLuint pipeline)
+void ImmediateCommandBuffer::IsProgramPipeline(GLuint pipeline, GLboolean* returnVal)
 {
 	m_Buffer.write_command(CommandId::IsProgramPipeline);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
+	m_Buffer.write(pipeline);
+	m_Buffer.write(returnVal);
 }
 
-GLuint ImmediateCommandBuffer::GetProgramResourceIndex(ShaderProgramHandle program, GLenum programInterface, const GLchar * name)
+void ImmediateCommandBuffer::GetProgramResourceIndex(ShaderProgramHandle program, GLenum programInterface, const GLchar * name, GLuint* returnVal)
 {
 	m_Buffer.write_command(CommandId::GetProgramResourceIndex);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
+	m_Buffer.write(program);
+	m_Buffer.write(programInterface);
+	m_Buffer.write(name);
+	m_Buffer.write(returnVal);
 }
 
-GLint ImmediateCommandBuffer::GetProgramResourceLocation(ShaderProgramHandle program, GLenum programInterface, const GLchar * name)
+void ImmediateCommandBuffer::GetProgramResourceLocation(ShaderProgramHandle program, GLenum programInterface, const GLchar * name, GLint* returnVal)
 {
 	m_Buffer.write_command(CommandId::GetProgramResourceLocation);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
+	m_Buffer.write(program);
+	m_Buffer.write(programInterface);
+	m_Buffer.write(name);
+	m_Buffer.write(returnVal);
 }
 
-GLint ImmediateCommandBuffer::GetProgramResourceLocationIndex(ShaderProgramHandle program, GLenum programInterface, const GLchar * name)
+void ImmediateCommandBuffer::GetProgramResourceLocationIndex(ShaderProgramHandle program, GLenum programInterface, const GLchar * name, GLint* returnVal)
 {
 	m_Buffer.write_command(CommandId::GetProgramResourceLocationIndex);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
+	m_Buffer.write(program);
+	m_Buffer.write(programInterface);
+	m_Buffer.write(name);
+	m_Buffer.write(returnVal);
 }
 
-GLuint ImmediateCommandBuffer::GetDebugMessageLog(GLuint count, GLsizei bufSize, GLenum * sources, GLenum * types, GLuint * ids, GLenum * severities, GLsizei * lengths, GLchar * messageLog)
+void ImmediateCommandBuffer::GetDebugMessageLog(GLuint count, GLsizei bufSize, GLenum * sources, GLenum * types, GLuint * ids, GLenum * severities, GLsizei * lengths, GLchar * messageLog, GLuint* returnVal)
 {
 	m_Buffer.write_command(CommandId::GetDebugMessageLog);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
+	m_Buffer.write(count);
+	m_Buffer.write(bufSize);
+	m_Buffer.write(sources);
+	m_Buffer.write(types);
+	m_Buffer.write(ids);
+	m_Buffer.write(severities);
+	m_Buffer.write(lengths);
+	m_Buffer.write(messageLog);
+	m_Buffer.write(returnVal);
 }
 
 BufferHandle ImmediateCommandBuffer::CreateBuffer()
@@ -392,31 +365,29 @@ BufferHandle ImmediateCommandBuffer::CreateBuffer()
 	return handle;
 }
 
-void * ImmediateCommandBuffer::MapNamedBuffer(BufferHandle buffer, GLenum access)
+void ImmediateCommandBuffer::MapNamedBuffer(BufferHandle buffer, GLenum access, void ** returnVal)
 {
 	m_Buffer.write_command(CommandId::MapNamedBuffer);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
+	m_Buffer.write(buffer);
+	m_Buffer.write(access);
+	m_Buffer.write(returnVal);
 }
 
-void * ImmediateCommandBuffer::MapNamedBufferRange(BufferHandle buffer, GLintptr offset, GLsizeiptr length, GLbitfield access)
+void ImmediateCommandBuffer::MapNamedBufferRange(BufferHandle buffer, GLintptr offset, GLsizeiptr length, GLbitfield access, void ** returnVal)
 {
 	m_Buffer.write_command(CommandId::MapNamedBufferRange);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
+	m_Buffer.write(buffer);
+	m_Buffer.write(offset);
+	m_Buffer.write(length);
+	m_Buffer.write(access);
+	m_Buffer.write(returnVal);
 }
 
-GLboolean ImmediateCommandBuffer::UnmapNamedBuffer(BufferHandle buffer)
+void ImmediateCommandBuffer::UnmapNamedBuffer(BufferHandle buffer, GLboolean* returnVal)
 {
 	m_Buffer.write_command(CommandId::UnmapNamedBuffer);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
+	m_Buffer.write(buffer);
+	m_Buffer.write(returnVal);
 }
 
 FramebufferHandle ImmediateCommandBuffer::CreateFramebuffer()
@@ -428,13 +399,12 @@ FramebufferHandle ImmediateCommandBuffer::CreateFramebuffer()
 	return handle;
 }
 
-GLenum ImmediateCommandBuffer::CheckNamedFramebufferStatus(FramebufferHandle framebuffer, GLenum target)
+void ImmediateCommandBuffer::CheckNamedFramebufferStatus(FramebufferHandle framebuffer, GLenum target, GLenum* returnVal)
 {
 	m_Buffer.write_command(CommandId::CheckNamedFramebufferStatus);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
+	m_Buffer.write(framebuffer);
+	m_Buffer.write(target);
+	m_Buffer.write(returnVal);
 }
 
 RenderbufferHandle ImmediateCommandBuffer::CreateRenderbuffer()
@@ -465,12 +435,9 @@ VertexArrayHandle ImmediateCommandBuffer::CreateVertexArray()
 	return handle;
 }
 
-GLenum ImmediateCommandBuffer::GetGraphicsResetStatus()
+void ImmediateCommandBuffer::GetGraphicsResetStatus(GLenum* returnVal)
 {
 	m_Buffer.write_command(CommandId::GetGraphicsResetStatus);
-	#if defined(MGL_STRICT_COMPILATION)
-	#error Unimplemented function with return value
-	#endif
-	return 0;
+	m_Buffer.write(returnVal);
 }
 
