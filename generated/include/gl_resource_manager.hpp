@@ -49,6 +49,9 @@ namespace multigl
     CREATE_GL_RESOURCE_HANDLE(Texture, GLuint);
     CREATE_GL_RESOURCE_HANDLE(Shader, GLuint);
     CREATE_GL_RESOURCE_HANDLE(ShaderProgram, GLuint);
+    CREATE_GL_RESOURCE_HANDLE(VertexArray, GLuint);
+    CREATE_GL_RESOURCE_HANDLE(Renderbuffer, GLuint);
+    CREATE_GL_RESOURCE_HANDLE(Framebuffer, GLuint);
 
     struct ResourceManager
     {
@@ -56,6 +59,9 @@ namespace multigl
         CREATE_GL_RESOURCE_MANAGER(Texture);
         CREATE_GL_RESOURCE_MANAGER(Shader);
         CREATE_GL_RESOURCE_MANAGER(ShaderProgram);
+        CREATE_GL_RESOURCE_MANAGER(VertexArray);
+        CREATE_GL_RESOURCE_MANAGER(Renderbuffer);
+        CREATE_GL_RESOURCE_MANAGER(Framebuffer);
     };
 }
 

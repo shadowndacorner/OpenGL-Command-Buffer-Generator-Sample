@@ -9,9 +9,10 @@ add_executable(
     test
     "src/glad.cpp"
     "src/main.cpp"
+    "src/stbi.cpp"
     "generated/src/gl_command_buffer_write.cpp"
     "generated/src/gl_command_buffer_read.cpp"
 )
 
-target_include_directories(test PUBLIC "include" "generated/include")
+target_include_directories(test PUBLIC "include" "generated/include" "thirdparty/glm/")
 target_link_libraries(test PUBLIC SDL2)
