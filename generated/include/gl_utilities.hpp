@@ -68,19 +68,4 @@ inline void CheckGLError()
 #define GL_CHECK(func) \
 	func;              \
 	CheckGLError()
-/*
-inline GLenum enum_convert(blade::graphics::BufferUsage usage)
-{
-	using namespace blade::graphics;
-	switch (usage)
-	{
-		case BufferUsage::DynamicDraw:
-			return GL_DYNAMIC_DRAW;
-		case BufferUsage::StreamDraw:
-			return GL_STREAM_DRAW;
-		case BufferUsage::StaticDraw:
-			return GL_STATIC_DRAW;
-	}
-	BLADE_FATAL_ERROR("Invalid BufferUsage enum");
-	return 0;
-}*/
+

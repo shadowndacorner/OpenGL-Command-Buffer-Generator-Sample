@@ -455,7 +455,7 @@ int main(int argc, char** argv)
 		SDL_GetWindowSize(window, &width, &height);
 		// TODO: Run this in another thread
 		{
-			GPU_FrameConstants.projection_matrix = glm::perspectiveFov<float>(glm::radians<float>(80.f), width, height, 0.01f, 1000.f);
+			GPU_FrameConstants.projection_matrix = glm::perspectiveFov<float>(glm::radians<float>(80.f), float(width), float(height), 0.01f, 1000.f);
 			GPU_FrameConstants.view_matrix = glm::lookAt(glm::vec3(1, 1, -3), glm::vec3(0), glm::vec3(0, 1, 0));
 			GPU_ObjectConstants.model_matrix = glm::mat4(1.0);
 

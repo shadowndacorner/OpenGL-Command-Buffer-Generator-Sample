@@ -1,5 +1,5 @@
 #include <gl_command_buffer.hpp>
-#include <opengl_util.hpp>
+#include <gl_utilities.hpp>
 
 using namespace multigl;
 void CommandBuffer::ProcessCommands()
