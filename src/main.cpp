@@ -370,8 +370,37 @@ namespace GPUConstants
 static GPUConstants::Frame GPU_FrameConstants;
 static GPUConstants::Object GPU_ObjectConstants;
 
+void raw_rw_buffer_test()
+{
+	multigl::raw_rw_buffer buffer;
+	{
+		buffer.write<char>(28);
+		buffer.write<uint64_t>(64);
+		buffer.write<int>(-64);
+		buffer.write<char>(64);
+		buffer.write<uint64_t>(64);
+		buffer.write<char>(2);
+		buffer.write<float>(64);
+		buffer.write<double>(64);
+		buffer.write<float>(64);
+	}
+
+	{
+		assert(buffer.read<char>() == 28);
+		assert(buffer.read<uint64_t>() == 64);
+		assert(buffer.read<int>() == -64);
+		assert(buffer.read<char>() == 64);
+		assert(buffer.read<uint64_t>() == 64);
+		assert(buffer.read<char>() == 2);
+		assert(buffer.read<float>() == 64);
+		assert(buffer.read<double>() == 64);
+		assert(buffer.read<float>() == 64);
+	}
+}
+
 int main(int argc, char** argv)
 {
+	raw_rw_buffer_test();
 	stbi_set_flip_vertically_on_load(true);
 
     SDL_Init(SDL_INIT_VIDEO);
