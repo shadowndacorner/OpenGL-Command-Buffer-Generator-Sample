@@ -11,20 +11,20 @@ void CommandBuffer::ProcessCommands()
 		{
 			case CommandId::CullFace:
 			{
-				GLenum mode = m_Buffer.read<GLenum>();
+				multigl::CullFaceMode mode = m_Buffer.read<multigl::CullFaceMode>();
 				GL_CHECK(glCullFace(mode));
 				break;
 			}
 			case CommandId::FrontFace:
 			{
-				GLenum mode = m_Buffer.read<GLenum>();
+				multigl::FrontFaceDirection mode = m_Buffer.read<multigl::FrontFaceDirection>();
 				GL_CHECK(glFrontFace(mode));
 				break;
 			}
 			case CommandId::Hint:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
-				GLenum mode = m_Buffer.read<GLenum>();
+				multigl::HintTarget target = m_Buffer.read<multigl::HintTarget>();
+				multigl::HintMode mode = m_Buffer.read<multigl::HintMode>();
 				GL_CHECK(glHint(target, mode));
 				break;
 			}
@@ -42,8 +42,8 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::PolygonMode:
 			{
-				GLenum face = m_Buffer.read<GLenum>();
-				GLenum mode = m_Buffer.read<GLenum>();
+				multigl::MaterialFace face = m_Buffer.read<multigl::MaterialFace>();
+				multigl::PolygonMode mode = m_Buffer.read<multigl::PolygonMode>();
 				GL_CHECK(glPolygonMode(face, mode));
 				break;
 			}
@@ -58,66 +58,66 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::TexParameterf:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::TextureTarget target = m_Buffer.read<multigl::TextureTarget>();
+				multigl::TextureParameterName pname = m_Buffer.read<multigl::TextureParameterName>();
 				GLfloat param = m_Buffer.read<GLfloat>();
 				GL_CHECK(glTexParameterf(target, pname, param));
 				break;
 			}
 			case CommandId::TexParameterfv:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::TextureTarget target = m_Buffer.read<multigl::TextureTarget>();
+				multigl::TextureParameterName pname = m_Buffer.read<multigl::TextureParameterName>();
 				const GLfloat * params = m_Buffer.read<const GLfloat *>();
 				GL_CHECK(glTexParameterfv(target, pname, params));
 				break;
 			}
 			case CommandId::TexParameteri:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::TextureTarget target = m_Buffer.read<multigl::TextureTarget>();
+				multigl::TextureParameterName pname = m_Buffer.read<multigl::TextureParameterName>();
 				GLint param = m_Buffer.read<GLint>();
 				GL_CHECK(glTexParameteri(target, pname, param));
 				break;
 			}
 			case CommandId::TexParameteriv:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::TextureTarget target = m_Buffer.read<multigl::TextureTarget>();
+				multigl::TextureParameterName pname = m_Buffer.read<multigl::TextureParameterName>();
 				const GLint * params = m_Buffer.read<const GLint *>();
 				GL_CHECK(glTexParameteriv(target, pname, params));
 				break;
 			}
 			case CommandId::TexImage1D:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
+				multigl::TextureTarget target = m_Buffer.read<multigl::TextureTarget>();
 				GLint level = m_Buffer.read<GLint>();
 				GLint internalformat = m_Buffer.read<GLint>();
 				GLsizei width = m_Buffer.read<GLsizei>();
 				GLint border = m_Buffer.read<GLint>();
-				GLenum format = m_Buffer.read<GLenum>();
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::PixelFormat format = m_Buffer.read<multigl::PixelFormat>();
+				multigl::PixelType type = m_Buffer.read<multigl::PixelType>();
 				const void * pixels = m_Buffer.read<const void *>();
 				GL_CHECK(glTexImage1D(target, level, internalformat, width, border, format, type, pixels));
 				break;
 			}
 			case CommandId::TexImage2D:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
+				multigl::TextureTarget target = m_Buffer.read<multigl::TextureTarget>();
 				GLint level = m_Buffer.read<GLint>();
 				GLint internalformat = m_Buffer.read<GLint>();
 				GLsizei width = m_Buffer.read<GLsizei>();
 				GLsizei height = m_Buffer.read<GLsizei>();
 				GLint border = m_Buffer.read<GLint>();
-				GLenum format = m_Buffer.read<GLenum>();
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::PixelFormat format = m_Buffer.read<multigl::PixelFormat>();
+				multigl::PixelType type = m_Buffer.read<multigl::PixelType>();
 				const void * pixels = m_Buffer.read<const void *>();
 				GL_CHECK(glTexImage2D(target, level, internalformat, width, height, border, format, type, pixels));
 				break;
 			}
 			case CommandId::DrawBuffer:
 			{
-				GLenum buf = m_Buffer.read<GLenum>();
+				multigl::DrawBufferMode buf = m_Buffer.read<multigl::DrawBufferMode>();
 				GL_CHECK(glDrawBuffer(buf));
 				break;
 			}
@@ -171,13 +171,13 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::Disable:
 			{
-				GLenum cap = m_Buffer.read<GLenum>();
+				multigl::EnableCap cap = m_Buffer.read<multigl::EnableCap>();
 				GL_CHECK(glDisable(cap));
 				break;
 			}
 			case CommandId::Enable:
 			{
-				GLenum cap = m_Buffer.read<GLenum>();
+				multigl::EnableCap cap = m_Buffer.read<multigl::EnableCap>();
 				GL_CHECK(glEnable(cap));
 				break;
 			}
@@ -193,20 +193,20 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::BlendFunc:
 			{
-				GLenum sfactor = m_Buffer.read<GLenum>();
-				GLenum dfactor = m_Buffer.read<GLenum>();
+				multigl::BlendingFactor sfactor = m_Buffer.read<multigl::BlendingFactor>();
+				multigl::BlendingFactor dfactor = m_Buffer.read<multigl::BlendingFactor>();
 				GL_CHECK(glBlendFunc(sfactor, dfactor));
 				break;
 			}
 			case CommandId::LogicOp:
 			{
-				GLenum opcode = m_Buffer.read<GLenum>();
+				multigl::LogicOp opcode = m_Buffer.read<multigl::LogicOp>();
 				GL_CHECK(glLogicOp(opcode));
 				break;
 			}
 			case CommandId::StencilFunc:
 			{
-				GLenum func = m_Buffer.read<GLenum>();
+				multigl::StencilFunction func = m_Buffer.read<multigl::StencilFunction>();
 				GLint ref = m_Buffer.read<GLint>();
 				GLuint mask = m_Buffer.read<GLuint>();
 				GL_CHECK(glStencilFunc(func, ref, mask));
@@ -214,35 +214,35 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::StencilOp:
 			{
-				GLenum fail = m_Buffer.read<GLenum>();
-				GLenum zfail = m_Buffer.read<GLenum>();
-				GLenum zpass = m_Buffer.read<GLenum>();
+				multigl::StencilOp fail = m_Buffer.read<multigl::StencilOp>();
+				multigl::StencilOp zfail = m_Buffer.read<multigl::StencilOp>();
+				multigl::StencilOp zpass = m_Buffer.read<multigl::StencilOp>();
 				GL_CHECK(glStencilOp(fail, zfail, zpass));
 				break;
 			}
 			case CommandId::DepthFunc:
 			{
-				GLenum func = m_Buffer.read<GLenum>();
+				multigl::DepthFunction func = m_Buffer.read<multigl::DepthFunction>();
 				GL_CHECK(glDepthFunc(func));
 				break;
 			}
 			case CommandId::PixelStoref:
 			{
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::PixelStoreParameter pname = m_Buffer.read<multigl::PixelStoreParameter>();
 				GLfloat param = m_Buffer.read<GLfloat>();
 				GL_CHECK(glPixelStoref(pname, param));
 				break;
 			}
 			case CommandId::PixelStorei:
 			{
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::PixelStoreParameter pname = m_Buffer.read<multigl::PixelStoreParameter>();
 				GLint param = m_Buffer.read<GLint>();
 				GL_CHECK(glPixelStorei(pname, param));
 				break;
 			}
 			case CommandId::ReadBuffer:
 			{
-				GLenum src = m_Buffer.read<GLenum>();
+				multigl::ReadBufferMode src = m_Buffer.read<multigl::ReadBufferMode>();
 				GL_CHECK(glReadBuffer(src));
 				break;
 			}
@@ -252,80 +252,80 @@ void CommandBuffer::ProcessCommands()
 				GLint y = m_Buffer.read<GLint>();
 				GLsizei width = m_Buffer.read<GLsizei>();
 				GLsizei height = m_Buffer.read<GLsizei>();
-				GLenum format = m_Buffer.read<GLenum>();
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::PixelFormat format = m_Buffer.read<multigl::PixelFormat>();
+				multigl::PixelType type = m_Buffer.read<multigl::PixelType>();
 				void * pixels = m_Buffer.read<void *>();
 				GL_CHECK(glReadPixels(x, y, width, height, format, type, pixels));
 				break;
 			}
 			case CommandId::GetBooleanv:
 			{
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::GetPName pname = m_Buffer.read<multigl::GetPName>();
 				GLboolean * data = m_Buffer.read<GLboolean *>();
 				GL_CHECK(glGetBooleanv(pname, data));
 				break;
 			}
 			case CommandId::GetDoublev:
 			{
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::GetPName pname = m_Buffer.read<multigl::GetPName>();
 				GLdouble * data = m_Buffer.read<GLdouble *>();
 				GL_CHECK(glGetDoublev(pname, data));
 				break;
 			}
 			case CommandId::GetFloatv:
 			{
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::GetPName pname = m_Buffer.read<multigl::GetPName>();
 				GLfloat * data = m_Buffer.read<GLfloat *>();
 				GL_CHECK(glGetFloatv(pname, data));
 				break;
 			}
 			case CommandId::GetIntegerv:
 			{
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::GetPName pname = m_Buffer.read<multigl::GetPName>();
 				GLint * data = m_Buffer.read<GLint *>();
 				GL_CHECK(glGetIntegerv(pname, data));
 				break;
 			}
 			case CommandId::GetTexImage:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
+				multigl::TextureTarget target = m_Buffer.read<multigl::TextureTarget>();
 				GLint level = m_Buffer.read<GLint>();
-				GLenum format = m_Buffer.read<GLenum>();
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::PixelFormat format = m_Buffer.read<multigl::PixelFormat>();
+				multigl::PixelType type = m_Buffer.read<multigl::PixelType>();
 				void * pixels = m_Buffer.read<void *>();
 				GL_CHECK(glGetTexImage(target, level, format, type, pixels));
 				break;
 			}
 			case CommandId::GetTexParameterfv:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::TextureTarget target = m_Buffer.read<multigl::TextureTarget>();
+				multigl::GetTextureParameter pname = m_Buffer.read<multigl::GetTextureParameter>();
 				GLfloat * params = m_Buffer.read<GLfloat *>();
 				GL_CHECK(glGetTexParameterfv(target, pname, params));
 				break;
 			}
 			case CommandId::GetTexParameteriv:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::TextureTarget target = m_Buffer.read<multigl::TextureTarget>();
+				multigl::GetTextureParameter pname = m_Buffer.read<multigl::GetTextureParameter>();
 				GLint * params = m_Buffer.read<GLint *>();
 				GL_CHECK(glGetTexParameteriv(target, pname, params));
 				break;
 			}
 			case CommandId::GetTexLevelParameterfv:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
+				multigl::TextureTarget target = m_Buffer.read<multigl::TextureTarget>();
 				GLint level = m_Buffer.read<GLint>();
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::GetTextureParameter pname = m_Buffer.read<multigl::GetTextureParameter>();
 				GLfloat * params = m_Buffer.read<GLfloat *>();
 				GL_CHECK(glGetTexLevelParameterfv(target, level, pname, params));
 				break;
 			}
 			case CommandId::GetTexLevelParameteriv:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
+				multigl::TextureTarget target = m_Buffer.read<multigl::TextureTarget>();
 				GLint level = m_Buffer.read<GLint>();
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::GetTextureParameter pname = m_Buffer.read<multigl::GetTextureParameter>();
 				GLint * params = m_Buffer.read<GLint *>();
 				GL_CHECK(glGetTexLevelParameteriv(target, level, pname, params));
 				break;
@@ -348,7 +348,7 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::DrawArrays:
 			{
-				GLenum mode = m_Buffer.read<GLenum>();
+				multigl::PrimitiveType mode = m_Buffer.read<multigl::PrimitiveType>();
 				GLint first = m_Buffer.read<GLint>();
 				GLsizei count = m_Buffer.read<GLsizei>();
 				GL_CHECK(glDrawArrays(mode, first, count));
@@ -356,9 +356,9 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::DrawElements:
 			{
-				GLenum mode = m_Buffer.read<GLenum>();
+				multigl::PrimitiveType mode = m_Buffer.read<multigl::PrimitiveType>();
 				GLsizei count = m_Buffer.read<GLsizei>();
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::DrawElementsType type = m_Buffer.read<multigl::DrawElementsType>();
 				const void * indices = m_Buffer.read<const void *>();
 				GL_CHECK(glDrawElements(mode, count, type, indices));
 				break;
@@ -372,9 +372,9 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::CopyTexImage1D:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
+				multigl::TextureTarget target = m_Buffer.read<multigl::TextureTarget>();
 				GLint level = m_Buffer.read<GLint>();
-				GLenum internalformat = m_Buffer.read<GLenum>();
+				multigl::InternalFormat internalformat = m_Buffer.read<multigl::InternalFormat>();
 				GLint x = m_Buffer.read<GLint>();
 				GLint y = m_Buffer.read<GLint>();
 				GLsizei width = m_Buffer.read<GLsizei>();
@@ -384,9 +384,9 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::CopyTexImage2D:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
+				multigl::TextureTarget target = m_Buffer.read<multigl::TextureTarget>();
 				GLint level = m_Buffer.read<GLint>();
-				GLenum internalformat = m_Buffer.read<GLenum>();
+				multigl::InternalFormat internalformat = m_Buffer.read<multigl::InternalFormat>();
 				GLint x = m_Buffer.read<GLint>();
 				GLint y = m_Buffer.read<GLint>();
 				GLsizei width = m_Buffer.read<GLsizei>();
@@ -397,7 +397,7 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::CopyTexSubImage1D:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
+				multigl::TextureTarget target = m_Buffer.read<multigl::TextureTarget>();
 				GLint level = m_Buffer.read<GLint>();
 				GLint xoffset = m_Buffer.read<GLint>();
 				GLint x = m_Buffer.read<GLint>();
@@ -408,7 +408,7 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::CopyTexSubImage2D:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
+				multigl::TextureTarget target = m_Buffer.read<multigl::TextureTarget>();
 				GLint level = m_Buffer.read<GLint>();
 				GLint xoffset = m_Buffer.read<GLint>();
 				GLint yoffset = m_Buffer.read<GLint>();
@@ -421,33 +421,33 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::TexSubImage1D:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
+				multigl::TextureTarget target = m_Buffer.read<multigl::TextureTarget>();
 				GLint level = m_Buffer.read<GLint>();
 				GLint xoffset = m_Buffer.read<GLint>();
 				GLsizei width = m_Buffer.read<GLsizei>();
-				GLenum format = m_Buffer.read<GLenum>();
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::PixelFormat format = m_Buffer.read<multigl::PixelFormat>();
+				multigl::PixelType type = m_Buffer.read<multigl::PixelType>();
 				const void * pixels = m_Buffer.read<const void *>();
 				GL_CHECK(glTexSubImage1D(target, level, xoffset, width, format, type, pixels));
 				break;
 			}
 			case CommandId::TexSubImage2D:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
+				multigl::TextureTarget target = m_Buffer.read<multigl::TextureTarget>();
 				GLint level = m_Buffer.read<GLint>();
 				GLint xoffset = m_Buffer.read<GLint>();
 				GLint yoffset = m_Buffer.read<GLint>();
 				GLsizei width = m_Buffer.read<GLsizei>();
 				GLsizei height = m_Buffer.read<GLsizei>();
-				GLenum format = m_Buffer.read<GLenum>();
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::PixelFormat format = m_Buffer.read<multigl::PixelFormat>();
+				multigl::PixelType type = m_Buffer.read<multigl::PixelType>();
 				const void * pixels = m_Buffer.read<const void *>();
 				GL_CHECK(glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, type, pixels));
 				break;
 			}
 			case CommandId::BindTexture:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
+				multigl::TextureTarget target = m_Buffer.read<multigl::TextureTarget>();
 				TextureHandle textureHandle = m_Buffer.read<TextureHandle>();
 				auto& texture = *m_ResourceManager.Textures.get(textureHandle);
 				GL_CHECK(glBindTexture(target, texture));
@@ -469,33 +469,33 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::DrawRangeElements:
 			{
-				GLenum mode = m_Buffer.read<GLenum>();
+				multigl::PrimitiveType mode = m_Buffer.read<multigl::PrimitiveType>();
 				GLuint start = m_Buffer.read<GLuint>();
 				GLuint end = m_Buffer.read<GLuint>();
 				GLsizei count = m_Buffer.read<GLsizei>();
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::DrawElementsType type = m_Buffer.read<multigl::DrawElementsType>();
 				const void * indices = m_Buffer.read<const void *>();
 				GL_CHECK(glDrawRangeElements(mode, start, end, count, type, indices));
 				break;
 			}
 			case CommandId::TexImage3D:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
+				multigl::TextureTarget target = m_Buffer.read<multigl::TextureTarget>();
 				GLint level = m_Buffer.read<GLint>();
 				GLint internalformat = m_Buffer.read<GLint>();
 				GLsizei width = m_Buffer.read<GLsizei>();
 				GLsizei height = m_Buffer.read<GLsizei>();
 				GLsizei depth = m_Buffer.read<GLsizei>();
 				GLint border = m_Buffer.read<GLint>();
-				GLenum format = m_Buffer.read<GLenum>();
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::PixelFormat format = m_Buffer.read<multigl::PixelFormat>();
+				multigl::PixelType type = m_Buffer.read<multigl::PixelType>();
 				const void * pixels = m_Buffer.read<const void *>();
 				GL_CHECK(glTexImage3D(target, level, internalformat, width, height, depth, border, format, type, pixels));
 				break;
 			}
 			case CommandId::TexSubImage3D:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
+				multigl::TextureTarget target = m_Buffer.read<multigl::TextureTarget>();
 				GLint level = m_Buffer.read<GLint>();
 				GLint xoffset = m_Buffer.read<GLint>();
 				GLint yoffset = m_Buffer.read<GLint>();
@@ -503,15 +503,15 @@ void CommandBuffer::ProcessCommands()
 				GLsizei width = m_Buffer.read<GLsizei>();
 				GLsizei height = m_Buffer.read<GLsizei>();
 				GLsizei depth = m_Buffer.read<GLsizei>();
-				GLenum format = m_Buffer.read<GLenum>();
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::PixelFormat format = m_Buffer.read<multigl::PixelFormat>();
+				multigl::PixelType type = m_Buffer.read<multigl::PixelType>();
 				const void * pixels = m_Buffer.read<const void *>();
 				GL_CHECK(glTexSubImage3D(target, level, xoffset, yoffset, zoffset, width, height, depth, format, type, pixels));
 				break;
 			}
 			case CommandId::CopyTexSubImage3D:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
+				multigl::TextureTarget target = m_Buffer.read<multigl::TextureTarget>();
 				GLint level = m_Buffer.read<GLint>();
 				GLint xoffset = m_Buffer.read<GLint>();
 				GLint yoffset = m_Buffer.read<GLint>();
@@ -539,9 +539,9 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::CompressedTexImage3D:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
+				multigl::TextureTarget target = m_Buffer.read<multigl::TextureTarget>();
 				GLint level = m_Buffer.read<GLint>();
-				GLenum internalformat = m_Buffer.read<GLenum>();
+				multigl::InternalFormat internalformat = m_Buffer.read<multigl::InternalFormat>();
 				GLsizei width = m_Buffer.read<GLsizei>();
 				GLsizei height = m_Buffer.read<GLsizei>();
 				GLsizei depth = m_Buffer.read<GLsizei>();
@@ -553,9 +553,9 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::CompressedTexImage2D:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
+				multigl::TextureTarget target = m_Buffer.read<multigl::TextureTarget>();
 				GLint level = m_Buffer.read<GLint>();
-				GLenum internalformat = m_Buffer.read<GLenum>();
+				multigl::InternalFormat internalformat = m_Buffer.read<multigl::InternalFormat>();
 				GLsizei width = m_Buffer.read<GLsizei>();
 				GLsizei height = m_Buffer.read<GLsizei>();
 				GLint border = m_Buffer.read<GLint>();
@@ -566,9 +566,9 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::CompressedTexImage1D:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
+				multigl::TextureTarget target = m_Buffer.read<multigl::TextureTarget>();
 				GLint level = m_Buffer.read<GLint>();
-				GLenum internalformat = m_Buffer.read<GLenum>();
+				multigl::InternalFormat internalformat = m_Buffer.read<multigl::InternalFormat>();
 				GLsizei width = m_Buffer.read<GLsizei>();
 				GLint border = m_Buffer.read<GLint>();
 				GLsizei imageSize = m_Buffer.read<GLsizei>();
@@ -578,7 +578,7 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::CompressedTexSubImage3D:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
+				multigl::TextureTarget target = m_Buffer.read<multigl::TextureTarget>();
 				GLint level = m_Buffer.read<GLint>();
 				GLint xoffset = m_Buffer.read<GLint>();
 				GLint yoffset = m_Buffer.read<GLint>();
@@ -586,7 +586,7 @@ void CommandBuffer::ProcessCommands()
 				GLsizei width = m_Buffer.read<GLsizei>();
 				GLsizei height = m_Buffer.read<GLsizei>();
 				GLsizei depth = m_Buffer.read<GLsizei>();
-				GLenum format = m_Buffer.read<GLenum>();
+				multigl::PixelFormat format = m_Buffer.read<multigl::PixelFormat>();
 				GLsizei imageSize = m_Buffer.read<GLsizei>();
 				const void * data = m_Buffer.read<const void *>();
 				GL_CHECK(glCompressedTexSubImage3D(target, level, xoffset, yoffset, zoffset, width, height, depth, format, imageSize, data));
@@ -594,13 +594,13 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::CompressedTexSubImage2D:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
+				multigl::TextureTarget target = m_Buffer.read<multigl::TextureTarget>();
 				GLint level = m_Buffer.read<GLint>();
 				GLint xoffset = m_Buffer.read<GLint>();
 				GLint yoffset = m_Buffer.read<GLint>();
 				GLsizei width = m_Buffer.read<GLsizei>();
 				GLsizei height = m_Buffer.read<GLsizei>();
-				GLenum format = m_Buffer.read<GLenum>();
+				multigl::PixelFormat format = m_Buffer.read<multigl::PixelFormat>();
 				GLsizei imageSize = m_Buffer.read<GLsizei>();
 				const void * data = m_Buffer.read<const void *>();
 				GL_CHECK(glCompressedTexSubImage2D(target, level, xoffset, yoffset, width, height, format, imageSize, data));
@@ -608,11 +608,11 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::CompressedTexSubImage1D:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
+				multigl::TextureTarget target = m_Buffer.read<multigl::TextureTarget>();
 				GLint level = m_Buffer.read<GLint>();
 				GLint xoffset = m_Buffer.read<GLint>();
 				GLsizei width = m_Buffer.read<GLsizei>();
-				GLenum format = m_Buffer.read<GLenum>();
+				multigl::PixelFormat format = m_Buffer.read<multigl::PixelFormat>();
 				GLsizei imageSize = m_Buffer.read<GLsizei>();
 				const void * data = m_Buffer.read<const void *>();
 				GL_CHECK(glCompressedTexSubImage1D(target, level, xoffset, width, format, imageSize, data));
@@ -620,7 +620,7 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::GetCompressedTexImage:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
+				multigl::TextureTarget target = m_Buffer.read<multigl::TextureTarget>();
 				GLint level = m_Buffer.read<GLint>();
 				void * img = m_Buffer.read<void *>();
 				GL_CHECK(glGetCompressedTexImage(target, level, img));
@@ -628,16 +628,16 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::BlendFuncSeparate:
 			{
-				GLenum sfactorRGB = m_Buffer.read<GLenum>();
-				GLenum dfactorRGB = m_Buffer.read<GLenum>();
-				GLenum sfactorAlpha = m_Buffer.read<GLenum>();
-				GLenum dfactorAlpha = m_Buffer.read<GLenum>();
+				multigl::BlendingFactor sfactorRGB = m_Buffer.read<multigl::BlendingFactor>();
+				multigl::BlendingFactor dfactorRGB = m_Buffer.read<multigl::BlendingFactor>();
+				multigl::BlendingFactor sfactorAlpha = m_Buffer.read<multigl::BlendingFactor>();
+				multigl::BlendingFactor dfactorAlpha = m_Buffer.read<multigl::BlendingFactor>();
 				GL_CHECK(glBlendFuncSeparate(sfactorRGB, dfactorRGB, sfactorAlpha, dfactorAlpha));
 				break;
 			}
 			case CommandId::MultiDrawArrays:
 			{
-				GLenum mode = m_Buffer.read<GLenum>();
+				multigl::PrimitiveType mode = m_Buffer.read<multigl::PrimitiveType>();
 				const GLint * first = m_Buffer.read<const GLint *>();
 				const GLsizei * count = m_Buffer.read<const GLsizei *>();
 				GLsizei drawcount = m_Buffer.read<GLsizei>();
@@ -646,9 +646,9 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::MultiDrawElements:
 			{
-				GLenum mode = m_Buffer.read<GLenum>();
+				multigl::PrimitiveType mode = m_Buffer.read<multigl::PrimitiveType>();
 				const GLsizei * count = m_Buffer.read<const GLsizei *>();
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::DrawElementsType type = m_Buffer.read<multigl::DrawElementsType>();
 				const void *const* indices = m_Buffer.read<const void *const*>();
 				GLsizei drawcount = m_Buffer.read<GLsizei>();
 				GL_CHECK(glMultiDrawElements(mode, count, type, indices, drawcount));
@@ -656,28 +656,28 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::PointParameterf:
 			{
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::PointParameterNameARB pname = m_Buffer.read<multigl::PointParameterNameARB>();
 				GLfloat param = m_Buffer.read<GLfloat>();
 				GL_CHECK(glPointParameterf(pname, param));
 				break;
 			}
 			case CommandId::PointParameterfv:
 			{
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::PointParameterNameARB pname = m_Buffer.read<multigl::PointParameterNameARB>();
 				const GLfloat * params = m_Buffer.read<const GLfloat *>();
 				GL_CHECK(glPointParameterfv(pname, params));
 				break;
 			}
 			case CommandId::PointParameteri:
 			{
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::PointParameterNameARB pname = m_Buffer.read<multigl::PointParameterNameARB>();
 				GLint param = m_Buffer.read<GLint>();
 				GL_CHECK(glPointParameteri(pname, param));
 				break;
 			}
 			case CommandId::PointParameteriv:
 			{
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::PointParameterNameARB pname = m_Buffer.read<multigl::PointParameterNameARB>();
 				const GLint * params = m_Buffer.read<const GLint *>();
 				GL_CHECK(glPointParameteriv(pname, params));
 				break;
@@ -693,7 +693,7 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::BlendEquation:
 			{
-				GLenum mode = m_Buffer.read<GLenum>();
+				multigl::BlendEquationModeEXT mode = m_Buffer.read<multigl::BlendEquationModeEXT>();
 				GL_CHECK(glBlendEquation(mode));
 				break;
 			}
@@ -713,21 +713,21 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::BeginQuery:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
+				multigl::QueryTarget target = m_Buffer.read<multigl::QueryTarget>();
 				GLuint id = m_Buffer.read<GLuint>();
 				GL_CHECK(glBeginQuery(target, id));
 				break;
 			}
 			case CommandId::EndQuery:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
+				multigl::QueryTarget target = m_Buffer.read<multigl::QueryTarget>();
 				GL_CHECK(glEndQuery(target));
 				break;
 			}
 			case CommandId::GetQueryiv:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::QueryTarget target = m_Buffer.read<multigl::QueryTarget>();
+				multigl::QueryParameterName pname = m_Buffer.read<multigl::QueryParameterName>();
 				GLint * params = m_Buffer.read<GLint *>();
 				GL_CHECK(glGetQueryiv(target, pname, params));
 				break;
@@ -735,7 +735,7 @@ void CommandBuffer::ProcessCommands()
 			case CommandId::GetQueryObjectiv:
 			{
 				GLuint id = m_Buffer.read<GLuint>();
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::QueryObjectParameterName pname = m_Buffer.read<multigl::QueryObjectParameterName>();
 				GLint * params = m_Buffer.read<GLint *>();
 				GL_CHECK(glGetQueryObjectiv(id, pname, params));
 				break;
@@ -743,14 +743,14 @@ void CommandBuffer::ProcessCommands()
 			case CommandId::GetQueryObjectuiv:
 			{
 				GLuint id = m_Buffer.read<GLuint>();
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::QueryObjectParameterName pname = m_Buffer.read<multigl::QueryObjectParameterName>();
 				GLuint * params = m_Buffer.read<GLuint *>();
 				GL_CHECK(glGetQueryObjectuiv(id, pname, params));
 				break;
 			}
 			case CommandId::BindBuffer:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
+				multigl::BufferTarget target = m_Buffer.read<multigl::BufferTarget>();
 				BufferHandle bufferHandle = m_Buffer.read<BufferHandle>();
 				auto& buffer = *m_ResourceManager.Buffers.get(bufferHandle);
 				GL_CHECK(glBindBuffer(target, buffer));
@@ -772,16 +772,16 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::BufferData:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
+				multigl::BufferTarget target = m_Buffer.read<multigl::BufferTarget>();
 				GLsizeiptr size = m_Buffer.read<GLsizeiptr>();
 				const void * data = m_Buffer.read<const void *>();
-				GLenum usage = m_Buffer.read<GLenum>();
+				multigl::BufferUsageARB usage = m_Buffer.read<multigl::BufferUsageARB>();
 				GL_CHECK(glBufferData(target, size, data, usage));
 				break;
 			}
 			case CommandId::BufferSubData:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
+				multigl::BufferTarget target = m_Buffer.read<multigl::BufferTarget>();
 				GLintptr offset = m_Buffer.read<GLintptr>();
 				GLsizeiptr size = m_Buffer.read<GLsizeiptr>();
 				const void * data = m_Buffer.read<const void *>();
@@ -790,7 +790,7 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::GetBufferSubData:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
+				multigl::BufferTarget target = m_Buffer.read<multigl::BufferTarget>();
 				GLintptr offset = m_Buffer.read<GLintptr>();
 				GLsizeiptr size = m_Buffer.read<GLsizeiptr>();
 				void * data = m_Buffer.read<void *>();
@@ -799,24 +799,24 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::GetBufferParameteriv:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::BufferTarget target = m_Buffer.read<multigl::BufferTarget>();
+				multigl::BufferPNameARB pname = m_Buffer.read<multigl::BufferPNameARB>();
 				GLint * params = m_Buffer.read<GLint *>();
 				GL_CHECK(glGetBufferParameteriv(target, pname, params));
 				break;
 			}
 			case CommandId::GetBufferPointerv:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::BufferTarget target = m_Buffer.read<multigl::BufferTarget>();
+				multigl::BufferPointerNameARB pname = m_Buffer.read<multigl::BufferPointerNameARB>();
 				void ** params = m_Buffer.read<void **>();
 				GL_CHECK(glGetBufferPointerv(target, pname, params));
 				break;
 			}
 			case CommandId::BlendEquationSeparate:
 			{
-				GLenum modeRGB = m_Buffer.read<GLenum>();
-				GLenum modeAlpha = m_Buffer.read<GLenum>();
+				multigl::BlendEquationModeEXT modeRGB = m_Buffer.read<multigl::BlendEquationModeEXT>();
+				multigl::BlendEquationModeEXT modeAlpha = m_Buffer.read<multigl::BlendEquationModeEXT>();
 				GL_CHECK(glBlendEquationSeparate(modeRGB, modeAlpha));
 				break;
 			}
@@ -829,17 +829,17 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::StencilOpSeparate:
 			{
-				GLenum face = m_Buffer.read<GLenum>();
-				GLenum sfail = m_Buffer.read<GLenum>();
-				GLenum dpfail = m_Buffer.read<GLenum>();
-				GLenum dppass = m_Buffer.read<GLenum>();
+				multigl::StencilFaceDirection face = m_Buffer.read<multigl::StencilFaceDirection>();
+				multigl::StencilOp sfail = m_Buffer.read<multigl::StencilOp>();
+				multigl::StencilOp dpfail = m_Buffer.read<multigl::StencilOp>();
+				multigl::StencilOp dppass = m_Buffer.read<multigl::StencilOp>();
 				GL_CHECK(glStencilOpSeparate(face, sfail, dpfail, dppass));
 				break;
 			}
 			case CommandId::StencilFuncSeparate:
 			{
-				GLenum face = m_Buffer.read<GLenum>();
-				GLenum func = m_Buffer.read<GLenum>();
+				multigl::StencilFaceDirection face = m_Buffer.read<multigl::StencilFaceDirection>();
+				multigl::StencilFunction func = m_Buffer.read<multigl::StencilFunction>();
 				GLint ref = m_Buffer.read<GLint>();
 				GLuint mask = m_Buffer.read<GLuint>();
 				GL_CHECK(glStencilFuncSeparate(face, func, ref, mask));
@@ -847,7 +847,7 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::StencilMaskSeparate:
 			{
-				GLenum face = m_Buffer.read<GLenum>();
+				multigl::StencilFaceDirection face = m_Buffer.read<multigl::StencilFaceDirection>();
 				GLuint mask = m_Buffer.read<GLuint>();
 				GL_CHECK(glStencilMaskSeparate(face, mask));
 				break;
@@ -888,7 +888,7 @@ void CommandBuffer::ProcessCommands()
 			{
 				auto handle = m_Buffer.read<ShaderHandle>();
 				auto& target = *m_ResourceManager.Shaders.get(handle);
-				GLenum type = m_Buffer.read<GLenum>();
+				ShaderType type = m_Buffer.read<ShaderType>();
 				target = glCreateShader(type);
 				break;
 			}
@@ -967,7 +967,7 @@ void CommandBuffer::ProcessCommands()
 			{
 				ShaderProgramHandle programHandle = m_Buffer.read<ShaderProgramHandle>();
 				auto& program = *m_ResourceManager.ShaderPrograms.get(programHandle);
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::ProgramPropertyARB pname = m_Buffer.read<multigl::ProgramPropertyARB>();
 				GLint * params = m_Buffer.read<GLint *>();
 				GL_CHECK(glGetProgramiv(program, pname, params));
 				break;
@@ -986,7 +986,7 @@ void CommandBuffer::ProcessCommands()
 			{
 				ShaderHandle shaderHandle = m_Buffer.read<ShaderHandle>();
 				auto& shader = *m_ResourceManager.Shaders.get(shaderHandle);
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::ShaderParameterName pname = m_Buffer.read<multigl::ShaderParameterName>();
 				GLint * params = m_Buffer.read<GLint *>();
 				GL_CHECK(glGetShaderiv(shader, pname, params));
 				break;
@@ -1032,7 +1032,7 @@ void CommandBuffer::ProcessCommands()
 			case CommandId::GetVertexAttribdv:
 			{
 				GLuint index = m_Buffer.read<GLuint>();
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::VertexAttribPropertyARB pname = m_Buffer.read<multigl::VertexAttribPropertyARB>();
 				GLdouble * params = m_Buffer.read<GLdouble *>();
 				GL_CHECK(glGetVertexAttribdv(index, pname, params));
 				break;
@@ -1040,7 +1040,7 @@ void CommandBuffer::ProcessCommands()
 			case CommandId::GetVertexAttribfv:
 			{
 				GLuint index = m_Buffer.read<GLuint>();
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::VertexAttribPropertyARB pname = m_Buffer.read<multigl::VertexAttribPropertyARB>();
 				GLfloat * params = m_Buffer.read<GLfloat *>();
 				GL_CHECK(glGetVertexAttribfv(index, pname, params));
 				break;
@@ -1048,7 +1048,7 @@ void CommandBuffer::ProcessCommands()
 			case CommandId::GetVertexAttribiv:
 			{
 				GLuint index = m_Buffer.read<GLuint>();
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::VertexAttribPropertyARB pname = m_Buffer.read<multigl::VertexAttribPropertyARB>();
 				GLint * params = m_Buffer.read<GLint *>();
 				GL_CHECK(glGetVertexAttribiv(index, pname, params));
 				break;
@@ -1056,7 +1056,7 @@ void CommandBuffer::ProcessCommands()
 			case CommandId::GetVertexAttribPointerv:
 			{
 				GLuint index = m_Buffer.read<GLuint>();
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::VertexAttribPointerPropertyARB pname = m_Buffer.read<multigl::VertexAttribPointerPropertyARB>();
 				void ** pointer = m_Buffer.read<void **>();
 				GL_CHECK(glGetVertexAttribPointerv(index, pname, pointer));
 				break;
@@ -1527,7 +1527,7 @@ void CommandBuffer::ProcessCommands()
 			{
 				GLuint index = m_Buffer.read<GLuint>();
 				GLint size = m_Buffer.read<GLint>();
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::VertexAttribPointerType type = m_Buffer.read<multigl::VertexAttribPointerType>();
 				GLboolean normalized = m_Buffer.read<GLboolean>();
 				GLsizei stride = m_Buffer.read<GLsizei>();
 				const void * pointer = m_Buffer.read<const void *>();
@@ -1600,7 +1600,7 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::GetBooleani_v:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
+				multigl::BufferTarget target = m_Buffer.read<multigl::BufferTarget>();
 				GLuint index = m_Buffer.read<GLuint>();
 				GLboolean * data = m_Buffer.read<GLboolean *>();
 				GL_CHECK(glGetBooleani_v(target, index, data));
@@ -1616,21 +1616,21 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::Enablei:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
+				multigl::EnableCap target = m_Buffer.read<multigl::EnableCap>();
 				GLuint index = m_Buffer.read<GLuint>();
 				GL_CHECK(glEnablei(target, index));
 				break;
 			}
 			case CommandId::Disablei:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
+				multigl::EnableCap target = m_Buffer.read<multigl::EnableCap>();
 				GLuint index = m_Buffer.read<GLuint>();
 				GL_CHECK(glDisablei(target, index));
 				break;
 			}
 			case CommandId::BeginTransformFeedback:
 			{
-				GLenum primitiveMode = m_Buffer.read<GLenum>();
+				multigl::PrimitiveType primitiveMode = m_Buffer.read<multigl::PrimitiveType>();
 				GL_CHECK(glBeginTransformFeedback(primitiveMode));
 				break;
 			}
@@ -1641,7 +1641,7 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::BindBufferRange:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
+				multigl::BufferTarget target = m_Buffer.read<multigl::BufferTarget>();
 				GLuint index = m_Buffer.read<GLuint>();
 				BufferHandle bufferHandle = m_Buffer.read<BufferHandle>();
 				auto& buffer = *m_ResourceManager.Buffers.get(bufferHandle);
@@ -1652,7 +1652,7 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::BindBufferBase:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
+				multigl::BufferTarget target = m_Buffer.read<multigl::BufferTarget>();
 				GLuint index = m_Buffer.read<GLuint>();
 				BufferHandle bufferHandle = m_Buffer.read<BufferHandle>();
 				auto& buffer = *m_ResourceManager.Buffers.get(bufferHandle);
@@ -1665,7 +1665,7 @@ void CommandBuffer::ProcessCommands()
 				auto& program = *m_ResourceManager.ShaderPrograms.get(programHandle);
 				GLsizei count = m_Buffer.read<GLsizei>();
 				const GLchar *const* varyings = m_Buffer.read<const GLchar *const*>();
-				GLenum bufferMode = m_Buffer.read<GLenum>();
+				multigl::TransformFeedbackBufferMode bufferMode = m_Buffer.read<multigl::TransformFeedbackBufferMode>();
 				GL_CHECK(glTransformFeedbackVaryings(program, count, varyings, bufferMode));
 				break;
 			}
@@ -1684,15 +1684,15 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::ClampColor:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
-				GLenum clamp = m_Buffer.read<GLenum>();
+				multigl::ClampColorTargetARB target = m_Buffer.read<multigl::ClampColorTargetARB>();
+				multigl::ClampColorModeARB clamp = m_Buffer.read<multigl::ClampColorModeARB>();
 				GL_CHECK(glClampColor(target, clamp));
 				break;
 			}
 			case CommandId::BeginConditionalRender:
 			{
 				GLuint id = m_Buffer.read<GLuint>();
-				GLenum mode = m_Buffer.read<GLenum>();
+				multigl::ConditionalRenderMode mode = m_Buffer.read<multigl::ConditionalRenderMode>();
 				GL_CHECK(glBeginConditionalRender(id, mode));
 				break;
 			}
@@ -1705,7 +1705,7 @@ void CommandBuffer::ProcessCommands()
 			{
 				GLuint index = m_Buffer.read<GLuint>();
 				GLint size = m_Buffer.read<GLint>();
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::VertexAttribPointerType type = m_Buffer.read<multigl::VertexAttribPointerType>();
 				GLsizei stride = m_Buffer.read<GLsizei>();
 				const void * pointer = m_Buffer.read<const void *>();
 				GL_CHECK(glVertexAttribIPointer(index, size, type, stride, pointer));
@@ -1714,7 +1714,7 @@ void CommandBuffer::ProcessCommands()
 			case CommandId::GetVertexAttribIiv:
 			{
 				GLuint index = m_Buffer.read<GLuint>();
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::VertexAttribEnum pname = m_Buffer.read<multigl::VertexAttribEnum>();
 				GLint * params = m_Buffer.read<GLint *>();
 				GL_CHECK(glGetVertexAttribIiv(index, pname, params));
 				break;
@@ -1722,7 +1722,7 @@ void CommandBuffer::ProcessCommands()
 			case CommandId::GetVertexAttribIuiv:
 			{
 				GLuint index = m_Buffer.read<GLuint>();
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::VertexAttribEnum pname = m_Buffer.read<multigl::VertexAttribEnum>();
 				GLuint * params = m_Buffer.read<GLuint *>();
 				GL_CHECK(glGetVertexAttribIuiv(index, pname, params));
 				break;
@@ -1965,32 +1965,32 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::TexParameterIiv:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::TextureTarget target = m_Buffer.read<multigl::TextureTarget>();
+				multigl::TextureParameterName pname = m_Buffer.read<multigl::TextureParameterName>();
 				const GLint * params = m_Buffer.read<const GLint *>();
 				GL_CHECK(glTexParameterIiv(target, pname, params));
 				break;
 			}
 			case CommandId::TexParameterIuiv:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::TextureTarget target = m_Buffer.read<multigl::TextureTarget>();
+				multigl::TextureParameterName pname = m_Buffer.read<multigl::TextureParameterName>();
 				const GLuint * params = m_Buffer.read<const GLuint *>();
 				GL_CHECK(glTexParameterIuiv(target, pname, params));
 				break;
 			}
 			case CommandId::GetTexParameterIiv:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::TextureTarget target = m_Buffer.read<multigl::TextureTarget>();
+				multigl::GetTextureParameter pname = m_Buffer.read<multigl::GetTextureParameter>();
 				GLint * params = m_Buffer.read<GLint *>();
 				GL_CHECK(glGetTexParameterIiv(target, pname, params));
 				break;
 			}
 			case CommandId::GetTexParameterIuiv:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::TextureTarget target = m_Buffer.read<multigl::TextureTarget>();
+				multigl::GetTextureParameter pname = m_Buffer.read<multigl::GetTextureParameter>();
 				GLuint * params = m_Buffer.read<GLuint *>();
 				GL_CHECK(glGetTexParameterIuiv(target, pname, params));
 				break;
@@ -2034,7 +2034,7 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::BindRenderbuffer:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
+				multigl::RenderbufferTarget target = m_Buffer.read<multigl::RenderbufferTarget>();
 				RenderbufferHandle renderbufferHandle = m_Buffer.read<RenderbufferHandle>();
 				auto& renderbuffer = *m_ResourceManager.Renderbuffers.get(renderbufferHandle);
 				GL_CHECK(glBindRenderbuffer(target, renderbuffer));
@@ -2056,8 +2056,8 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::RenderbufferStorage:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
-				GLenum internalformat = m_Buffer.read<GLenum>();
+				multigl::RenderbufferTarget target = m_Buffer.read<multigl::RenderbufferTarget>();
+				multigl::InternalFormat internalformat = m_Buffer.read<multigl::InternalFormat>();
 				GLsizei width = m_Buffer.read<GLsizei>();
 				GLsizei height = m_Buffer.read<GLsizei>();
 				GL_CHECK(glRenderbufferStorage(target, internalformat, width, height));
@@ -2065,15 +2065,15 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::GetRenderbufferParameteriv:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::RenderbufferTarget target = m_Buffer.read<multigl::RenderbufferTarget>();
+				multigl::RenderbufferParameterName pname = m_Buffer.read<multigl::RenderbufferParameterName>();
 				GLint * params = m_Buffer.read<GLint *>();
 				GL_CHECK(glGetRenderbufferParameteriv(target, pname, params));
 				break;
 			}
 			case CommandId::BindFramebuffer:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
+				multigl::FramebufferTarget target = m_Buffer.read<multigl::FramebufferTarget>();
 				FramebufferHandle framebufferHandle = m_Buffer.read<FramebufferHandle>();
 				auto& framebuffer = *m_ResourceManager.Framebuffers.get(framebufferHandle);
 				GL_CHECK(glBindFramebuffer(target, framebuffer));
@@ -2095,9 +2095,9 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::FramebufferTexture1D:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
-				GLenum attachment = m_Buffer.read<GLenum>();
-				GLenum textarget = m_Buffer.read<GLenum>();
+				multigl::FramebufferTarget target = m_Buffer.read<multigl::FramebufferTarget>();
+				multigl::FramebufferAttachment attachment = m_Buffer.read<multigl::FramebufferAttachment>();
+				multigl::TextureTarget textarget = m_Buffer.read<multigl::TextureTarget>();
 				TextureHandle textureHandle = m_Buffer.read<TextureHandle>();
 				auto& texture = *m_ResourceManager.Textures.get(textureHandle);
 				GLint level = m_Buffer.read<GLint>();
@@ -2106,9 +2106,9 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::FramebufferTexture2D:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
-				GLenum attachment = m_Buffer.read<GLenum>();
-				GLenum textarget = m_Buffer.read<GLenum>();
+				multigl::FramebufferTarget target = m_Buffer.read<multigl::FramebufferTarget>();
+				multigl::FramebufferAttachment attachment = m_Buffer.read<multigl::FramebufferAttachment>();
+				multigl::TextureTarget textarget = m_Buffer.read<multigl::TextureTarget>();
 				TextureHandle textureHandle = m_Buffer.read<TextureHandle>();
 				auto& texture = *m_ResourceManager.Textures.get(textureHandle);
 				GLint level = m_Buffer.read<GLint>();
@@ -2117,9 +2117,9 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::FramebufferTexture3D:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
-				GLenum attachment = m_Buffer.read<GLenum>();
-				GLenum textarget = m_Buffer.read<GLenum>();
+				multigl::FramebufferTarget target = m_Buffer.read<multigl::FramebufferTarget>();
+				multigl::FramebufferAttachment attachment = m_Buffer.read<multigl::FramebufferAttachment>();
+				multigl::TextureTarget textarget = m_Buffer.read<multigl::TextureTarget>();
 				TextureHandle textureHandle = m_Buffer.read<TextureHandle>();
 				auto& texture = *m_ResourceManager.Textures.get(textureHandle);
 				GLint level = m_Buffer.read<GLint>();
@@ -2129,9 +2129,9 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::FramebufferRenderbuffer:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
-				GLenum attachment = m_Buffer.read<GLenum>();
-				GLenum renderbuffertarget = m_Buffer.read<GLenum>();
+				multigl::FramebufferTarget target = m_Buffer.read<multigl::FramebufferTarget>();
+				multigl::FramebufferAttachment attachment = m_Buffer.read<multigl::FramebufferAttachment>();
+				multigl::RenderbufferTarget renderbuffertarget = m_Buffer.read<multigl::RenderbufferTarget>();
 				RenderbufferHandle renderbufferHandle = m_Buffer.read<RenderbufferHandle>();
 				auto& renderbuffer = *m_ResourceManager.Renderbuffers.get(renderbufferHandle);
 				GL_CHECK(glFramebufferRenderbuffer(target, attachment, renderbuffertarget, renderbuffer));
@@ -2139,16 +2139,16 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::GetFramebufferAttachmentParameteriv:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
-				GLenum attachment = m_Buffer.read<GLenum>();
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::FramebufferTarget target = m_Buffer.read<multigl::FramebufferTarget>();
+				multigl::FramebufferAttachment attachment = m_Buffer.read<multigl::FramebufferAttachment>();
+				multigl::FramebufferAttachmentParameterName pname = m_Buffer.read<multigl::FramebufferAttachmentParameterName>();
 				GLint * params = m_Buffer.read<GLint *>();
 				GL_CHECK(glGetFramebufferAttachmentParameteriv(target, attachment, pname, params));
 				break;
 			}
 			case CommandId::GenerateMipmap:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
+				multigl::TextureTarget target = m_Buffer.read<multigl::TextureTarget>();
 				GL_CHECK(glGenerateMipmap(target));
 				break;
 			}
@@ -2163,15 +2163,15 @@ void CommandBuffer::ProcessCommands()
 				GLint dstX1 = m_Buffer.read<GLint>();
 				GLint dstY1 = m_Buffer.read<GLint>();
 				GLbitfield mask = m_Buffer.read<GLbitfield>();
-				GLenum filter = m_Buffer.read<GLenum>();
+				multigl::BlitFramebufferFilter filter = m_Buffer.read<multigl::BlitFramebufferFilter>();
 				GL_CHECK(glBlitFramebuffer(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter));
 				break;
 			}
 			case CommandId::RenderbufferStorageMultisample:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
+				multigl::RenderbufferTarget target = m_Buffer.read<multigl::RenderbufferTarget>();
 				GLsizei samples = m_Buffer.read<GLsizei>();
-				GLenum internalformat = m_Buffer.read<GLenum>();
+				multigl::InternalFormat internalformat = m_Buffer.read<multigl::InternalFormat>();
 				GLsizei width = m_Buffer.read<GLsizei>();
 				GLsizei height = m_Buffer.read<GLsizei>();
 				GL_CHECK(glRenderbufferStorageMultisample(target, samples, internalformat, width, height));
@@ -2179,8 +2179,8 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::FramebufferTextureLayer:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
-				GLenum attachment = m_Buffer.read<GLenum>();
+				multigl::FramebufferTarget target = m_Buffer.read<multigl::FramebufferTarget>();
+				multigl::FramebufferAttachment attachment = m_Buffer.read<multigl::FramebufferAttachment>();
 				TextureHandle textureHandle = m_Buffer.read<TextureHandle>();
 				auto& texture = *m_ResourceManager.Textures.get(textureHandle);
 				GLint level = m_Buffer.read<GLint>();
@@ -2190,7 +2190,7 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::FlushMappedBufferRange:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
+				multigl::BufferTarget target = m_Buffer.read<multigl::BufferTarget>();
 				GLintptr offset = m_Buffer.read<GLintptr>();
 				GLsizeiptr length = m_Buffer.read<GLsizeiptr>();
 				GL_CHECK(glFlushMappedBufferRange(target, offset, length));
@@ -2219,7 +2219,7 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::DrawArraysInstanced:
 			{
-				GLenum mode = m_Buffer.read<GLenum>();
+				multigl::PrimitiveType mode = m_Buffer.read<multigl::PrimitiveType>();
 				GLint first = m_Buffer.read<GLint>();
 				GLsizei count = m_Buffer.read<GLsizei>();
 				GLsizei instancecount = m_Buffer.read<GLsizei>();
@@ -2228,9 +2228,9 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::DrawElementsInstanced:
 			{
-				GLenum mode = m_Buffer.read<GLenum>();
+				multigl::PrimitiveType mode = m_Buffer.read<multigl::PrimitiveType>();
 				GLsizei count = m_Buffer.read<GLsizei>();
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::DrawElementsType type = m_Buffer.read<multigl::DrawElementsType>();
 				const void * indices = m_Buffer.read<const void *>();
 				GLsizei instancecount = m_Buffer.read<GLsizei>();
 				GL_CHECK(glDrawElementsInstanced(mode, count, type, indices, instancecount));
@@ -2238,8 +2238,8 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::TexBuffer:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
-				GLenum internalformat = m_Buffer.read<GLenum>();
+				multigl::TextureTarget target = m_Buffer.read<multigl::TextureTarget>();
+				multigl::InternalFormat internalformat = m_Buffer.read<multigl::InternalFormat>();
 				BufferHandle bufferHandle = m_Buffer.read<BufferHandle>();
 				auto& buffer = *m_ResourceManager.Buffers.get(bufferHandle);
 				GL_CHECK(glTexBuffer(target, internalformat, buffer));
@@ -2253,8 +2253,8 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::CopyBufferSubData:
 			{
-				GLenum readTarget = m_Buffer.read<GLenum>();
-				GLenum writeTarget = m_Buffer.read<GLenum>();
+				multigl::CopyBufferSubDataTarget readTarget = m_Buffer.read<multigl::CopyBufferSubDataTarget>();
+				multigl::CopyBufferSubDataTarget writeTarget = m_Buffer.read<multigl::CopyBufferSubDataTarget>();
 				GLintptr readOffset = m_Buffer.read<GLintptr>();
 				GLintptr writeOffset = m_Buffer.read<GLintptr>();
 				GLsizeiptr size = m_Buffer.read<GLsizeiptr>();
@@ -2277,7 +2277,7 @@ void CommandBuffer::ProcessCommands()
 				auto& program = *m_ResourceManager.ShaderPrograms.get(programHandle);
 				GLsizei uniformCount = m_Buffer.read<GLsizei>();
 				const GLuint * uniformIndices = m_Buffer.read<const GLuint *>();
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::UniformPName pname = m_Buffer.read<multigl::UniformPName>();
 				GLint * params = m_Buffer.read<GLint *>();
 				GL_CHECK(glGetActiveUniformsiv(program, uniformCount, uniformIndices, pname, params));
 				break;
@@ -2298,7 +2298,7 @@ void CommandBuffer::ProcessCommands()
 				ShaderProgramHandle programHandle = m_Buffer.read<ShaderProgramHandle>();
 				auto& program = *m_ResourceManager.ShaderPrograms.get(programHandle);
 				GLuint uniformBlockIndex = m_Buffer.read<GLuint>();
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::UniformBlockPName pname = m_Buffer.read<multigl::UniformBlockPName>();
 				GLint * params = m_Buffer.read<GLint *>();
 				GL_CHECK(glGetActiveUniformBlockiv(program, uniformBlockIndex, pname, params));
 				break;
@@ -2325,9 +2325,9 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::DrawElementsBaseVertex:
 			{
-				GLenum mode = m_Buffer.read<GLenum>();
+				multigl::PrimitiveType mode = m_Buffer.read<multigl::PrimitiveType>();
 				GLsizei count = m_Buffer.read<GLsizei>();
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::DrawElementsType type = m_Buffer.read<multigl::DrawElementsType>();
 				const void * indices = m_Buffer.read<const void *>();
 				GLint basevertex = m_Buffer.read<GLint>();
 				GL_CHECK(glDrawElementsBaseVertex(mode, count, type, indices, basevertex));
@@ -2335,11 +2335,11 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::DrawRangeElementsBaseVertex:
 			{
-				GLenum mode = m_Buffer.read<GLenum>();
+				multigl::PrimitiveType mode = m_Buffer.read<multigl::PrimitiveType>();
 				GLuint start = m_Buffer.read<GLuint>();
 				GLuint end = m_Buffer.read<GLuint>();
 				GLsizei count = m_Buffer.read<GLsizei>();
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::DrawElementsType type = m_Buffer.read<multigl::DrawElementsType>();
 				const void * indices = m_Buffer.read<const void *>();
 				GLint basevertex = m_Buffer.read<GLint>();
 				GL_CHECK(glDrawRangeElementsBaseVertex(mode, start, end, count, type, indices, basevertex));
@@ -2347,9 +2347,9 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::DrawElementsInstancedBaseVertex:
 			{
-				GLenum mode = m_Buffer.read<GLenum>();
+				multigl::PrimitiveType mode = m_Buffer.read<multigl::PrimitiveType>();
 				GLsizei count = m_Buffer.read<GLsizei>();
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::DrawElementsType type = m_Buffer.read<multigl::DrawElementsType>();
 				const void * indices = m_Buffer.read<const void *>();
 				GLsizei instancecount = m_Buffer.read<GLsizei>();
 				GLint basevertex = m_Buffer.read<GLint>();
@@ -2358,9 +2358,9 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::MultiDrawElementsBaseVertex:
 			{
-				GLenum mode = m_Buffer.read<GLenum>();
+				multigl::PrimitiveType mode = m_Buffer.read<multigl::PrimitiveType>();
 				const GLsizei * count = m_Buffer.read<const GLsizei *>();
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::DrawElementsType type = m_Buffer.read<multigl::DrawElementsType>();
 				const void *const* indices = m_Buffer.read<const void *const*>();
 				GLsizei drawcount = m_Buffer.read<GLsizei>();
 				const GLint * basevertex = m_Buffer.read<const GLint *>();
@@ -2369,7 +2369,7 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::ProvokingVertex:
 			{
-				GLenum mode = m_Buffer.read<GLenum>();
+				multigl::VertexProvokingMode mode = m_Buffer.read<multigl::VertexProvokingMode>();
 				GL_CHECK(glProvokingVertex(mode));
 				break;
 			}
@@ -2389,7 +2389,7 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::GetInteger64v:
 			{
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::GetPName pname = m_Buffer.read<multigl::GetPName>();
 				GLint64 * data = m_Buffer.read<GLint64 *>();
 				GL_CHECK(glGetInteger64v(pname, data));
 				break;
@@ -2397,7 +2397,7 @@ void CommandBuffer::ProcessCommands()
 			case CommandId::GetSynciv:
 			{
 				GLsync sync = m_Buffer.read<GLsync>();
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::SyncParameterName pname = m_Buffer.read<multigl::SyncParameterName>();
 				GLsizei count = m_Buffer.read<GLsizei>();
 				GLsizei * length = m_Buffer.read<GLsizei *>();
 				GLint * values = m_Buffer.read<GLint *>();
@@ -2414,16 +2414,16 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::GetBufferParameteri64v:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::BufferTarget target = m_Buffer.read<multigl::BufferTarget>();
+				multigl::BufferPNameARB pname = m_Buffer.read<multigl::BufferPNameARB>();
 				GLint64 * params = m_Buffer.read<GLint64 *>();
 				GL_CHECK(glGetBufferParameteri64v(target, pname, params));
 				break;
 			}
 			case CommandId::FramebufferTexture:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
-				GLenum attachment = m_Buffer.read<GLenum>();
+				multigl::FramebufferTarget target = m_Buffer.read<multigl::FramebufferTarget>();
+				multigl::FramebufferAttachment attachment = m_Buffer.read<multigl::FramebufferAttachment>();
 				TextureHandle textureHandle = m_Buffer.read<TextureHandle>();
 				auto& texture = *m_ResourceManager.Textures.get(textureHandle);
 				GLint level = m_Buffer.read<GLint>();
@@ -2432,9 +2432,9 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::TexImage2DMultisample:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
+				multigl::TextureTarget target = m_Buffer.read<multigl::TextureTarget>();
 				GLsizei samples = m_Buffer.read<GLsizei>();
-				GLenum internalformat = m_Buffer.read<GLenum>();
+				multigl::InternalFormat internalformat = m_Buffer.read<multigl::InternalFormat>();
 				GLsizei width = m_Buffer.read<GLsizei>();
 				GLsizei height = m_Buffer.read<GLsizei>();
 				GLboolean fixedsamplelocations = m_Buffer.read<GLboolean>();
@@ -2443,9 +2443,9 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::TexImage3DMultisample:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
+				multigl::TextureTarget target = m_Buffer.read<multigl::TextureTarget>();
 				GLsizei samples = m_Buffer.read<GLsizei>();
-				GLenum internalformat = m_Buffer.read<GLenum>();
+				multigl::InternalFormat internalformat = m_Buffer.read<multigl::InternalFormat>();
 				GLsizei width = m_Buffer.read<GLsizei>();
 				GLsizei height = m_Buffer.read<GLsizei>();
 				GLsizei depth = m_Buffer.read<GLsizei>();
@@ -2455,7 +2455,7 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::GetMultisamplefv:
 			{
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::GetMultisamplePNameNV pname = m_Buffer.read<multigl::GetMultisamplePNameNV>();
 				GLuint index = m_Buffer.read<GLuint>();
 				GLfloat * val = m_Buffer.read<GLfloat *>();
 				GL_CHECK(glGetMultisamplefv(pname, index, val));
@@ -2502,7 +2502,7 @@ void CommandBuffer::ProcessCommands()
 			case CommandId::SamplerParameteri:
 			{
 				GLuint sampler = m_Buffer.read<GLuint>();
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::SamplerParameterI pname = m_Buffer.read<multigl::SamplerParameterI>();
 				GLint param = m_Buffer.read<GLint>();
 				GL_CHECK(glSamplerParameteri(sampler, pname, param));
 				break;
@@ -2510,7 +2510,7 @@ void CommandBuffer::ProcessCommands()
 			case CommandId::SamplerParameteriv:
 			{
 				GLuint sampler = m_Buffer.read<GLuint>();
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::SamplerParameterI pname = m_Buffer.read<multigl::SamplerParameterI>();
 				const GLint * param = m_Buffer.read<const GLint *>();
 				GL_CHECK(glSamplerParameteriv(sampler, pname, param));
 				break;
@@ -2518,7 +2518,7 @@ void CommandBuffer::ProcessCommands()
 			case CommandId::SamplerParameterf:
 			{
 				GLuint sampler = m_Buffer.read<GLuint>();
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::SamplerParameterF pname = m_Buffer.read<multigl::SamplerParameterF>();
 				GLfloat param = m_Buffer.read<GLfloat>();
 				GL_CHECK(glSamplerParameterf(sampler, pname, param));
 				break;
@@ -2526,7 +2526,7 @@ void CommandBuffer::ProcessCommands()
 			case CommandId::SamplerParameterfv:
 			{
 				GLuint sampler = m_Buffer.read<GLuint>();
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::SamplerParameterF pname = m_Buffer.read<multigl::SamplerParameterF>();
 				const GLfloat * param = m_Buffer.read<const GLfloat *>();
 				GL_CHECK(glSamplerParameterfv(sampler, pname, param));
 				break;
@@ -2534,7 +2534,7 @@ void CommandBuffer::ProcessCommands()
 			case CommandId::SamplerParameterIiv:
 			{
 				GLuint sampler = m_Buffer.read<GLuint>();
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::SamplerParameterI pname = m_Buffer.read<multigl::SamplerParameterI>();
 				const GLint * param = m_Buffer.read<const GLint *>();
 				GL_CHECK(glSamplerParameterIiv(sampler, pname, param));
 				break;
@@ -2542,7 +2542,7 @@ void CommandBuffer::ProcessCommands()
 			case CommandId::SamplerParameterIuiv:
 			{
 				GLuint sampler = m_Buffer.read<GLuint>();
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::SamplerParameterI pname = m_Buffer.read<multigl::SamplerParameterI>();
 				const GLuint * param = m_Buffer.read<const GLuint *>();
 				GL_CHECK(glSamplerParameterIuiv(sampler, pname, param));
 				break;
@@ -2550,7 +2550,7 @@ void CommandBuffer::ProcessCommands()
 			case CommandId::GetSamplerParameteriv:
 			{
 				GLuint sampler = m_Buffer.read<GLuint>();
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::SamplerParameterI pname = m_Buffer.read<multigl::SamplerParameterI>();
 				GLint * params = m_Buffer.read<GLint *>();
 				GL_CHECK(glGetSamplerParameteriv(sampler, pname, params));
 				break;
@@ -2558,7 +2558,7 @@ void CommandBuffer::ProcessCommands()
 			case CommandId::GetSamplerParameterIiv:
 			{
 				GLuint sampler = m_Buffer.read<GLuint>();
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::SamplerParameterI pname = m_Buffer.read<multigl::SamplerParameterI>();
 				GLint * params = m_Buffer.read<GLint *>();
 				GL_CHECK(glGetSamplerParameterIiv(sampler, pname, params));
 				break;
@@ -2566,7 +2566,7 @@ void CommandBuffer::ProcessCommands()
 			case CommandId::GetSamplerParameterfv:
 			{
 				GLuint sampler = m_Buffer.read<GLuint>();
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::SamplerParameterF pname = m_Buffer.read<multigl::SamplerParameterF>();
 				GLfloat * params = m_Buffer.read<GLfloat *>();
 				GL_CHECK(glGetSamplerParameterfv(sampler, pname, params));
 				break;
@@ -2574,7 +2574,7 @@ void CommandBuffer::ProcessCommands()
 			case CommandId::GetSamplerParameterIuiv:
 			{
 				GLuint sampler = m_Buffer.read<GLuint>();
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::SamplerParameterI pname = m_Buffer.read<multigl::SamplerParameterI>();
 				GLuint * params = m_Buffer.read<GLuint *>();
 				GL_CHECK(glGetSamplerParameterIuiv(sampler, pname, params));
 				break;
@@ -2582,14 +2582,14 @@ void CommandBuffer::ProcessCommands()
 			case CommandId::QueryCounter:
 			{
 				GLuint id = m_Buffer.read<GLuint>();
-				GLenum target = m_Buffer.read<GLenum>();
+				multigl::QueryCounterTarget target = m_Buffer.read<multigl::QueryCounterTarget>();
 				GL_CHECK(glQueryCounter(id, target));
 				break;
 			}
 			case CommandId::GetQueryObjecti64v:
 			{
 				GLuint id = m_Buffer.read<GLuint>();
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::QueryObjectParameterName pname = m_Buffer.read<multigl::QueryObjectParameterName>();
 				GLint64 * params = m_Buffer.read<GLint64 *>();
 				GL_CHECK(glGetQueryObjecti64v(id, pname, params));
 				break;
@@ -2597,7 +2597,7 @@ void CommandBuffer::ProcessCommands()
 			case CommandId::GetQueryObjectui64v:
 			{
 				GLuint id = m_Buffer.read<GLuint>();
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::QueryObjectParameterName pname = m_Buffer.read<multigl::QueryObjectParameterName>();
 				GLuint64 * params = m_Buffer.read<GLuint64 *>();
 				GL_CHECK(glGetQueryObjectui64v(id, pname, params));
 				break;
@@ -2612,7 +2612,7 @@ void CommandBuffer::ProcessCommands()
 			case CommandId::VertexAttribP1ui:
 			{
 				GLuint index = m_Buffer.read<GLuint>();
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::VertexAttribPointerType type = m_Buffer.read<multigl::VertexAttribPointerType>();
 				GLboolean normalized = m_Buffer.read<GLboolean>();
 				GLuint value = m_Buffer.read<GLuint>();
 				GL_CHECK(glVertexAttribP1ui(index, type, normalized, value));
@@ -2621,7 +2621,7 @@ void CommandBuffer::ProcessCommands()
 			case CommandId::VertexAttribP1uiv:
 			{
 				GLuint index = m_Buffer.read<GLuint>();
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::VertexAttribPointerType type = m_Buffer.read<multigl::VertexAttribPointerType>();
 				GLboolean normalized = m_Buffer.read<GLboolean>();
 				const GLuint * value = m_Buffer.read<const GLuint *>();
 				GL_CHECK(glVertexAttribP1uiv(index, type, normalized, value));
@@ -2630,7 +2630,7 @@ void CommandBuffer::ProcessCommands()
 			case CommandId::VertexAttribP2ui:
 			{
 				GLuint index = m_Buffer.read<GLuint>();
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::VertexAttribPointerType type = m_Buffer.read<multigl::VertexAttribPointerType>();
 				GLboolean normalized = m_Buffer.read<GLboolean>();
 				GLuint value = m_Buffer.read<GLuint>();
 				GL_CHECK(glVertexAttribP2ui(index, type, normalized, value));
@@ -2639,7 +2639,7 @@ void CommandBuffer::ProcessCommands()
 			case CommandId::VertexAttribP2uiv:
 			{
 				GLuint index = m_Buffer.read<GLuint>();
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::VertexAttribPointerType type = m_Buffer.read<multigl::VertexAttribPointerType>();
 				GLboolean normalized = m_Buffer.read<GLboolean>();
 				const GLuint * value = m_Buffer.read<const GLuint *>();
 				GL_CHECK(glVertexAttribP2uiv(index, type, normalized, value));
@@ -2648,7 +2648,7 @@ void CommandBuffer::ProcessCommands()
 			case CommandId::VertexAttribP3ui:
 			{
 				GLuint index = m_Buffer.read<GLuint>();
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::VertexAttribPointerType type = m_Buffer.read<multigl::VertexAttribPointerType>();
 				GLboolean normalized = m_Buffer.read<GLboolean>();
 				GLuint value = m_Buffer.read<GLuint>();
 				GL_CHECK(glVertexAttribP3ui(index, type, normalized, value));
@@ -2657,7 +2657,7 @@ void CommandBuffer::ProcessCommands()
 			case CommandId::VertexAttribP3uiv:
 			{
 				GLuint index = m_Buffer.read<GLuint>();
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::VertexAttribPointerType type = m_Buffer.read<multigl::VertexAttribPointerType>();
 				GLboolean normalized = m_Buffer.read<GLboolean>();
 				const GLuint * value = m_Buffer.read<const GLuint *>();
 				GL_CHECK(glVertexAttribP3uiv(index, type, normalized, value));
@@ -2666,7 +2666,7 @@ void CommandBuffer::ProcessCommands()
 			case CommandId::VertexAttribP4ui:
 			{
 				GLuint index = m_Buffer.read<GLuint>();
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::VertexAttribPointerType type = m_Buffer.read<multigl::VertexAttribPointerType>();
 				GLboolean normalized = m_Buffer.read<GLboolean>();
 				GLuint value = m_Buffer.read<GLuint>();
 				GL_CHECK(glVertexAttribP4ui(index, type, normalized, value));
@@ -2675,7 +2675,7 @@ void CommandBuffer::ProcessCommands()
 			case CommandId::VertexAttribP4uiv:
 			{
 				GLuint index = m_Buffer.read<GLuint>();
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::VertexAttribPointerType type = m_Buffer.read<multigl::VertexAttribPointerType>();
 				GLboolean normalized = m_Buffer.read<GLboolean>();
 				const GLuint * value = m_Buffer.read<const GLuint *>();
 				GL_CHECK(glVertexAttribP4uiv(index, type, normalized, value));
@@ -2683,98 +2683,98 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::VertexP2ui:
 			{
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::VertexPointerType type = m_Buffer.read<multigl::VertexPointerType>();
 				GLuint value = m_Buffer.read<GLuint>();
 				GL_CHECK(glVertexP2ui(type, value));
 				break;
 			}
 			case CommandId::VertexP2uiv:
 			{
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::VertexPointerType type = m_Buffer.read<multigl::VertexPointerType>();
 				const GLuint * value = m_Buffer.read<const GLuint *>();
 				GL_CHECK(glVertexP2uiv(type, value));
 				break;
 			}
 			case CommandId::VertexP3ui:
 			{
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::VertexPointerType type = m_Buffer.read<multigl::VertexPointerType>();
 				GLuint value = m_Buffer.read<GLuint>();
 				GL_CHECK(glVertexP3ui(type, value));
 				break;
 			}
 			case CommandId::VertexP3uiv:
 			{
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::VertexPointerType type = m_Buffer.read<multigl::VertexPointerType>();
 				const GLuint * value = m_Buffer.read<const GLuint *>();
 				GL_CHECK(glVertexP3uiv(type, value));
 				break;
 			}
 			case CommandId::VertexP4ui:
 			{
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::VertexPointerType type = m_Buffer.read<multigl::VertexPointerType>();
 				GLuint value = m_Buffer.read<GLuint>();
 				GL_CHECK(glVertexP4ui(type, value));
 				break;
 			}
 			case CommandId::VertexP4uiv:
 			{
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::VertexPointerType type = m_Buffer.read<multigl::VertexPointerType>();
 				const GLuint * value = m_Buffer.read<const GLuint *>();
 				GL_CHECK(glVertexP4uiv(type, value));
 				break;
 			}
 			case CommandId::TexCoordP1ui:
 			{
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::TexCoordPointerType type = m_Buffer.read<multigl::TexCoordPointerType>();
 				GLuint coords = m_Buffer.read<GLuint>();
 				GL_CHECK(glTexCoordP1ui(type, coords));
 				break;
 			}
 			case CommandId::TexCoordP1uiv:
 			{
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::TexCoordPointerType type = m_Buffer.read<multigl::TexCoordPointerType>();
 				const GLuint * coords = m_Buffer.read<const GLuint *>();
 				GL_CHECK(glTexCoordP1uiv(type, coords));
 				break;
 			}
 			case CommandId::TexCoordP2ui:
 			{
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::TexCoordPointerType type = m_Buffer.read<multigl::TexCoordPointerType>();
 				GLuint coords = m_Buffer.read<GLuint>();
 				GL_CHECK(glTexCoordP2ui(type, coords));
 				break;
 			}
 			case CommandId::TexCoordP2uiv:
 			{
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::TexCoordPointerType type = m_Buffer.read<multigl::TexCoordPointerType>();
 				const GLuint * coords = m_Buffer.read<const GLuint *>();
 				GL_CHECK(glTexCoordP2uiv(type, coords));
 				break;
 			}
 			case CommandId::TexCoordP3ui:
 			{
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::TexCoordPointerType type = m_Buffer.read<multigl::TexCoordPointerType>();
 				GLuint coords = m_Buffer.read<GLuint>();
 				GL_CHECK(glTexCoordP3ui(type, coords));
 				break;
 			}
 			case CommandId::TexCoordP3uiv:
 			{
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::TexCoordPointerType type = m_Buffer.read<multigl::TexCoordPointerType>();
 				const GLuint * coords = m_Buffer.read<const GLuint *>();
 				GL_CHECK(glTexCoordP3uiv(type, coords));
 				break;
 			}
 			case CommandId::TexCoordP4ui:
 			{
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::TexCoordPointerType type = m_Buffer.read<multigl::TexCoordPointerType>();
 				GLuint coords = m_Buffer.read<GLuint>();
 				GL_CHECK(glTexCoordP4ui(type, coords));
 				break;
 			}
 			case CommandId::TexCoordP4uiv:
 			{
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::TexCoordPointerType type = m_Buffer.read<multigl::TexCoordPointerType>();
 				const GLuint * coords = m_Buffer.read<const GLuint *>();
 				GL_CHECK(glTexCoordP4uiv(type, coords));
 				break;
@@ -2783,7 +2783,7 @@ void CommandBuffer::ProcessCommands()
 			{
 				TextureHandle textureHandle = m_Buffer.read<TextureHandle>();
 				auto& texture = *m_ResourceManager.Textures.get(textureHandle);
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::TexCoordPointerType type = m_Buffer.read<multigl::TexCoordPointerType>();
 				GLuint coords = m_Buffer.read<GLuint>();
 				GL_CHECK(glMultiTexCoordP1ui(texture, type, coords));
 				break;
@@ -2792,7 +2792,7 @@ void CommandBuffer::ProcessCommands()
 			{
 				TextureHandle textureHandle = m_Buffer.read<TextureHandle>();
 				auto& texture = *m_ResourceManager.Textures.get(textureHandle);
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::TexCoordPointerType type = m_Buffer.read<multigl::TexCoordPointerType>();
 				const GLuint * coords = m_Buffer.read<const GLuint *>();
 				GL_CHECK(glMultiTexCoordP1uiv(texture, type, coords));
 				break;
@@ -2801,7 +2801,7 @@ void CommandBuffer::ProcessCommands()
 			{
 				TextureHandle textureHandle = m_Buffer.read<TextureHandle>();
 				auto& texture = *m_ResourceManager.Textures.get(textureHandle);
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::TexCoordPointerType type = m_Buffer.read<multigl::TexCoordPointerType>();
 				GLuint coords = m_Buffer.read<GLuint>();
 				GL_CHECK(glMultiTexCoordP2ui(texture, type, coords));
 				break;
@@ -2810,7 +2810,7 @@ void CommandBuffer::ProcessCommands()
 			{
 				TextureHandle textureHandle = m_Buffer.read<TextureHandle>();
 				auto& texture = *m_ResourceManager.Textures.get(textureHandle);
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::TexCoordPointerType type = m_Buffer.read<multigl::TexCoordPointerType>();
 				const GLuint * coords = m_Buffer.read<const GLuint *>();
 				GL_CHECK(glMultiTexCoordP2uiv(texture, type, coords));
 				break;
@@ -2819,7 +2819,7 @@ void CommandBuffer::ProcessCommands()
 			{
 				TextureHandle textureHandle = m_Buffer.read<TextureHandle>();
 				auto& texture = *m_ResourceManager.Textures.get(textureHandle);
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::TexCoordPointerType type = m_Buffer.read<multigl::TexCoordPointerType>();
 				GLuint coords = m_Buffer.read<GLuint>();
 				GL_CHECK(glMultiTexCoordP3ui(texture, type, coords));
 				break;
@@ -2828,7 +2828,7 @@ void CommandBuffer::ProcessCommands()
 			{
 				TextureHandle textureHandle = m_Buffer.read<TextureHandle>();
 				auto& texture = *m_ResourceManager.Textures.get(textureHandle);
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::TexCoordPointerType type = m_Buffer.read<multigl::TexCoordPointerType>();
 				const GLuint * coords = m_Buffer.read<const GLuint *>();
 				GL_CHECK(glMultiTexCoordP3uiv(texture, type, coords));
 				break;
@@ -2837,7 +2837,7 @@ void CommandBuffer::ProcessCommands()
 			{
 				TextureHandle textureHandle = m_Buffer.read<TextureHandle>();
 				auto& texture = *m_ResourceManager.Textures.get(textureHandle);
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::TexCoordPointerType type = m_Buffer.read<multigl::TexCoordPointerType>();
 				GLuint coords = m_Buffer.read<GLuint>();
 				GL_CHECK(glMultiTexCoordP4ui(texture, type, coords));
 				break;
@@ -2846,63 +2846,63 @@ void CommandBuffer::ProcessCommands()
 			{
 				TextureHandle textureHandle = m_Buffer.read<TextureHandle>();
 				auto& texture = *m_ResourceManager.Textures.get(textureHandle);
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::TexCoordPointerType type = m_Buffer.read<multigl::TexCoordPointerType>();
 				const GLuint * coords = m_Buffer.read<const GLuint *>();
 				GL_CHECK(glMultiTexCoordP4uiv(texture, type, coords));
 				break;
 			}
 			case CommandId::NormalP3ui:
 			{
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::NormalPointerType type = m_Buffer.read<multigl::NormalPointerType>();
 				GLuint coords = m_Buffer.read<GLuint>();
 				GL_CHECK(glNormalP3ui(type, coords));
 				break;
 			}
 			case CommandId::NormalP3uiv:
 			{
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::NormalPointerType type = m_Buffer.read<multigl::NormalPointerType>();
 				const GLuint * coords = m_Buffer.read<const GLuint *>();
 				GL_CHECK(glNormalP3uiv(type, coords));
 				break;
 			}
 			case CommandId::ColorP3ui:
 			{
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::ColorPointerType type = m_Buffer.read<multigl::ColorPointerType>();
 				GLuint color = m_Buffer.read<GLuint>();
 				GL_CHECK(glColorP3ui(type, color));
 				break;
 			}
 			case CommandId::ColorP3uiv:
 			{
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::ColorPointerType type = m_Buffer.read<multigl::ColorPointerType>();
 				const GLuint * color = m_Buffer.read<const GLuint *>();
 				GL_CHECK(glColorP3uiv(type, color));
 				break;
 			}
 			case CommandId::ColorP4ui:
 			{
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::ColorPointerType type = m_Buffer.read<multigl::ColorPointerType>();
 				GLuint color = m_Buffer.read<GLuint>();
 				GL_CHECK(glColorP4ui(type, color));
 				break;
 			}
 			case CommandId::ColorP4uiv:
 			{
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::ColorPointerType type = m_Buffer.read<multigl::ColorPointerType>();
 				const GLuint * color = m_Buffer.read<const GLuint *>();
 				GL_CHECK(glColorP4uiv(type, color));
 				break;
 			}
 			case CommandId::SecondaryColorP3ui:
 			{
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::ColorPointerType type = m_Buffer.read<multigl::ColorPointerType>();
 				GLuint color = m_Buffer.read<GLuint>();
 				GL_CHECK(glSecondaryColorP3ui(type, color));
 				break;
 			}
 			case CommandId::SecondaryColorP3uiv:
 			{
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::ColorPointerType type = m_Buffer.read<multigl::ColorPointerType>();
 				const GLuint * color = m_Buffer.read<const GLuint *>();
 				GL_CHECK(glSecondaryColorP3uiv(type, color));
 				break;
@@ -2916,47 +2916,47 @@ void CommandBuffer::ProcessCommands()
 			case CommandId::BlendEquationi:
 			{
 				GLuint buf = m_Buffer.read<GLuint>();
-				GLenum mode = m_Buffer.read<GLenum>();
+				multigl::BlendEquationModeEXT mode = m_Buffer.read<multigl::BlendEquationModeEXT>();
 				GL_CHECK(glBlendEquationi(buf, mode));
 				break;
 			}
 			case CommandId::BlendEquationSeparatei:
 			{
 				GLuint buf = m_Buffer.read<GLuint>();
-				GLenum modeRGB = m_Buffer.read<GLenum>();
-				GLenum modeAlpha = m_Buffer.read<GLenum>();
+				multigl::BlendEquationModeEXT modeRGB = m_Buffer.read<multigl::BlendEquationModeEXT>();
+				multigl::BlendEquationModeEXT modeAlpha = m_Buffer.read<multigl::BlendEquationModeEXT>();
 				GL_CHECK(glBlendEquationSeparatei(buf, modeRGB, modeAlpha));
 				break;
 			}
 			case CommandId::BlendFunci:
 			{
 				GLuint buf = m_Buffer.read<GLuint>();
-				GLenum src = m_Buffer.read<GLenum>();
-				GLenum dst = m_Buffer.read<GLenum>();
+				multigl::BlendingFactor src = m_Buffer.read<multigl::BlendingFactor>();
+				multigl::BlendingFactor dst = m_Buffer.read<multigl::BlendingFactor>();
 				GL_CHECK(glBlendFunci(buf, src, dst));
 				break;
 			}
 			case CommandId::BlendFuncSeparatei:
 			{
 				GLuint buf = m_Buffer.read<GLuint>();
-				GLenum srcRGB = m_Buffer.read<GLenum>();
-				GLenum dstRGB = m_Buffer.read<GLenum>();
-				GLenum srcAlpha = m_Buffer.read<GLenum>();
-				GLenum dstAlpha = m_Buffer.read<GLenum>();
+				multigl::BlendingFactor srcRGB = m_Buffer.read<multigl::BlendingFactor>();
+				multigl::BlendingFactor dstRGB = m_Buffer.read<multigl::BlendingFactor>();
+				multigl::BlendingFactor srcAlpha = m_Buffer.read<multigl::BlendingFactor>();
+				multigl::BlendingFactor dstAlpha = m_Buffer.read<multigl::BlendingFactor>();
 				GL_CHECK(glBlendFuncSeparatei(buf, srcRGB, dstRGB, srcAlpha, dstAlpha));
 				break;
 			}
 			case CommandId::DrawArraysIndirect:
 			{
-				GLenum mode = m_Buffer.read<GLenum>();
+				multigl::PrimitiveType mode = m_Buffer.read<multigl::PrimitiveType>();
 				const void * indirect = m_Buffer.read<const void *>();
 				GL_CHECK(glDrawArraysIndirect(mode, indirect));
 				break;
 			}
 			case CommandId::DrawElementsIndirect:
 			{
-				GLenum mode = m_Buffer.read<GLenum>();
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::PrimitiveType mode = m_Buffer.read<multigl::PrimitiveType>();
+				multigl::DrawElementsType type = m_Buffer.read<multigl::DrawElementsType>();
 				const void * indirect = m_Buffer.read<const void *>();
 				GL_CHECK(glDrawElementsIndirect(mode, type, indirect));
 				break;
@@ -3121,9 +3121,9 @@ void CommandBuffer::ProcessCommands()
 			{
 				ShaderProgramHandle programHandle = m_Buffer.read<ShaderProgramHandle>();
 				auto& program = *m_ResourceManager.ShaderPrograms.get(programHandle);
-				GLenum shadertype = m_Buffer.read<GLenum>();
+				multigl::ShaderType shadertype = m_Buffer.read<multigl::ShaderType>();
 				GLuint index = m_Buffer.read<GLuint>();
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::SubroutineParameterName pname = m_Buffer.read<multigl::SubroutineParameterName>();
 				GLint * values = m_Buffer.read<GLint *>();
 				GL_CHECK(glGetActiveSubroutineUniformiv(program, shadertype, index, pname, values));
 				break;
@@ -3132,7 +3132,7 @@ void CommandBuffer::ProcessCommands()
 			{
 				ShaderProgramHandle programHandle = m_Buffer.read<ShaderProgramHandle>();
 				auto& program = *m_ResourceManager.ShaderPrograms.get(programHandle);
-				GLenum shadertype = m_Buffer.read<GLenum>();
+				multigl::ShaderType shadertype = m_Buffer.read<multigl::ShaderType>();
 				GLuint index = m_Buffer.read<GLuint>();
 				GLsizei bufSize = m_Buffer.read<GLsizei>();
 				GLsizei * length = m_Buffer.read<GLsizei *>();
@@ -3144,7 +3144,7 @@ void CommandBuffer::ProcessCommands()
 			{
 				ShaderProgramHandle programHandle = m_Buffer.read<ShaderProgramHandle>();
 				auto& program = *m_ResourceManager.ShaderPrograms.get(programHandle);
-				GLenum shadertype = m_Buffer.read<GLenum>();
+				multigl::ShaderType shadertype = m_Buffer.read<multigl::ShaderType>();
 				GLuint index = m_Buffer.read<GLuint>();
 				GLsizei bufSize = m_Buffer.read<GLsizei>();
 				GLsizei * length = m_Buffer.read<GLsizei *>();
@@ -3154,7 +3154,7 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::UniformSubroutinesuiv:
 			{
-				GLenum shadertype = m_Buffer.read<GLenum>();
+				multigl::ShaderType shadertype = m_Buffer.read<multigl::ShaderType>();
 				GLsizei count = m_Buffer.read<GLsizei>();
 				const GLuint * indices = m_Buffer.read<const GLuint *>();
 				GL_CHECK(glUniformSubroutinesuiv(shadertype, count, indices));
@@ -3162,7 +3162,7 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::GetUniformSubroutineuiv:
 			{
-				GLenum shadertype = m_Buffer.read<GLenum>();
+				multigl::ShaderType shadertype = m_Buffer.read<multigl::ShaderType>();
 				GLint location = m_Buffer.read<GLint>();
 				GLuint * params = m_Buffer.read<GLuint *>();
 				GL_CHECK(glGetUniformSubroutineuiv(shadertype, location, params));
@@ -3172,29 +3172,29 @@ void CommandBuffer::ProcessCommands()
 			{
 				ShaderProgramHandle programHandle = m_Buffer.read<ShaderProgramHandle>();
 				auto& program = *m_ResourceManager.ShaderPrograms.get(programHandle);
-				GLenum shadertype = m_Buffer.read<GLenum>();
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::ShaderType shadertype = m_Buffer.read<multigl::ShaderType>();
+				multigl::ProgramStagePName pname = m_Buffer.read<multigl::ProgramStagePName>();
 				GLint * values = m_Buffer.read<GLint *>();
 				GL_CHECK(glGetProgramStageiv(program, shadertype, pname, values));
 				break;
 			}
 			case CommandId::PatchParameteri:
 			{
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::PatchParameterName pname = m_Buffer.read<multigl::PatchParameterName>();
 				GLint value = m_Buffer.read<GLint>();
 				GL_CHECK(glPatchParameteri(pname, value));
 				break;
 			}
 			case CommandId::PatchParameterfv:
 			{
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::PatchParameterName pname = m_Buffer.read<multigl::PatchParameterName>();
 				const GLfloat * values = m_Buffer.read<const GLfloat *>();
 				GL_CHECK(glPatchParameterfv(pname, values));
 				break;
 			}
 			case CommandId::BindTransformFeedback:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
+				multigl::BindTransformFeedbackTarget target = m_Buffer.read<multigl::BindTransformFeedbackTarget>();
 				GLuint id = m_Buffer.read<GLuint>();
 				GL_CHECK(glBindTransformFeedback(target, id));
 				break;
@@ -3225,14 +3225,14 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::DrawTransformFeedback:
 			{
-				GLenum mode = m_Buffer.read<GLenum>();
+				multigl::PrimitiveType mode = m_Buffer.read<multigl::PrimitiveType>();
 				GLuint id = m_Buffer.read<GLuint>();
 				GL_CHECK(glDrawTransformFeedback(mode, id));
 				break;
 			}
 			case CommandId::DrawTransformFeedbackStream:
 			{
-				GLenum mode = m_Buffer.read<GLenum>();
+				multigl::PrimitiveType mode = m_Buffer.read<multigl::PrimitiveType>();
 				GLuint id = m_Buffer.read<GLuint>();
 				GLuint stream = m_Buffer.read<GLuint>();
 				GL_CHECK(glDrawTransformFeedbackStream(mode, id, stream));
@@ -3240,7 +3240,7 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::BeginQueryIndexed:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
+				multigl::QueryTarget target = m_Buffer.read<multigl::QueryTarget>();
 				GLuint index = m_Buffer.read<GLuint>();
 				GLuint id = m_Buffer.read<GLuint>();
 				GL_CHECK(glBeginQueryIndexed(target, index, id));
@@ -3248,16 +3248,16 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::EndQueryIndexed:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
+				multigl::QueryTarget target = m_Buffer.read<multigl::QueryTarget>();
 				GLuint index = m_Buffer.read<GLuint>();
 				GL_CHECK(glEndQueryIndexed(target, index));
 				break;
 			}
 			case CommandId::GetQueryIndexediv:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
+				multigl::QueryTarget target = m_Buffer.read<multigl::QueryTarget>();
 				GLuint index = m_Buffer.read<GLuint>();
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::QueryParameterName pname = m_Buffer.read<multigl::QueryParameterName>();
 				GLint * params = m_Buffer.read<GLint *>();
 				GL_CHECK(glGetQueryIndexediv(target, index, pname, params));
 				break;
@@ -3279,8 +3279,8 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::GetShaderPrecisionFormat:
 			{
-				GLenum shadertype = m_Buffer.read<GLenum>();
-				GLenum precisiontype = m_Buffer.read<GLenum>();
+				multigl::ShaderType shadertype = m_Buffer.read<multigl::ShaderType>();
+				multigl::PrecisionType precisiontype = m_Buffer.read<multigl::PrecisionType>();
 				GLint * range = m_Buffer.read<GLint *>();
 				GLint * precision = m_Buffer.read<GLint *>();
 				GL_CHECK(glGetShaderPrecisionFormat(shadertype, precisiontype, range, precision));
@@ -3324,7 +3324,7 @@ void CommandBuffer::ProcessCommands()
 			{
 				ShaderProgramHandle programHandle = m_Buffer.read<ShaderProgramHandle>();
 				auto& program = *m_ResourceManager.ShaderPrograms.get(programHandle);
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::ProgramParameterPName pname = m_Buffer.read<multigl::ProgramParameterPName>();
 				GLint value = m_Buffer.read<GLint>();
 				GL_CHECK(glProgramParameteri(program, pname, value));
 				break;
@@ -3369,7 +3369,7 @@ void CommandBuffer::ProcessCommands()
 			case CommandId::GetProgramPipelineiv:
 			{
 				GLuint pipeline = m_Buffer.read<GLuint>();
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::PipelineParameterName pname = m_Buffer.read<multigl::PipelineParameterName>();
 				GLint * params = m_Buffer.read<GLint *>();
 				GL_CHECK(glGetProgramPipelineiv(pipeline, pname, params));
 				break;
@@ -3981,7 +3981,7 @@ void CommandBuffer::ProcessCommands()
 			{
 				GLuint index = m_Buffer.read<GLuint>();
 				GLint size = m_Buffer.read<GLint>();
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::VertexAttribPointerType type = m_Buffer.read<multigl::VertexAttribPointerType>();
 				GLsizei stride = m_Buffer.read<GLsizei>();
 				const void * pointer = m_Buffer.read<const void *>();
 				GL_CHECK(glVertexAttribLPointer(index, size, type, stride, pointer));
@@ -3990,7 +3990,7 @@ void CommandBuffer::ProcessCommands()
 			case CommandId::GetVertexAttribLdv:
 			{
 				GLuint index = m_Buffer.read<GLuint>();
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::VertexAttribEnum pname = m_Buffer.read<multigl::VertexAttribEnum>();
 				GLdouble * params = m_Buffer.read<GLdouble *>();
 				GL_CHECK(glGetVertexAttribLdv(index, pname, params));
 				break;
@@ -4079,7 +4079,7 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::DrawArraysInstancedBaseInstance:
 			{
-				GLenum mode = m_Buffer.read<GLenum>();
+				multigl::PrimitiveType mode = m_Buffer.read<multigl::PrimitiveType>();
 				GLint first = m_Buffer.read<GLint>();
 				GLsizei count = m_Buffer.read<GLsizei>();
 				GLsizei instancecount = m_Buffer.read<GLsizei>();
@@ -4089,9 +4089,9 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::DrawElementsInstancedBaseInstance:
 			{
-				GLenum mode = m_Buffer.read<GLenum>();
+				multigl::PrimitiveType mode = m_Buffer.read<multigl::PrimitiveType>();
 				GLsizei count = m_Buffer.read<GLsizei>();
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::PrimitiveType type = m_Buffer.read<multigl::PrimitiveType>();
 				const void * indices = m_Buffer.read<const void *>();
 				GLsizei instancecount = m_Buffer.read<GLsizei>();
 				GLuint baseinstance = m_Buffer.read<GLuint>();
@@ -4100,9 +4100,9 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::DrawElementsInstancedBaseVertexBaseInstance:
 			{
-				GLenum mode = m_Buffer.read<GLenum>();
+				multigl::PrimitiveType mode = m_Buffer.read<multigl::PrimitiveType>();
 				GLsizei count = m_Buffer.read<GLsizei>();
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::DrawElementsType type = m_Buffer.read<multigl::DrawElementsType>();
 				const void * indices = m_Buffer.read<const void *>();
 				GLsizei instancecount = m_Buffer.read<GLsizei>();
 				GLint basevertex = m_Buffer.read<GLint>();
@@ -4112,9 +4112,9 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::GetInternalformativ:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
-				GLenum internalformat = m_Buffer.read<GLenum>();
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::TextureTarget target = m_Buffer.read<multigl::TextureTarget>();
+				multigl::InternalFormat internalformat = m_Buffer.read<multigl::InternalFormat>();
+				multigl::InternalFormatPName pname = m_Buffer.read<multigl::InternalFormatPName>();
 				GLsizei count = m_Buffer.read<GLsizei>();
 				GLint * params = m_Buffer.read<GLint *>();
 				GL_CHECK(glGetInternalformativ(target, internalformat, pname, count, params));
@@ -4125,7 +4125,7 @@ void CommandBuffer::ProcessCommands()
 				ShaderProgramHandle programHandle = m_Buffer.read<ShaderProgramHandle>();
 				auto& program = *m_ResourceManager.ShaderPrograms.get(programHandle);
 				GLuint bufferIndex = m_Buffer.read<GLuint>();
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::AtomicCounterBufferPName pname = m_Buffer.read<multigl::AtomicCounterBufferPName>();
 				GLint * params = m_Buffer.read<GLint *>();
 				GL_CHECK(glGetActiveAtomicCounterBufferiv(program, bufferIndex, pname, params));
 				break;
@@ -4138,8 +4138,8 @@ void CommandBuffer::ProcessCommands()
 				GLint level = m_Buffer.read<GLint>();
 				GLboolean layered = m_Buffer.read<GLboolean>();
 				GLint layer = m_Buffer.read<GLint>();
-				GLenum access = m_Buffer.read<GLenum>();
-				GLenum format = m_Buffer.read<GLenum>();
+				multigl::BufferAccessARB access = m_Buffer.read<multigl::BufferAccessARB>();
+				multigl::InternalFormat format = m_Buffer.read<multigl::InternalFormat>();
 				GL_CHECK(glBindImageTexture(unit, texture, level, layered, layer, access, format));
 				break;
 			}
@@ -4151,18 +4151,18 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::TexStorage1D:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
+				multigl::TextureTarget target = m_Buffer.read<multigl::TextureTarget>();
 				GLsizei levels = m_Buffer.read<GLsizei>();
-				GLenum internalformat = m_Buffer.read<GLenum>();
+				multigl::InternalFormat internalformat = m_Buffer.read<multigl::InternalFormat>();
 				GLsizei width = m_Buffer.read<GLsizei>();
 				GL_CHECK(glTexStorage1D(target, levels, internalformat, width));
 				break;
 			}
 			case CommandId::TexStorage2D:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
+				multigl::TextureTarget target = m_Buffer.read<multigl::TextureTarget>();
 				GLsizei levels = m_Buffer.read<GLsizei>();
-				GLenum internalformat = m_Buffer.read<GLenum>();
+				multigl::InternalFormat internalformat = m_Buffer.read<multigl::InternalFormat>();
 				GLsizei width = m_Buffer.read<GLsizei>();
 				GLsizei height = m_Buffer.read<GLsizei>();
 				GL_CHECK(glTexStorage2D(target, levels, internalformat, width, height));
@@ -4170,9 +4170,9 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::TexStorage3D:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
+				multigl::TextureTarget target = m_Buffer.read<multigl::TextureTarget>();
 				GLsizei levels = m_Buffer.read<GLsizei>();
-				GLenum internalformat = m_Buffer.read<GLenum>();
+				multigl::InternalFormat internalformat = m_Buffer.read<multigl::InternalFormat>();
 				GLsizei width = m_Buffer.read<GLsizei>();
 				GLsizei height = m_Buffer.read<GLsizei>();
 				GLsizei depth = m_Buffer.read<GLsizei>();
@@ -4181,7 +4181,7 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::DrawTransformFeedbackInstanced:
 			{
-				GLenum mode = m_Buffer.read<GLenum>();
+				multigl::PrimitiveType mode = m_Buffer.read<multigl::PrimitiveType>();
 				GLuint id = m_Buffer.read<GLuint>();
 				GLsizei instancecount = m_Buffer.read<GLsizei>();
 				GL_CHECK(glDrawTransformFeedbackInstanced(mode, id, instancecount));
@@ -4189,7 +4189,7 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::DrawTransformFeedbackStreamInstanced:
 			{
-				GLenum mode = m_Buffer.read<GLenum>();
+				multigl::PrimitiveType mode = m_Buffer.read<multigl::PrimitiveType>();
 				GLuint id = m_Buffer.read<GLuint>();
 				GLuint stream = m_Buffer.read<GLuint>();
 				GLsizei instancecount = m_Buffer.read<GLsizei>();
@@ -4198,22 +4198,22 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::ClearBufferData:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
-				GLenum internalformat = m_Buffer.read<GLenum>();
-				GLenum format = m_Buffer.read<GLenum>();
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::BufferStorageTarget target = m_Buffer.read<multigl::BufferStorageTarget>();
+				multigl::InternalFormat internalformat = m_Buffer.read<multigl::InternalFormat>();
+				multigl::PixelFormat format = m_Buffer.read<multigl::PixelFormat>();
+				multigl::PixelType type = m_Buffer.read<multigl::PixelType>();
 				const void * data = m_Buffer.read<const void *>();
 				GL_CHECK(glClearBufferData(target, internalformat, format, type, data));
 				break;
 			}
 			case CommandId::ClearBufferSubData:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
-				GLenum internalformat = m_Buffer.read<GLenum>();
+				multigl::BufferTarget target = m_Buffer.read<multigl::BufferTarget>();
+				multigl::InternalFormat internalformat = m_Buffer.read<multigl::InternalFormat>();
 				GLintptr offset = m_Buffer.read<GLintptr>();
 				GLsizeiptr size = m_Buffer.read<GLsizeiptr>();
-				GLenum format = m_Buffer.read<GLenum>();
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::PixelFormat format = m_Buffer.read<multigl::PixelFormat>();
+				multigl::PixelType type = m_Buffer.read<multigl::PixelType>();
 				const void * data = m_Buffer.read<const void *>();
 				GL_CHECK(glClearBufferSubData(target, internalformat, offset, size, format, type, data));
 				break;
@@ -4235,13 +4235,13 @@ void CommandBuffer::ProcessCommands()
 			case CommandId::CopyImageSubData:
 			{
 				GLuint srcName = m_Buffer.read<GLuint>();
-				GLenum srcTarget = m_Buffer.read<GLenum>();
+				multigl::CopyImageSubDataTarget srcTarget = m_Buffer.read<multigl::CopyImageSubDataTarget>();
 				GLint srcLevel = m_Buffer.read<GLint>();
 				GLint srcX = m_Buffer.read<GLint>();
 				GLint srcY = m_Buffer.read<GLint>();
 				GLint srcZ = m_Buffer.read<GLint>();
 				GLuint dstName = m_Buffer.read<GLuint>();
-				GLenum dstTarget = m_Buffer.read<GLenum>();
+				multigl::CopyImageSubDataTarget dstTarget = m_Buffer.read<multigl::CopyImageSubDataTarget>();
 				GLint dstLevel = m_Buffer.read<GLint>();
 				GLint dstX = m_Buffer.read<GLint>();
 				GLint dstY = m_Buffer.read<GLint>();
@@ -4254,25 +4254,25 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::FramebufferParameteri:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::FramebufferTarget target = m_Buffer.read<multigl::FramebufferTarget>();
+				multigl::FramebufferParameterName pname = m_Buffer.read<multigl::FramebufferParameterName>();
 				GLint param = m_Buffer.read<GLint>();
 				GL_CHECK(glFramebufferParameteri(target, pname, param));
 				break;
 			}
 			case CommandId::GetFramebufferParameteriv:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::FramebufferTarget target = m_Buffer.read<multigl::FramebufferTarget>();
+				multigl::FramebufferAttachmentParameterName pname = m_Buffer.read<multigl::FramebufferAttachmentParameterName>();
 				GLint * params = m_Buffer.read<GLint *>();
 				GL_CHECK(glGetFramebufferParameteriv(target, pname, params));
 				break;
 			}
 			case CommandId::GetInternalformati64v:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
-				GLenum internalformat = m_Buffer.read<GLenum>();
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::TextureTarget target = m_Buffer.read<multigl::TextureTarget>();
+				multigl::InternalFormat internalformat = m_Buffer.read<multigl::InternalFormat>();
+				multigl::InternalFormatPName pname = m_Buffer.read<multigl::InternalFormatPName>();
 				GLsizei count = m_Buffer.read<GLsizei>();
 				GLint64 * params = m_Buffer.read<GLint64 *>();
 				GL_CHECK(glGetInternalformati64v(target, internalformat, pname, count, params));
@@ -4318,7 +4318,7 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::InvalidateFramebuffer:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
+				multigl::FramebufferTarget target = m_Buffer.read<multigl::FramebufferTarget>();
 				GLsizei numAttachments = m_Buffer.read<GLsizei>();
 				const GLenum * attachments = m_Buffer.read<const GLenum *>();
 				GL_CHECK(glInvalidateFramebuffer(target, numAttachments, attachments));
@@ -4326,7 +4326,7 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::InvalidateSubFramebuffer:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
+				multigl::FramebufferTarget target = m_Buffer.read<multigl::FramebufferTarget>();
 				GLsizei numAttachments = m_Buffer.read<GLsizei>();
 				const GLenum * attachments = m_Buffer.read<const GLenum *>();
 				GLint x = m_Buffer.read<GLint>();
@@ -4338,7 +4338,7 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::MultiDrawArraysIndirect:
 			{
-				GLenum mode = m_Buffer.read<GLenum>();
+				multigl::PrimitiveType mode = m_Buffer.read<multigl::PrimitiveType>();
 				const void * indirect = m_Buffer.read<const void *>();
 				GLsizei drawcount = m_Buffer.read<GLsizei>();
 				GLsizei stride = m_Buffer.read<GLsizei>();
@@ -4347,8 +4347,8 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::MultiDrawElementsIndirect:
 			{
-				GLenum mode = m_Buffer.read<GLenum>();
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::PrimitiveType mode = m_Buffer.read<multigl::PrimitiveType>();
+				multigl::DrawElementsType type = m_Buffer.read<multigl::DrawElementsType>();
 				const void * indirect = m_Buffer.read<const void *>();
 				GLsizei drawcount = m_Buffer.read<GLsizei>();
 				GLsizei stride = m_Buffer.read<GLsizei>();
@@ -4359,8 +4359,8 @@ void CommandBuffer::ProcessCommands()
 			{
 				ShaderProgramHandle programHandle = m_Buffer.read<ShaderProgramHandle>();
 				auto& program = *m_ResourceManager.ShaderPrograms.get(programHandle);
-				GLenum programInterface = m_Buffer.read<GLenum>();
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::ProgramInterface programInterface = m_Buffer.read<multigl::ProgramInterface>();
+				multigl::ProgramInterfacePName pname = m_Buffer.read<multigl::ProgramInterfacePName>();
 				GLint * params = m_Buffer.read<GLint *>();
 				GL_CHECK(glGetProgramInterfaceiv(program, programInterface, pname, params));
 				break;
@@ -4369,7 +4369,7 @@ void CommandBuffer::ProcessCommands()
 			{
 				ShaderProgramHandle programHandle = m_Buffer.read<ShaderProgramHandle>();
 				auto& program = *m_ResourceManager.ShaderPrograms.get(programHandle);
-				GLenum programInterface = m_Buffer.read<GLenum>();
+				multigl::ProgramInterface programInterface = m_Buffer.read<multigl::ProgramInterface>();
 				GLuint index = m_Buffer.read<GLuint>();
 				GLsizei bufSize = m_Buffer.read<GLsizei>();
 				GLsizei * length = m_Buffer.read<GLsizei *>();
@@ -4381,7 +4381,7 @@ void CommandBuffer::ProcessCommands()
 			{
 				ShaderProgramHandle programHandle = m_Buffer.read<ShaderProgramHandle>();
 				auto& program = *m_ResourceManager.ShaderPrograms.get(programHandle);
-				GLenum programInterface = m_Buffer.read<GLenum>();
+				multigl::ProgramInterface programInterface = m_Buffer.read<multigl::ProgramInterface>();
 				GLuint index = m_Buffer.read<GLuint>();
 				GLsizei propCount = m_Buffer.read<GLsizei>();
 				const GLenum * props = m_Buffer.read<const GLenum *>();
@@ -4402,8 +4402,8 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::TexBufferRange:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
-				GLenum internalformat = m_Buffer.read<GLenum>();
+				multigl::TextureTarget target = m_Buffer.read<multigl::TextureTarget>();
+				multigl::InternalFormat internalformat = m_Buffer.read<multigl::InternalFormat>();
 				BufferHandle bufferHandle = m_Buffer.read<BufferHandle>();
 				auto& buffer = *m_ResourceManager.Buffers.get(bufferHandle);
 				GLintptr offset = m_Buffer.read<GLintptr>();
@@ -4413,9 +4413,9 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::TexStorage2DMultisample:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
+				multigl::TextureTarget target = m_Buffer.read<multigl::TextureTarget>();
 				GLsizei samples = m_Buffer.read<GLsizei>();
-				GLenum internalformat = m_Buffer.read<GLenum>();
+				multigl::InternalFormat internalformat = m_Buffer.read<multigl::InternalFormat>();
 				GLsizei width = m_Buffer.read<GLsizei>();
 				GLsizei height = m_Buffer.read<GLsizei>();
 				GLboolean fixedsamplelocations = m_Buffer.read<GLboolean>();
@@ -4424,9 +4424,9 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::TexStorage3DMultisample:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
+				multigl::TextureTarget target = m_Buffer.read<multigl::TextureTarget>();
 				GLsizei samples = m_Buffer.read<GLsizei>();
-				GLenum internalformat = m_Buffer.read<GLenum>();
+				multigl::InternalFormat internalformat = m_Buffer.read<multigl::InternalFormat>();
 				GLsizei width = m_Buffer.read<GLsizei>();
 				GLsizei height = m_Buffer.read<GLsizei>();
 				GLsizei depth = m_Buffer.read<GLsizei>();
@@ -4438,9 +4438,9 @@ void CommandBuffer::ProcessCommands()
 			{
 				TextureHandle textureHandle = m_Buffer.read<TextureHandle>();
 				auto& texture = *m_ResourceManager.Textures.get(textureHandle);
-				GLenum target = m_Buffer.read<GLenum>();
+				multigl::TextureTarget target = m_Buffer.read<multigl::TextureTarget>();
 				GLuint origtexture = m_Buffer.read<GLuint>();
-				GLenum internalformat = m_Buffer.read<GLenum>();
+				multigl::InternalFormat internalformat = m_Buffer.read<multigl::InternalFormat>();
 				GLuint minlevel = m_Buffer.read<GLuint>();
 				GLuint numlevels = m_Buffer.read<GLuint>();
 				GLuint minlayer = m_Buffer.read<GLuint>();
@@ -4462,7 +4462,7 @@ void CommandBuffer::ProcessCommands()
 			{
 				GLuint attribindex = m_Buffer.read<GLuint>();
 				GLint size = m_Buffer.read<GLint>();
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::VertexAttribType type = m_Buffer.read<multigl::VertexAttribType>();
 				GLboolean normalized = m_Buffer.read<GLboolean>();
 				GLuint relativeoffset = m_Buffer.read<GLuint>();
 				GL_CHECK(glVertexAttribFormat(attribindex, size, type, normalized, relativeoffset));
@@ -4472,7 +4472,7 @@ void CommandBuffer::ProcessCommands()
 			{
 				GLuint attribindex = m_Buffer.read<GLuint>();
 				GLint size = m_Buffer.read<GLint>();
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::VertexAttribIType type = m_Buffer.read<multigl::VertexAttribIType>();
 				GLuint relativeoffset = m_Buffer.read<GLuint>();
 				GL_CHECK(glVertexAttribIFormat(attribindex, size, type, relativeoffset));
 				break;
@@ -4481,7 +4481,7 @@ void CommandBuffer::ProcessCommands()
 			{
 				GLuint attribindex = m_Buffer.read<GLuint>();
 				GLint size = m_Buffer.read<GLint>();
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::VertexAttribLType type = m_Buffer.read<multigl::VertexAttribLType>();
 				GLuint relativeoffset = m_Buffer.read<GLuint>();
 				GL_CHECK(glVertexAttribLFormat(attribindex, size, type, relativeoffset));
 				break;
@@ -4502,9 +4502,9 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::DebugMessageControl:
 			{
-				GLenum source = m_Buffer.read<GLenum>();
-				GLenum type = m_Buffer.read<GLenum>();
-				GLenum severity = m_Buffer.read<GLenum>();
+				multigl::DebugSource source = m_Buffer.read<multigl::DebugSource>();
+				multigl::DebugType type = m_Buffer.read<multigl::DebugType>();
+				multigl::DebugSeverity severity = m_Buffer.read<multigl::DebugSeverity>();
 				GLsizei count = m_Buffer.read<GLsizei>();
 				const GLuint * ids = m_Buffer.read<const GLuint *>();
 				GLboolean enabled = m_Buffer.read<GLboolean>();
@@ -4513,10 +4513,10 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::DebugMessageInsert:
 			{
-				GLenum source = m_Buffer.read<GLenum>();
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::DebugSource source = m_Buffer.read<multigl::DebugSource>();
+				multigl::DebugType type = m_Buffer.read<multigl::DebugType>();
 				GLuint id = m_Buffer.read<GLuint>();
-				GLenum severity = m_Buffer.read<GLenum>();
+				multigl::DebugSeverity severity = m_Buffer.read<multigl::DebugSeverity>();
 				GLsizei length = m_Buffer.read<GLsizei>();
 				const GLchar * buf = m_Buffer.read<const GLchar *>();
 				GL_CHECK(glDebugMessageInsert(source, type, id, severity, length, buf));
@@ -4531,7 +4531,7 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::PushDebugGroup:
 			{
-				GLenum source = m_Buffer.read<GLenum>();
+				multigl::DebugSource source = m_Buffer.read<multigl::DebugSource>();
 				GLuint id = m_Buffer.read<GLuint>();
 				GLsizei length = m_Buffer.read<GLsizei>();
 				const GLchar * message = m_Buffer.read<const GLchar *>();
@@ -4545,7 +4545,7 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::ObjectLabel:
 			{
-				GLenum identifier = m_Buffer.read<GLenum>();
+				multigl::ObjectIdentifier identifier = m_Buffer.read<multigl::ObjectIdentifier>();
 				GLuint name = m_Buffer.read<GLuint>();
 				GLsizei length = m_Buffer.read<GLsizei>();
 				const GLchar * label = m_Buffer.read<const GLchar *>();
@@ -4554,7 +4554,7 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::GetObjectLabel:
 			{
-				GLenum identifier = m_Buffer.read<GLenum>();
+				multigl::ObjectIdentifier identifier = m_Buffer.read<multigl::ObjectIdentifier>();
 				GLuint name = m_Buffer.read<GLuint>();
 				GLsizei bufSize = m_Buffer.read<GLsizei>();
 				GLsizei * length = m_Buffer.read<GLsizei *>();
@@ -4581,14 +4581,14 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::GetPointerv:
 			{
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::GetPointervPName pname = m_Buffer.read<multigl::GetPointervPName>();
 				void ** params = m_Buffer.read<void **>();
 				GL_CHECK(glGetPointerv(pname, params));
 				break;
 			}
 			case CommandId::BufferStorage:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
+				multigl::BufferStorageTarget target = m_Buffer.read<multigl::BufferStorageTarget>();
 				GLsizeiptr size = m_Buffer.read<GLsizeiptr>();
 				const void * data = m_Buffer.read<const void *>();
 				GLbitfield flags = m_Buffer.read<GLbitfield>();
@@ -4600,8 +4600,8 @@ void CommandBuffer::ProcessCommands()
 				TextureHandle textureHandle = m_Buffer.read<TextureHandle>();
 				auto& texture = *m_ResourceManager.Textures.get(textureHandle);
 				GLint level = m_Buffer.read<GLint>();
-				GLenum format = m_Buffer.read<GLenum>();
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::PixelFormat format = m_Buffer.read<multigl::PixelFormat>();
+				multigl::PixelType type = m_Buffer.read<multigl::PixelType>();
 				const void * data = m_Buffer.read<const void *>();
 				GL_CHECK(glClearTexImage(texture, level, format, type, data));
 				break;
@@ -4617,15 +4617,15 @@ void CommandBuffer::ProcessCommands()
 				GLsizei width = m_Buffer.read<GLsizei>();
 				GLsizei height = m_Buffer.read<GLsizei>();
 				GLsizei depth = m_Buffer.read<GLsizei>();
-				GLenum format = m_Buffer.read<GLenum>();
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::PixelFormat format = m_Buffer.read<multigl::PixelFormat>();
+				multigl::PixelType type = m_Buffer.read<multigl::PixelType>();
 				const void * data = m_Buffer.read<const void *>();
 				GL_CHECK(glClearTexSubImage(texture, level, xoffset, yoffset, zoffset, width, height, depth, format, type, data));
 				break;
 			}
 			case CommandId::BindBuffersBase:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
+				multigl::BufferTarget target = m_Buffer.read<multigl::BufferTarget>();
 				GLuint first = m_Buffer.read<GLuint>();
 				GLsizei count = m_Buffer.read<GLsizei>();
 				const GLuint * buffers = m_Buffer.read<const GLuint *>();
@@ -4634,7 +4634,7 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::BindBuffersRange:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
+				multigl::BufferTarget target = m_Buffer.read<multigl::BufferTarget>();
 				GLuint first = m_Buffer.read<GLuint>();
 				GLsizei count = m_Buffer.read<GLsizei>();
 				const GLuint * buffers = m_Buffer.read<const GLuint *>();
@@ -4679,8 +4679,8 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::ClipControl:
 			{
-				GLenum origin = m_Buffer.read<GLenum>();
-				GLenum depth = m_Buffer.read<GLenum>();
+				multigl::ClipControlOrigin origin = m_Buffer.read<multigl::ClipControlOrigin>();
+				multigl::ClipControlDepth depth = m_Buffer.read<multigl::ClipControlDepth>();
 				GL_CHECK(glClipControl(origin, depth));
 				break;
 			}
@@ -4714,7 +4714,7 @@ void CommandBuffer::ProcessCommands()
 			case CommandId::GetTransformFeedbackiv:
 			{
 				GLuint xfb = m_Buffer.read<GLuint>();
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::TransformFeedbackPName pname = m_Buffer.read<multigl::TransformFeedbackPName>();
 				GLint * param = m_Buffer.read<GLint *>();
 				GL_CHECK(glGetTransformFeedbackiv(xfb, pname, param));
 				break;
@@ -4722,7 +4722,7 @@ void CommandBuffer::ProcessCommands()
 			case CommandId::GetTransformFeedbacki_v:
 			{
 				GLuint xfb = m_Buffer.read<GLuint>();
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::TransformFeedbackPName pname = m_Buffer.read<multigl::TransformFeedbackPName>();
 				GLuint index = m_Buffer.read<GLuint>();
 				GLint * param = m_Buffer.read<GLint *>();
 				GL_CHECK(glGetTransformFeedbacki_v(xfb, pname, index, param));
@@ -4731,7 +4731,7 @@ void CommandBuffer::ProcessCommands()
 			case CommandId::GetTransformFeedbacki64_v:
 			{
 				GLuint xfb = m_Buffer.read<GLuint>();
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::TransformFeedbackPName pname = m_Buffer.read<multigl::TransformFeedbackPName>();
 				GLuint index = m_Buffer.read<GLuint>();
 				GLint64 * param = m_Buffer.read<GLint64 *>();
 				GL_CHECK(glGetTransformFeedbacki64_v(xfb, pname, index, param));
@@ -4760,7 +4760,7 @@ void CommandBuffer::ProcessCommands()
 				auto& buffer = *m_ResourceManager.Buffers.get(bufferHandle);
 				GLsizeiptr size = m_Buffer.read<GLsizeiptr>();
 				const void * data = m_Buffer.read<const void *>();
-				GLenum usage = m_Buffer.read<GLenum>();
+				multigl::VertexBufferObjectUsage usage = m_Buffer.read<multigl::VertexBufferObjectUsage>();
 				GL_CHECK(glNamedBufferData(buffer, size, data, usage));
 				break;
 			}
@@ -4788,9 +4788,9 @@ void CommandBuffer::ProcessCommands()
 			{
 				BufferHandle bufferHandle = m_Buffer.read<BufferHandle>();
 				auto& buffer = *m_ResourceManager.Buffers.get(bufferHandle);
-				GLenum internalformat = m_Buffer.read<GLenum>();
-				GLenum format = m_Buffer.read<GLenum>();
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::InternalFormat internalformat = m_Buffer.read<multigl::InternalFormat>();
+				multigl::PixelFormat format = m_Buffer.read<multigl::PixelFormat>();
+				multigl::PixelType type = m_Buffer.read<multigl::PixelType>();
 				const void * data = m_Buffer.read<const void *>();
 				GL_CHECK(glClearNamedBufferData(buffer, internalformat, format, type, data));
 				break;
@@ -4799,11 +4799,11 @@ void CommandBuffer::ProcessCommands()
 			{
 				BufferHandle bufferHandle = m_Buffer.read<BufferHandle>();
 				auto& buffer = *m_ResourceManager.Buffers.get(bufferHandle);
-				GLenum internalformat = m_Buffer.read<GLenum>();
+				multigl::InternalFormat internalformat = m_Buffer.read<multigl::InternalFormat>();
 				GLintptr offset = m_Buffer.read<GLintptr>();
 				GLsizeiptr size = m_Buffer.read<GLsizeiptr>();
-				GLenum format = m_Buffer.read<GLenum>();
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::PixelFormat format = m_Buffer.read<multigl::PixelFormat>();
+				multigl::PixelType type = m_Buffer.read<multigl::PixelType>();
 				const void * data = m_Buffer.read<const void *>();
 				GL_CHECK(glClearNamedBufferSubData(buffer, internalformat, offset, size, format, type, data));
 				break;
@@ -4821,7 +4821,7 @@ void CommandBuffer::ProcessCommands()
 			{
 				BufferHandle bufferHandle = m_Buffer.read<BufferHandle>();
 				auto& buffer = *m_ResourceManager.Buffers.get(bufferHandle);
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::VertexBufferObjectParameter pname = m_Buffer.read<multigl::VertexBufferObjectParameter>();
 				GLint * params = m_Buffer.read<GLint *>();
 				GL_CHECK(glGetNamedBufferParameteriv(buffer, pname, params));
 				break;
@@ -4830,7 +4830,7 @@ void CommandBuffer::ProcessCommands()
 			{
 				BufferHandle bufferHandle = m_Buffer.read<BufferHandle>();
 				auto& buffer = *m_ResourceManager.Buffers.get(bufferHandle);
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::VertexBufferObjectParameter pname = m_Buffer.read<multigl::VertexBufferObjectParameter>();
 				GLint64 * params = m_Buffer.read<GLint64 *>();
 				GL_CHECK(glGetNamedBufferParameteri64v(buffer, pname, params));
 				break;
@@ -4839,7 +4839,7 @@ void CommandBuffer::ProcessCommands()
 			{
 				BufferHandle bufferHandle = m_Buffer.read<BufferHandle>();
 				auto& buffer = *m_ResourceManager.Buffers.get(bufferHandle);
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::VertexBufferObjectParameter pname = m_Buffer.read<multigl::VertexBufferObjectParameter>();
 				void ** params = m_Buffer.read<void **>();
 				GL_CHECK(glGetNamedBufferPointerv(buffer, pname, params));
 				break;
@@ -4865,8 +4865,8 @@ void CommandBuffer::ProcessCommands()
 			{
 				FramebufferHandle framebufferHandle = m_Buffer.read<FramebufferHandle>();
 				auto& framebuffer = *m_ResourceManager.Framebuffers.get(framebufferHandle);
-				GLenum attachment = m_Buffer.read<GLenum>();
-				GLenum renderbuffertarget = m_Buffer.read<GLenum>();
+				multigl::FramebufferAttachment attachment = m_Buffer.read<multigl::FramebufferAttachment>();
+				multigl::RenderbufferTarget renderbuffertarget = m_Buffer.read<multigl::RenderbufferTarget>();
 				RenderbufferHandle renderbufferHandle = m_Buffer.read<RenderbufferHandle>();
 				auto& renderbuffer = *m_ResourceManager.Renderbuffers.get(renderbufferHandle);
 				GL_CHECK(glNamedFramebufferRenderbuffer(framebuffer, attachment, renderbuffertarget, renderbuffer));
@@ -4876,7 +4876,7 @@ void CommandBuffer::ProcessCommands()
 			{
 				FramebufferHandle framebufferHandle = m_Buffer.read<FramebufferHandle>();
 				auto& framebuffer = *m_ResourceManager.Framebuffers.get(framebufferHandle);
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::FramebufferParameterName pname = m_Buffer.read<multigl::FramebufferParameterName>();
 				GLint param = m_Buffer.read<GLint>();
 				GL_CHECK(glNamedFramebufferParameteri(framebuffer, pname, param));
 				break;
@@ -4885,7 +4885,7 @@ void CommandBuffer::ProcessCommands()
 			{
 				FramebufferHandle framebufferHandle = m_Buffer.read<FramebufferHandle>();
 				auto& framebuffer = *m_ResourceManager.Framebuffers.get(framebufferHandle);
-				GLenum attachment = m_Buffer.read<GLenum>();
+				multigl::FramebufferAttachment attachment = m_Buffer.read<multigl::FramebufferAttachment>();
 				TextureHandle textureHandle = m_Buffer.read<TextureHandle>();
 				auto& texture = *m_ResourceManager.Textures.get(textureHandle);
 				GLint level = m_Buffer.read<GLint>();
@@ -4896,7 +4896,7 @@ void CommandBuffer::ProcessCommands()
 			{
 				FramebufferHandle framebufferHandle = m_Buffer.read<FramebufferHandle>();
 				auto& framebuffer = *m_ResourceManager.Framebuffers.get(framebufferHandle);
-				GLenum attachment = m_Buffer.read<GLenum>();
+				multigl::FramebufferAttachment attachment = m_Buffer.read<multigl::FramebufferAttachment>();
 				TextureHandle textureHandle = m_Buffer.read<TextureHandle>();
 				auto& texture = *m_ResourceManager.Textures.get(textureHandle);
 				GLint level = m_Buffer.read<GLint>();
@@ -4908,7 +4908,7 @@ void CommandBuffer::ProcessCommands()
 			{
 				FramebufferHandle framebufferHandle = m_Buffer.read<FramebufferHandle>();
 				auto& framebuffer = *m_ResourceManager.Framebuffers.get(framebufferHandle);
-				GLenum buf = m_Buffer.read<GLenum>();
+				multigl::ColorBuffer buf = m_Buffer.read<multigl::ColorBuffer>();
 				GL_CHECK(glNamedFramebufferDrawBuffer(framebuffer, buf));
 				break;
 			}
@@ -4925,7 +4925,7 @@ void CommandBuffer::ProcessCommands()
 			{
 				FramebufferHandle framebufferHandle = m_Buffer.read<FramebufferHandle>();
 				auto& framebuffer = *m_ResourceManager.Framebuffers.get(framebufferHandle);
-				GLenum src = m_Buffer.read<GLenum>();
+				multigl::ColorBuffer src = m_Buffer.read<multigl::ColorBuffer>();
 				GL_CHECK(glNamedFramebufferReadBuffer(framebuffer, src));
 				break;
 			}
@@ -5009,7 +5009,7 @@ void CommandBuffer::ProcessCommands()
 				GLint dstX1 = m_Buffer.read<GLint>();
 				GLint dstY1 = m_Buffer.read<GLint>();
 				GLbitfield mask = m_Buffer.read<GLbitfield>();
-				GLenum filter = m_Buffer.read<GLenum>();
+				multigl::BlitFramebufferFilter filter = m_Buffer.read<multigl::BlitFramebufferFilter>();
 				GL_CHECK(glBlitNamedFramebuffer(readFramebuffer, drawFramebuffer, srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter));
 				break;
 			}
@@ -5017,7 +5017,7 @@ void CommandBuffer::ProcessCommands()
 			{
 				FramebufferHandle framebufferHandle = m_Buffer.read<FramebufferHandle>();
 				auto& framebuffer = *m_ResourceManager.Framebuffers.get(framebufferHandle);
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::GetFramebufferParameter pname = m_Buffer.read<multigl::GetFramebufferParameter>();
 				GLint * param = m_Buffer.read<GLint *>();
 				GL_CHECK(glGetNamedFramebufferParameteriv(framebuffer, pname, param));
 				break;
@@ -5026,8 +5026,8 @@ void CommandBuffer::ProcessCommands()
 			{
 				FramebufferHandle framebufferHandle = m_Buffer.read<FramebufferHandle>();
 				auto& framebuffer = *m_ResourceManager.Framebuffers.get(framebufferHandle);
-				GLenum attachment = m_Buffer.read<GLenum>();
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::FramebufferAttachment attachment = m_Buffer.read<multigl::FramebufferAttachment>();
+				multigl::FramebufferAttachmentParameterName pname = m_Buffer.read<multigl::FramebufferAttachmentParameterName>();
 				GLint * params = m_Buffer.read<GLint *>();
 				GL_CHECK(glGetNamedFramebufferAttachmentParameteriv(framebuffer, attachment, pname, params));
 				break;
@@ -5043,7 +5043,7 @@ void CommandBuffer::ProcessCommands()
 			{
 				RenderbufferHandle renderbufferHandle = m_Buffer.read<RenderbufferHandle>();
 				auto& renderbuffer = *m_ResourceManager.Renderbuffers.get(renderbufferHandle);
-				GLenum internalformat = m_Buffer.read<GLenum>();
+				multigl::InternalFormat internalformat = m_Buffer.read<multigl::InternalFormat>();
 				GLsizei width = m_Buffer.read<GLsizei>();
 				GLsizei height = m_Buffer.read<GLsizei>();
 				GL_CHECK(glNamedRenderbufferStorage(renderbuffer, internalformat, width, height));
@@ -5054,7 +5054,7 @@ void CommandBuffer::ProcessCommands()
 				RenderbufferHandle renderbufferHandle = m_Buffer.read<RenderbufferHandle>();
 				auto& renderbuffer = *m_ResourceManager.Renderbuffers.get(renderbufferHandle);
 				GLsizei samples = m_Buffer.read<GLsizei>();
-				GLenum internalformat = m_Buffer.read<GLenum>();
+				multigl::InternalFormat internalformat = m_Buffer.read<multigl::InternalFormat>();
 				GLsizei width = m_Buffer.read<GLsizei>();
 				GLsizei height = m_Buffer.read<GLsizei>();
 				GL_CHECK(glNamedRenderbufferStorageMultisample(renderbuffer, samples, internalformat, width, height));
@@ -5064,14 +5064,14 @@ void CommandBuffer::ProcessCommands()
 			{
 				RenderbufferHandle renderbufferHandle = m_Buffer.read<RenderbufferHandle>();
 				auto& renderbuffer = *m_ResourceManager.Renderbuffers.get(renderbufferHandle);
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::RenderbufferParameterName pname = m_Buffer.read<multigl::RenderbufferParameterName>();
 				GLint * params = m_Buffer.read<GLint *>();
 				GL_CHECK(glGetNamedRenderbufferParameteriv(renderbuffer, pname, params));
 				break;
 			}
 			case CommandId::CreateTexture:
 			{
-				auto target = m_Buffer.read<GLenum>();
+				auto target = m_Buffer.read<TextureTarget>();
 				auto handle = m_Buffer.read<TextureHandle>();
 				auto& texture = *m_ResourceManager.Textures.get(handle);
 				glCreateTextures(target, 1, &texture);
@@ -5081,7 +5081,7 @@ void CommandBuffer::ProcessCommands()
 			{
 				TextureHandle textureHandle = m_Buffer.read<TextureHandle>();
 				auto& texture = *m_ResourceManager.Textures.get(textureHandle);
-				GLenum internalformat = m_Buffer.read<GLenum>();
+				multigl::InternalFormat internalformat = m_Buffer.read<multigl::InternalFormat>();
 				BufferHandle bufferHandle = m_Buffer.read<BufferHandle>();
 				auto& buffer = *m_ResourceManager.Buffers.get(bufferHandle);
 				GL_CHECK(glTextureBuffer(texture, internalformat, buffer));
@@ -5091,7 +5091,7 @@ void CommandBuffer::ProcessCommands()
 			{
 				TextureHandle textureHandle = m_Buffer.read<TextureHandle>();
 				auto& texture = *m_ResourceManager.Textures.get(textureHandle);
-				GLenum internalformat = m_Buffer.read<GLenum>();
+				multigl::InternalFormat internalformat = m_Buffer.read<multigl::InternalFormat>();
 				BufferHandle bufferHandle = m_Buffer.read<BufferHandle>();
 				auto& buffer = *m_ResourceManager.Buffers.get(bufferHandle);
 				GLintptr offset = m_Buffer.read<GLintptr>();
@@ -5104,7 +5104,7 @@ void CommandBuffer::ProcessCommands()
 				TextureHandle textureHandle = m_Buffer.read<TextureHandle>();
 				auto& texture = *m_ResourceManager.Textures.get(textureHandle);
 				GLsizei levels = m_Buffer.read<GLsizei>();
-				GLenum internalformat = m_Buffer.read<GLenum>();
+				multigl::InternalFormat internalformat = m_Buffer.read<multigl::InternalFormat>();
 				GLsizei width = m_Buffer.read<GLsizei>();
 				GL_CHECK(glTextureStorage1D(texture, levels, internalformat, width));
 				break;
@@ -5114,7 +5114,7 @@ void CommandBuffer::ProcessCommands()
 				TextureHandle textureHandle = m_Buffer.read<TextureHandle>();
 				auto& texture = *m_ResourceManager.Textures.get(textureHandle);
 				GLsizei levels = m_Buffer.read<GLsizei>();
-				GLenum internalformat = m_Buffer.read<GLenum>();
+				multigl::InternalFormat internalformat = m_Buffer.read<multigl::InternalFormat>();
 				GLsizei width = m_Buffer.read<GLsizei>();
 				GLsizei height = m_Buffer.read<GLsizei>();
 				GL_CHECK(glTextureStorage2D(texture, levels, internalformat, width, height));
@@ -5125,7 +5125,7 @@ void CommandBuffer::ProcessCommands()
 				TextureHandle textureHandle = m_Buffer.read<TextureHandle>();
 				auto& texture = *m_ResourceManager.Textures.get(textureHandle);
 				GLsizei levels = m_Buffer.read<GLsizei>();
-				GLenum internalformat = m_Buffer.read<GLenum>();
+				multigl::InternalFormat internalformat = m_Buffer.read<multigl::InternalFormat>();
 				GLsizei width = m_Buffer.read<GLsizei>();
 				GLsizei height = m_Buffer.read<GLsizei>();
 				GLsizei depth = m_Buffer.read<GLsizei>();
@@ -5137,7 +5137,7 @@ void CommandBuffer::ProcessCommands()
 				TextureHandle textureHandle = m_Buffer.read<TextureHandle>();
 				auto& texture = *m_ResourceManager.Textures.get(textureHandle);
 				GLsizei samples = m_Buffer.read<GLsizei>();
-				GLenum internalformat = m_Buffer.read<GLenum>();
+				multigl::InternalFormat internalformat = m_Buffer.read<multigl::InternalFormat>();
 				GLsizei width = m_Buffer.read<GLsizei>();
 				GLsizei height = m_Buffer.read<GLsizei>();
 				GLboolean fixedsamplelocations = m_Buffer.read<GLboolean>();
@@ -5149,7 +5149,7 @@ void CommandBuffer::ProcessCommands()
 				TextureHandle textureHandle = m_Buffer.read<TextureHandle>();
 				auto& texture = *m_ResourceManager.Textures.get(textureHandle);
 				GLsizei samples = m_Buffer.read<GLsizei>();
-				GLenum internalformat = m_Buffer.read<GLenum>();
+				multigl::InternalFormat internalformat = m_Buffer.read<multigl::InternalFormat>();
 				GLsizei width = m_Buffer.read<GLsizei>();
 				GLsizei height = m_Buffer.read<GLsizei>();
 				GLsizei depth = m_Buffer.read<GLsizei>();
@@ -5164,8 +5164,8 @@ void CommandBuffer::ProcessCommands()
 				GLint level = m_Buffer.read<GLint>();
 				GLint xoffset = m_Buffer.read<GLint>();
 				GLsizei width = m_Buffer.read<GLsizei>();
-				GLenum format = m_Buffer.read<GLenum>();
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::PixelFormat format = m_Buffer.read<multigl::PixelFormat>();
+				multigl::PixelType type = m_Buffer.read<multigl::PixelType>();
 				const void * pixels = m_Buffer.read<const void *>();
 				GL_CHECK(glTextureSubImage1D(texture, level, xoffset, width, format, type, pixels));
 				break;
@@ -5179,8 +5179,8 @@ void CommandBuffer::ProcessCommands()
 				GLint yoffset = m_Buffer.read<GLint>();
 				GLsizei width = m_Buffer.read<GLsizei>();
 				GLsizei height = m_Buffer.read<GLsizei>();
-				GLenum format = m_Buffer.read<GLenum>();
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::PixelFormat format = m_Buffer.read<multigl::PixelFormat>();
+				multigl::PixelType type = m_Buffer.read<multigl::PixelType>();
 				const void * pixels = m_Buffer.read<const void *>();
 				GL_CHECK(glTextureSubImage2D(texture, level, xoffset, yoffset, width, height, format, type, pixels));
 				break;
@@ -5196,8 +5196,8 @@ void CommandBuffer::ProcessCommands()
 				GLsizei width = m_Buffer.read<GLsizei>();
 				GLsizei height = m_Buffer.read<GLsizei>();
 				GLsizei depth = m_Buffer.read<GLsizei>();
-				GLenum format = m_Buffer.read<GLenum>();
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::PixelFormat format = m_Buffer.read<multigl::PixelFormat>();
+				multigl::PixelType type = m_Buffer.read<multigl::PixelType>();
 				const void * pixels = m_Buffer.read<const void *>();
 				GL_CHECK(glTextureSubImage3D(texture, level, xoffset, yoffset, zoffset, width, height, depth, format, type, pixels));
 				break;
@@ -5209,7 +5209,7 @@ void CommandBuffer::ProcessCommands()
 				GLint level = m_Buffer.read<GLint>();
 				GLint xoffset = m_Buffer.read<GLint>();
 				GLsizei width = m_Buffer.read<GLsizei>();
-				GLenum format = m_Buffer.read<GLenum>();
+				multigl::PixelFormat format = m_Buffer.read<multigl::PixelFormat>();
 				GLsizei imageSize = m_Buffer.read<GLsizei>();
 				const void * data = m_Buffer.read<const void *>();
 				GL_CHECK(glCompressedTextureSubImage1D(texture, level, xoffset, width, format, imageSize, data));
@@ -5224,7 +5224,7 @@ void CommandBuffer::ProcessCommands()
 				GLint yoffset = m_Buffer.read<GLint>();
 				GLsizei width = m_Buffer.read<GLsizei>();
 				GLsizei height = m_Buffer.read<GLsizei>();
-				GLenum format = m_Buffer.read<GLenum>();
+				multigl::PixelFormat format = m_Buffer.read<multigl::PixelFormat>();
 				GLsizei imageSize = m_Buffer.read<GLsizei>();
 				const void * data = m_Buffer.read<const void *>();
 				GL_CHECK(glCompressedTextureSubImage2D(texture, level, xoffset, yoffset, width, height, format, imageSize, data));
@@ -5241,7 +5241,7 @@ void CommandBuffer::ProcessCommands()
 				GLsizei width = m_Buffer.read<GLsizei>();
 				GLsizei height = m_Buffer.read<GLsizei>();
 				GLsizei depth = m_Buffer.read<GLsizei>();
-				GLenum format = m_Buffer.read<GLenum>();
+				multigl::PixelFormat format = m_Buffer.read<multigl::PixelFormat>();
 				GLsizei imageSize = m_Buffer.read<GLsizei>();
 				const void * data = m_Buffer.read<const void *>();
 				GL_CHECK(glCompressedTextureSubImage3D(texture, level, xoffset, yoffset, zoffset, width, height, depth, format, imageSize, data));
@@ -5292,7 +5292,7 @@ void CommandBuffer::ProcessCommands()
 			{
 				TextureHandle textureHandle = m_Buffer.read<TextureHandle>();
 				auto& texture = *m_ResourceManager.Textures.get(textureHandle);
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::TextureParameterName pname = m_Buffer.read<multigl::TextureParameterName>();
 				GLfloat param = m_Buffer.read<GLfloat>();
 				GL_CHECK(glTextureParameterf(texture, pname, param));
 				break;
@@ -5301,7 +5301,7 @@ void CommandBuffer::ProcessCommands()
 			{
 				TextureHandle textureHandle = m_Buffer.read<TextureHandle>();
 				auto& texture = *m_ResourceManager.Textures.get(textureHandle);
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::TextureParameterName pname = m_Buffer.read<multigl::TextureParameterName>();
 				const GLfloat * param = m_Buffer.read<const GLfloat *>();
 				GL_CHECK(glTextureParameterfv(texture, pname, param));
 				break;
@@ -5310,7 +5310,7 @@ void CommandBuffer::ProcessCommands()
 			{
 				TextureHandle textureHandle = m_Buffer.read<TextureHandle>();
 				auto& texture = *m_ResourceManager.Textures.get(textureHandle);
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::TextureParameterName pname = m_Buffer.read<multigl::TextureParameterName>();
 				GLint param = m_Buffer.read<GLint>();
 				GL_CHECK(glTextureParameteri(texture, pname, param));
 				break;
@@ -5319,7 +5319,7 @@ void CommandBuffer::ProcessCommands()
 			{
 				TextureHandle textureHandle = m_Buffer.read<TextureHandle>();
 				auto& texture = *m_ResourceManager.Textures.get(textureHandle);
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::TextureParameterName pname = m_Buffer.read<multigl::TextureParameterName>();
 				const GLint * params = m_Buffer.read<const GLint *>();
 				GL_CHECK(glTextureParameterIiv(texture, pname, params));
 				break;
@@ -5328,7 +5328,7 @@ void CommandBuffer::ProcessCommands()
 			{
 				TextureHandle textureHandle = m_Buffer.read<TextureHandle>();
 				auto& texture = *m_ResourceManager.Textures.get(textureHandle);
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::TextureParameterName pname = m_Buffer.read<multigl::TextureParameterName>();
 				const GLuint * params = m_Buffer.read<const GLuint *>();
 				GL_CHECK(glTextureParameterIuiv(texture, pname, params));
 				break;
@@ -5337,7 +5337,7 @@ void CommandBuffer::ProcessCommands()
 			{
 				TextureHandle textureHandle = m_Buffer.read<TextureHandle>();
 				auto& texture = *m_ResourceManager.Textures.get(textureHandle);
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::TextureParameterName pname = m_Buffer.read<multigl::TextureParameterName>();
 				const GLint * param = m_Buffer.read<const GLint *>();
 				GL_CHECK(glTextureParameteriv(texture, pname, param));
 				break;
@@ -5362,8 +5362,8 @@ void CommandBuffer::ProcessCommands()
 				TextureHandle textureHandle = m_Buffer.read<TextureHandle>();
 				auto& texture = *m_ResourceManager.Textures.get(textureHandle);
 				GLint level = m_Buffer.read<GLint>();
-				GLenum format = m_Buffer.read<GLenum>();
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::PixelFormat format = m_Buffer.read<multigl::PixelFormat>();
+				multigl::PixelType type = m_Buffer.read<multigl::PixelType>();
 				GLsizei bufSize = m_Buffer.read<GLsizei>();
 				void * pixels = m_Buffer.read<void *>();
 				GL_CHECK(glGetTextureImage(texture, level, format, type, bufSize, pixels));
@@ -5384,7 +5384,7 @@ void CommandBuffer::ProcessCommands()
 				TextureHandle textureHandle = m_Buffer.read<TextureHandle>();
 				auto& texture = *m_ResourceManager.Textures.get(textureHandle);
 				GLint level = m_Buffer.read<GLint>();
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::GetTextureParameter pname = m_Buffer.read<multigl::GetTextureParameter>();
 				GLfloat * params = m_Buffer.read<GLfloat *>();
 				GL_CHECK(glGetTextureLevelParameterfv(texture, level, pname, params));
 				break;
@@ -5394,7 +5394,7 @@ void CommandBuffer::ProcessCommands()
 				TextureHandle textureHandle = m_Buffer.read<TextureHandle>();
 				auto& texture = *m_ResourceManager.Textures.get(textureHandle);
 				GLint level = m_Buffer.read<GLint>();
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::GetTextureParameter pname = m_Buffer.read<multigl::GetTextureParameter>();
 				GLint * params = m_Buffer.read<GLint *>();
 				GL_CHECK(glGetTextureLevelParameteriv(texture, level, pname, params));
 				break;
@@ -5403,7 +5403,7 @@ void CommandBuffer::ProcessCommands()
 			{
 				TextureHandle textureHandle = m_Buffer.read<TextureHandle>();
 				auto& texture = *m_ResourceManager.Textures.get(textureHandle);
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::GetTextureParameter pname = m_Buffer.read<multigl::GetTextureParameter>();
 				GLfloat * params = m_Buffer.read<GLfloat *>();
 				GL_CHECK(glGetTextureParameterfv(texture, pname, params));
 				break;
@@ -5412,7 +5412,7 @@ void CommandBuffer::ProcessCommands()
 			{
 				TextureHandle textureHandle = m_Buffer.read<TextureHandle>();
 				auto& texture = *m_ResourceManager.Textures.get(textureHandle);
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::GetTextureParameter pname = m_Buffer.read<multigl::GetTextureParameter>();
 				GLint * params = m_Buffer.read<GLint *>();
 				GL_CHECK(glGetTextureParameterIiv(texture, pname, params));
 				break;
@@ -5421,7 +5421,7 @@ void CommandBuffer::ProcessCommands()
 			{
 				TextureHandle textureHandle = m_Buffer.read<TextureHandle>();
 				auto& texture = *m_ResourceManager.Textures.get(textureHandle);
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::GetTextureParameter pname = m_Buffer.read<multigl::GetTextureParameter>();
 				GLuint * params = m_Buffer.read<GLuint *>();
 				GL_CHECK(glGetTextureParameterIuiv(texture, pname, params));
 				break;
@@ -5430,7 +5430,7 @@ void CommandBuffer::ProcessCommands()
 			{
 				TextureHandle textureHandle = m_Buffer.read<TextureHandle>();
 				auto& texture = *m_ResourceManager.Textures.get(textureHandle);
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::GetTextureParameter pname = m_Buffer.read<multigl::GetTextureParameter>();
 				GLint * params = m_Buffer.read<GLint *>();
 				GL_CHECK(glGetTextureParameteriv(texture, pname, params));
 				break;
@@ -5506,7 +5506,7 @@ void CommandBuffer::ProcessCommands()
 				auto& vaobj = *m_ResourceManager.VertexArrays.get(vaobjHandle);
 				GLuint attribindex = m_Buffer.read<GLuint>();
 				GLint size = m_Buffer.read<GLint>();
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::VertexAttribType type = m_Buffer.read<multigl::VertexAttribType>();
 				GLboolean normalized = m_Buffer.read<GLboolean>();
 				GLuint relativeoffset = m_Buffer.read<GLuint>();
 				GL_CHECK(glVertexArrayAttribFormat(vaobj, attribindex, size, type, normalized, relativeoffset));
@@ -5518,7 +5518,7 @@ void CommandBuffer::ProcessCommands()
 				auto& vaobj = *m_ResourceManager.VertexArrays.get(vaobjHandle);
 				GLuint attribindex = m_Buffer.read<GLuint>();
 				GLint size = m_Buffer.read<GLint>();
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::VertexAttribIType type = m_Buffer.read<multigl::VertexAttribIType>();
 				GLuint relativeoffset = m_Buffer.read<GLuint>();
 				GL_CHECK(glVertexArrayAttribIFormat(vaobj, attribindex, size, type, relativeoffset));
 				break;
@@ -5529,7 +5529,7 @@ void CommandBuffer::ProcessCommands()
 				auto& vaobj = *m_ResourceManager.VertexArrays.get(vaobjHandle);
 				GLuint attribindex = m_Buffer.read<GLuint>();
 				GLint size = m_Buffer.read<GLint>();
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::VertexAttribLType type = m_Buffer.read<multigl::VertexAttribLType>();
 				GLuint relativeoffset = m_Buffer.read<GLuint>();
 				GL_CHECK(glVertexArrayAttribLFormat(vaobj, attribindex, size, type, relativeoffset));
 				break;
@@ -5547,7 +5547,7 @@ void CommandBuffer::ProcessCommands()
 			{
 				VertexArrayHandle vaobjHandle = m_Buffer.read<VertexArrayHandle>();
 				auto& vaobj = *m_ResourceManager.VertexArrays.get(vaobjHandle);
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::VertexArrayPName pname = m_Buffer.read<multigl::VertexArrayPName>();
 				GLint * param = m_Buffer.read<GLint *>();
 				GL_CHECK(glGetVertexArrayiv(vaobj, pname, param));
 				break;
@@ -5557,7 +5557,7 @@ void CommandBuffer::ProcessCommands()
 				VertexArrayHandle vaobjHandle = m_Buffer.read<VertexArrayHandle>();
 				auto& vaobj = *m_ResourceManager.VertexArrays.get(vaobjHandle);
 				GLuint index = m_Buffer.read<GLuint>();
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::VertexArrayPName pname = m_Buffer.read<multigl::VertexArrayPName>();
 				GLint * param = m_Buffer.read<GLint *>();
 				GL_CHECK(glGetVertexArrayIndexediv(vaobj, index, pname, param));
 				break;
@@ -5567,7 +5567,7 @@ void CommandBuffer::ProcessCommands()
 				VertexArrayHandle vaobjHandle = m_Buffer.read<VertexArrayHandle>();
 				auto& vaobj = *m_ResourceManager.VertexArrays.get(vaobjHandle);
 				GLuint index = m_Buffer.read<GLuint>();
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::VertexArrayPName pname = m_Buffer.read<multigl::VertexArrayPName>();
 				GLint64 * param = m_Buffer.read<GLint64 *>();
 				GL_CHECK(glGetVertexArrayIndexed64iv(vaobj, index, pname, param));
 				break;
@@ -5588,7 +5588,7 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::CreateQueries:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
+				multigl::QueryTarget target = m_Buffer.read<multigl::QueryTarget>();
 				GLsizei n = m_Buffer.read<GLsizei>();
 				GLuint * ids = m_Buffer.read<GLuint *>();
 				GL_CHECK(glCreateQueries(target, n, ids));
@@ -5599,7 +5599,7 @@ void CommandBuffer::ProcessCommands()
 				GLuint id = m_Buffer.read<GLuint>();
 				BufferHandle bufferHandle = m_Buffer.read<BufferHandle>();
 				auto& buffer = *m_ResourceManager.Buffers.get(bufferHandle);
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::QueryObjectParameterName pname = m_Buffer.read<multigl::QueryObjectParameterName>();
 				GLintptr offset = m_Buffer.read<GLintptr>();
 				GL_CHECK(glGetQueryBufferObjecti64v(id, buffer, pname, offset));
 				break;
@@ -5609,7 +5609,7 @@ void CommandBuffer::ProcessCommands()
 				GLuint id = m_Buffer.read<GLuint>();
 				BufferHandle bufferHandle = m_Buffer.read<BufferHandle>();
 				auto& buffer = *m_ResourceManager.Buffers.get(bufferHandle);
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::QueryObjectParameterName pname = m_Buffer.read<multigl::QueryObjectParameterName>();
 				GLintptr offset = m_Buffer.read<GLintptr>();
 				GL_CHECK(glGetQueryBufferObjectiv(id, buffer, pname, offset));
 				break;
@@ -5619,7 +5619,7 @@ void CommandBuffer::ProcessCommands()
 				GLuint id = m_Buffer.read<GLuint>();
 				BufferHandle bufferHandle = m_Buffer.read<BufferHandle>();
 				auto& buffer = *m_ResourceManager.Buffers.get(bufferHandle);
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::QueryObjectParameterName pname = m_Buffer.read<multigl::QueryObjectParameterName>();
 				GLintptr offset = m_Buffer.read<GLintptr>();
 				GL_CHECK(glGetQueryBufferObjectui64v(id, buffer, pname, offset));
 				break;
@@ -5629,7 +5629,7 @@ void CommandBuffer::ProcessCommands()
 				GLuint id = m_Buffer.read<GLuint>();
 				BufferHandle bufferHandle = m_Buffer.read<BufferHandle>();
 				auto& buffer = *m_ResourceManager.Buffers.get(bufferHandle);
-				GLenum pname = m_Buffer.read<GLenum>();
+				multigl::QueryObjectParameterName pname = m_Buffer.read<multigl::QueryObjectParameterName>();
 				GLintptr offset = m_Buffer.read<GLintptr>();
 				GL_CHECK(glGetQueryBufferObjectuiv(id, buffer, pname, offset));
 				break;
@@ -5651,8 +5651,8 @@ void CommandBuffer::ProcessCommands()
 				GLsizei width = m_Buffer.read<GLsizei>();
 				GLsizei height = m_Buffer.read<GLsizei>();
 				GLsizei depth = m_Buffer.read<GLsizei>();
-				GLenum format = m_Buffer.read<GLenum>();
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::PixelFormat format = m_Buffer.read<multigl::PixelFormat>();
+				multigl::PixelType type = m_Buffer.read<multigl::PixelType>();
 				GLsizei bufSize = m_Buffer.read<GLsizei>();
 				void * pixels = m_Buffer.read<void *>();
 				GL_CHECK(glGetTextureSubImage(texture, level, xoffset, yoffset, zoffset, width, height, depth, format, type, bufSize, pixels));
@@ -5676,7 +5676,7 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::GetnCompressedTexImage:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
+				multigl::TextureTarget target = m_Buffer.read<multigl::TextureTarget>();
 				GLint lod = m_Buffer.read<GLint>();
 				GLsizei bufSize = m_Buffer.read<GLsizei>();
 				void * pixels = m_Buffer.read<void *>();
@@ -5685,10 +5685,10 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::GetnTexImage:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
+				multigl::TextureTarget target = m_Buffer.read<multigl::TextureTarget>();
 				GLint level = m_Buffer.read<GLint>();
-				GLenum format = m_Buffer.read<GLenum>();
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::PixelFormat format = m_Buffer.read<multigl::PixelFormat>();
+				multigl::PixelType type = m_Buffer.read<multigl::PixelType>();
 				GLsizei bufSize = m_Buffer.read<GLsizei>();
 				void * pixels = m_Buffer.read<void *>();
 				GL_CHECK(glGetnTexImage(target, level, format, type, bufSize, pixels));
@@ -5740,8 +5740,8 @@ void CommandBuffer::ProcessCommands()
 				GLint y = m_Buffer.read<GLint>();
 				GLsizei width = m_Buffer.read<GLsizei>();
 				GLsizei height = m_Buffer.read<GLsizei>();
-				GLenum format = m_Buffer.read<GLenum>();
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::PixelFormat format = m_Buffer.read<multigl::PixelFormat>();
+				multigl::PixelType type = m_Buffer.read<multigl::PixelType>();
 				GLsizei bufSize = m_Buffer.read<GLsizei>();
 				void * data = m_Buffer.read<void *>();
 				GL_CHECK(glReadnPixels(x, y, width, height, format, type, bufSize, data));
@@ -5749,8 +5749,8 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::GetnMapdv:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
-				GLenum query = m_Buffer.read<GLenum>();
+				multigl::MapTarget target = m_Buffer.read<multigl::MapTarget>();
+				multigl::MapQuery query = m_Buffer.read<multigl::MapQuery>();
 				GLsizei bufSize = m_Buffer.read<GLsizei>();
 				GLdouble * v = m_Buffer.read<GLdouble *>();
 				GL_CHECK(glGetnMapdv(target, query, bufSize, v));
@@ -5758,8 +5758,8 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::GetnMapfv:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
-				GLenum query = m_Buffer.read<GLenum>();
+				multigl::MapTarget target = m_Buffer.read<multigl::MapTarget>();
+				multigl::MapQuery query = m_Buffer.read<multigl::MapQuery>();
 				GLsizei bufSize = m_Buffer.read<GLsizei>();
 				GLfloat * v = m_Buffer.read<GLfloat *>();
 				GL_CHECK(glGetnMapfv(target, query, bufSize, v));
@@ -5767,8 +5767,8 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::GetnMapiv:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
-				GLenum query = m_Buffer.read<GLenum>();
+				multigl::MapTarget target = m_Buffer.read<multigl::MapTarget>();
+				multigl::MapQuery query = m_Buffer.read<multigl::MapQuery>();
 				GLsizei bufSize = m_Buffer.read<GLsizei>();
 				GLint * v = m_Buffer.read<GLint *>();
 				GL_CHECK(glGetnMapiv(target, query, bufSize, v));
@@ -5776,7 +5776,7 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::GetnPixelMapfv:
 			{
-				GLenum map = m_Buffer.read<GLenum>();
+				multigl::PixelMap map = m_Buffer.read<multigl::PixelMap>();
 				GLsizei bufSize = m_Buffer.read<GLsizei>();
 				GLfloat * values = m_Buffer.read<GLfloat *>();
 				GL_CHECK(glGetnPixelMapfv(map, bufSize, values));
@@ -5784,7 +5784,7 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::GetnPixelMapuiv:
 			{
-				GLenum map = m_Buffer.read<GLenum>();
+				multigl::PixelMap map = m_Buffer.read<multigl::PixelMap>();
 				GLsizei bufSize = m_Buffer.read<GLsizei>();
 				GLuint * values = m_Buffer.read<GLuint *>();
 				GL_CHECK(glGetnPixelMapuiv(map, bufSize, values));
@@ -5792,7 +5792,7 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::GetnPixelMapusv:
 			{
-				GLenum map = m_Buffer.read<GLenum>();
+				multigl::PixelMap map = m_Buffer.read<multigl::PixelMap>();
 				GLsizei bufSize = m_Buffer.read<GLsizei>();
 				GLushort * values = m_Buffer.read<GLushort *>();
 				GL_CHECK(glGetnPixelMapusv(map, bufSize, values));
@@ -5807,9 +5807,9 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::GetnColorTable:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
-				GLenum format = m_Buffer.read<GLenum>();
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::ColorTableTarget target = m_Buffer.read<multigl::ColorTableTarget>();
+				multigl::PixelFormat format = m_Buffer.read<multigl::PixelFormat>();
+				multigl::PixelType type = m_Buffer.read<multigl::PixelType>();
 				GLsizei bufSize = m_Buffer.read<GLsizei>();
 				void * table = m_Buffer.read<void *>();
 				GL_CHECK(glGetnColorTable(target, format, type, bufSize, table));
@@ -5817,9 +5817,9 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::GetnConvolutionFilter:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
-				GLenum format = m_Buffer.read<GLenum>();
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::ConvolutionTarget target = m_Buffer.read<multigl::ConvolutionTarget>();
+				multigl::PixelFormat format = m_Buffer.read<multigl::PixelFormat>();
+				multigl::PixelType type = m_Buffer.read<multigl::PixelType>();
 				GLsizei bufSize = m_Buffer.read<GLsizei>();
 				void * image = m_Buffer.read<void *>();
 				GL_CHECK(glGetnConvolutionFilter(target, format, type, bufSize, image));
@@ -5827,9 +5827,9 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::GetnSeparableFilter:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
-				GLenum format = m_Buffer.read<GLenum>();
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::SeparableTargetEXT target = m_Buffer.read<multigl::SeparableTargetEXT>();
+				multigl::PixelFormat format = m_Buffer.read<multigl::PixelFormat>();
+				multigl::PixelType type = m_Buffer.read<multigl::PixelType>();
 				GLsizei rowBufSize = m_Buffer.read<GLsizei>();
 				void * row = m_Buffer.read<void *>();
 				GLsizei columnBufSize = m_Buffer.read<GLsizei>();
@@ -5840,10 +5840,10 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::GetnHistogram:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
+				multigl::HistogramTargetEXT target = m_Buffer.read<multigl::HistogramTargetEXT>();
 				GLboolean reset = m_Buffer.read<GLboolean>();
-				GLenum format = m_Buffer.read<GLenum>();
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::PixelFormat format = m_Buffer.read<multigl::PixelFormat>();
+				multigl::PixelType type = m_Buffer.read<multigl::PixelType>();
 				GLsizei bufSize = m_Buffer.read<GLsizei>();
 				void * values = m_Buffer.read<void *>();
 				GL_CHECK(glGetnHistogram(target, reset, format, type, bufSize, values));
@@ -5851,10 +5851,10 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::GetnMinmax:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
+				multigl::MinmaxTargetEXT target = m_Buffer.read<multigl::MinmaxTargetEXT>();
 				GLboolean reset = m_Buffer.read<GLboolean>();
-				GLenum format = m_Buffer.read<GLenum>();
-				GLenum type = m_Buffer.read<GLenum>();
+				multigl::PixelFormat format = m_Buffer.read<multigl::PixelFormat>();
+				multigl::PixelType type = m_Buffer.read<multigl::PixelType>();
 				GLsizei bufSize = m_Buffer.read<GLsizei>();
 				void * values = m_Buffer.read<void *>();
 				GL_CHECK(glGetnMinmax(target, reset, format, type, bufSize, values));

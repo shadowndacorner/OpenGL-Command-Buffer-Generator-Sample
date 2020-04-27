@@ -11,10 +11,10 @@ void ImmediateCommandBuffer::ProcessCommands()
 		{
 			case CommandId::GetError:
 			{
-				auto returnVal = m_Buffer.read<GLenum*>();
+				auto returnVal = m_Buffer.read<multigl::ErrorCode*>();
 				if (returnVal)
 				{
-					GL_CHECK(*returnVal = glGetError());
+					GL_CHECK(*returnVal = ErrorCode(glGetError()));
 					return;
 				}
 				GL_CHECK(glGetError());
@@ -22,11 +22,11 @@ void ImmediateCommandBuffer::ProcessCommands()
 			}
 			case CommandId::GetString:
 			{
-				GLenum name = m_Buffer.read<GLenum>();
+				StringName name = m_Buffer.read<multigl::StringName>();
 				auto returnVal = m_Buffer.read<const GLubyte **>();
 				if (returnVal)
 				{
-					GL_CHECK(*returnVal = glGetString(name));
+					GL_CHECK(*returnVal = (glGetString(name)));
 					return;
 				}
 				GL_CHECK(glGetString(name));
@@ -34,11 +34,11 @@ void ImmediateCommandBuffer::ProcessCommands()
 			}
 			case CommandId::IsEnabled:
 			{
-				GLenum cap = m_Buffer.read<GLenum>();
+				EnableCap cap = m_Buffer.read<multigl::EnableCap>();
 				auto returnVal = m_Buffer.read<GLboolean*>();
 				if (returnVal)
 				{
-					GL_CHECK(*returnVal = glIsEnabled(cap));
+					GL_CHECK(*returnVal = (glIsEnabled(cap)));
 					return;
 				}
 				GL_CHECK(glIsEnabled(cap));
@@ -58,7 +58,7 @@ void ImmediateCommandBuffer::ProcessCommands()
 				auto returnVal = m_Buffer.read<GLboolean*>();
 				if (returnVal)
 				{
-					GL_CHECK(*returnVal = glIsTexture(texture));
+					GL_CHECK(*returnVal = (glIsTexture(texture)));
 					return;
 				}
 				GL_CHECK(glIsTexture(texture));
@@ -70,7 +70,7 @@ void ImmediateCommandBuffer::ProcessCommands()
 				auto returnVal = m_Buffer.read<GLboolean*>();
 				if (returnVal)
 				{
-					GL_CHECK(*returnVal = glIsQuery(id));
+					GL_CHECK(*returnVal = (glIsQuery(id)));
 					return;
 				}
 				GL_CHECK(glIsQuery(id));
@@ -90,7 +90,7 @@ void ImmediateCommandBuffer::ProcessCommands()
 				auto returnVal = m_Buffer.read<GLboolean*>();
 				if (returnVal)
 				{
-					GL_CHECK(*returnVal = glIsBuffer(buffer));
+					GL_CHECK(*returnVal = (glIsBuffer(buffer)));
 					return;
 				}
 				GL_CHECK(glIsBuffer(buffer));
@@ -98,12 +98,12 @@ void ImmediateCommandBuffer::ProcessCommands()
 			}
 			case CommandId::MapBuffer:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
-				GLenum access = m_Buffer.read<GLenum>();
+				BufferTarget target = m_Buffer.read<multigl::BufferTarget>();
+				BufferAccessARB access = m_Buffer.read<multigl::BufferAccessARB>();
 				auto returnVal = m_Buffer.read<void **>();
 				if (returnVal)
 				{
-					GL_CHECK(*returnVal = glMapBuffer(target, access));
+					GL_CHECK(*returnVal = (glMapBuffer(target, access)));
 					return;
 				}
 				GL_CHECK(glMapBuffer(target, access));
@@ -111,11 +111,11 @@ void ImmediateCommandBuffer::ProcessCommands()
 			}
 			case CommandId::UnmapBuffer:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
+				BufferTarget target = m_Buffer.read<multigl::BufferTarget>();
 				auto returnVal = m_Buffer.read<GLboolean*>();
 				if (returnVal)
 				{
-					GL_CHECK(*returnVal = glUnmapBuffer(target));
+					GL_CHECK(*returnVal = (glUnmapBuffer(target)));
 					return;
 				}
 				GL_CHECK(glUnmapBuffer(target));
@@ -132,7 +132,7 @@ void ImmediateCommandBuffer::ProcessCommands()
 			{
 				auto handle = m_Buffer.read<ShaderHandle>();
 				auto& target = *m_ResourceManager.Shaders.get(handle);
-				GLenum type = m_Buffer.read<GLenum>();
+				ShaderType type = m_Buffer.read<ShaderType>();
 				target = glCreateShader(type);
 				break;
 			}
@@ -144,7 +144,7 @@ void ImmediateCommandBuffer::ProcessCommands()
 				auto returnVal = m_Buffer.read<GLint*>();
 				if (returnVal)
 				{
-					GL_CHECK(*returnVal = glGetAttribLocation(program, name));
+					GL_CHECK(*returnVal = (glGetAttribLocation(program, name)));
 					return;
 				}
 				GL_CHECK(glGetAttribLocation(program, name));
@@ -158,7 +158,7 @@ void ImmediateCommandBuffer::ProcessCommands()
 				auto returnVal = m_Buffer.read<GLint*>();
 				if (returnVal)
 				{
-					GL_CHECK(*returnVal = glGetUniformLocation(program, name));
+					GL_CHECK(*returnVal = (glGetUniformLocation(program, name)));
 					return;
 				}
 				GL_CHECK(glGetUniformLocation(program, name));
@@ -171,7 +171,7 @@ void ImmediateCommandBuffer::ProcessCommands()
 				auto returnVal = m_Buffer.read<GLboolean*>();
 				if (returnVal)
 				{
-					GL_CHECK(*returnVal = glIsProgram(program));
+					GL_CHECK(*returnVal = (glIsProgram(program)));
 					return;
 				}
 				GL_CHECK(glIsProgram(program));
@@ -184,7 +184,7 @@ void ImmediateCommandBuffer::ProcessCommands()
 				auto returnVal = m_Buffer.read<GLboolean*>();
 				if (returnVal)
 				{
-					GL_CHECK(*returnVal = glIsShader(shader));
+					GL_CHECK(*returnVal = (glIsShader(shader)));
 					return;
 				}
 				GL_CHECK(glIsShader(shader));
@@ -192,12 +192,12 @@ void ImmediateCommandBuffer::ProcessCommands()
 			}
 			case CommandId::IsEnabledi:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
+				EnableCap target = m_Buffer.read<multigl::EnableCap>();
 				GLuint index = m_Buffer.read<GLuint>();
 				auto returnVal = m_Buffer.read<GLboolean*>();
 				if (returnVal)
 				{
-					GL_CHECK(*returnVal = glIsEnabledi(target, index));
+					GL_CHECK(*returnVal = (glIsEnabledi(target, index)));
 					return;
 				}
 				GL_CHECK(glIsEnabledi(target, index));
@@ -211,7 +211,7 @@ void ImmediateCommandBuffer::ProcessCommands()
 				auto returnVal = m_Buffer.read<GLint*>();
 				if (returnVal)
 				{
-					GL_CHECK(*returnVal = glGetFragDataLocation(program, name));
+					GL_CHECK(*returnVal = (glGetFragDataLocation(program, name)));
 					return;
 				}
 				GL_CHECK(glGetFragDataLocation(program, name));
@@ -219,12 +219,12 @@ void ImmediateCommandBuffer::ProcessCommands()
 			}
 			case CommandId::GetStringi:
 			{
-				GLenum name = m_Buffer.read<GLenum>();
+				StringName name = m_Buffer.read<multigl::StringName>();
 				GLuint index = m_Buffer.read<GLuint>();
 				auto returnVal = m_Buffer.read<const GLubyte **>();
 				if (returnVal)
 				{
-					GL_CHECK(*returnVal = glGetStringi(name, index));
+					GL_CHECK(*returnVal = (glGetStringi(name, index)));
 					return;
 				}
 				GL_CHECK(glGetStringi(name, index));
@@ -237,7 +237,7 @@ void ImmediateCommandBuffer::ProcessCommands()
 				auto returnVal = m_Buffer.read<GLboolean*>();
 				if (returnVal)
 				{
-					GL_CHECK(*returnVal = glIsRenderbuffer(renderbuffer));
+					GL_CHECK(*returnVal = (glIsRenderbuffer(renderbuffer)));
 					return;
 				}
 				GL_CHECK(glIsRenderbuffer(renderbuffer));
@@ -257,7 +257,7 @@ void ImmediateCommandBuffer::ProcessCommands()
 				auto returnVal = m_Buffer.read<GLboolean*>();
 				if (returnVal)
 				{
-					GL_CHECK(*returnVal = glIsFramebuffer(framebuffer));
+					GL_CHECK(*returnVal = (glIsFramebuffer(framebuffer)));
 					return;
 				}
 				GL_CHECK(glIsFramebuffer(framebuffer));
@@ -272,11 +272,11 @@ void ImmediateCommandBuffer::ProcessCommands()
 			}
 			case CommandId::CheckFramebufferStatus:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
-				auto returnVal = m_Buffer.read<GLenum*>();
+				FramebufferTarget target = m_Buffer.read<multigl::FramebufferTarget>();
+				auto returnVal = m_Buffer.read<multigl::FramebufferStatus*>();
 				if (returnVal)
 				{
-					GL_CHECK(*returnVal = glCheckFramebufferStatus(target));
+					GL_CHECK(*returnVal = FramebufferStatus(glCheckFramebufferStatus(target)));
 					return;
 				}
 				GL_CHECK(glCheckFramebufferStatus(target));
@@ -284,14 +284,14 @@ void ImmediateCommandBuffer::ProcessCommands()
 			}
 			case CommandId::MapBufferRange:
 			{
-				GLenum target = m_Buffer.read<GLenum>();
+				BufferTarget target = m_Buffer.read<multigl::BufferTarget>();
 				GLintptr offset = m_Buffer.read<GLintptr>();
 				GLsizeiptr length = m_Buffer.read<GLsizeiptr>();
 				GLbitfield access = m_Buffer.read<GLbitfield>();
 				auto returnVal = m_Buffer.read<void **>();
 				if (returnVal)
 				{
-					GL_CHECK(*returnVal = glMapBufferRange(target, offset, length, access));
+					GL_CHECK(*returnVal = (glMapBufferRange(target, offset, length, access)));
 					return;
 				}
 				GL_CHECK(glMapBufferRange(target, offset, length, access));
@@ -310,7 +310,7 @@ void ImmediateCommandBuffer::ProcessCommands()
 				auto returnVal = m_Buffer.read<GLboolean*>();
 				if (returnVal)
 				{
-					GL_CHECK(*returnVal = glIsVertexArray(array));
+					GL_CHECK(*returnVal = (glIsVertexArray(array)));
 					return;
 				}
 				GL_CHECK(glIsVertexArray(array));
@@ -324,7 +324,7 @@ void ImmediateCommandBuffer::ProcessCommands()
 				auto returnVal = m_Buffer.read<GLuint*>();
 				if (returnVal)
 				{
-					GL_CHECK(*returnVal = glGetUniformBlockIndex(program, uniformBlockName));
+					GL_CHECK(*returnVal = (glGetUniformBlockIndex(program, uniformBlockName)));
 					return;
 				}
 				GL_CHECK(glGetUniformBlockIndex(program, uniformBlockName));
@@ -332,12 +332,12 @@ void ImmediateCommandBuffer::ProcessCommands()
 			}
 			case CommandId::FenceSync:
 			{
-				GLenum condition = m_Buffer.read<GLenum>();
+				SyncCondition condition = m_Buffer.read<multigl::SyncCondition>();
 				GLbitfield flags = m_Buffer.read<GLbitfield>();
 				auto returnVal = m_Buffer.read<GLsync*>();
 				if (returnVal)
 				{
-					GL_CHECK(*returnVal = glFenceSync(condition, flags));
+					GL_CHECK(*returnVal = (glFenceSync(condition, flags)));
 					return;
 				}
 				GL_CHECK(glFenceSync(condition, flags));
@@ -349,7 +349,7 @@ void ImmediateCommandBuffer::ProcessCommands()
 				auto returnVal = m_Buffer.read<GLboolean*>();
 				if (returnVal)
 				{
-					GL_CHECK(*returnVal = glIsSync(sync));
+					GL_CHECK(*returnVal = (glIsSync(sync)));
 					return;
 				}
 				GL_CHECK(glIsSync(sync));
@@ -360,10 +360,10 @@ void ImmediateCommandBuffer::ProcessCommands()
 				GLsync sync = m_Buffer.read<GLsync>();
 				GLbitfield flags = m_Buffer.read<GLbitfield>();
 				GLuint64 timeout = m_Buffer.read<GLuint64>();
-				auto returnVal = m_Buffer.read<GLenum*>();
+				auto returnVal = m_Buffer.read<multigl::SyncStatus*>();
 				if (returnVal)
 				{
-					GL_CHECK(*returnVal = glClientWaitSync(sync, flags, timeout));
+					GL_CHECK(*returnVal = SyncStatus(glClientWaitSync(sync, flags, timeout)));
 					return;
 				}
 				GL_CHECK(glClientWaitSync(sync, flags, timeout));
@@ -377,7 +377,7 @@ void ImmediateCommandBuffer::ProcessCommands()
 				auto returnVal = m_Buffer.read<GLint*>();
 				if (returnVal)
 				{
-					GL_CHECK(*returnVal = glGetFragDataIndex(program, name));
+					GL_CHECK(*returnVal = (glGetFragDataIndex(program, name)));
 					return;
 				}
 				GL_CHECK(glGetFragDataIndex(program, name));
@@ -389,7 +389,7 @@ void ImmediateCommandBuffer::ProcessCommands()
 				auto returnVal = m_Buffer.read<GLboolean*>();
 				if (returnVal)
 				{
-					GL_CHECK(*returnVal = glIsSampler(sampler));
+					GL_CHECK(*returnVal = (glIsSampler(sampler)));
 					return;
 				}
 				GL_CHECK(glIsSampler(sampler));
@@ -399,12 +399,12 @@ void ImmediateCommandBuffer::ProcessCommands()
 			{
 				ShaderProgramHandle programHandle = m_Buffer.read<ShaderProgramHandle>();
 				auto& program = *m_ResourceManager.ShaderPrograms.get(programHandle);
-				GLenum shadertype = m_Buffer.read<GLenum>();
+				ShaderType shadertype = m_Buffer.read<multigl::ShaderType>();
 				const GLchar * name = m_Buffer.read<const GLchar *>();
 				auto returnVal = m_Buffer.read<GLint*>();
 				if (returnVal)
 				{
-					GL_CHECK(*returnVal = glGetSubroutineUniformLocation(program, shadertype, name));
+					GL_CHECK(*returnVal = (glGetSubroutineUniformLocation(program, shadertype, name)));
 					return;
 				}
 				GL_CHECK(glGetSubroutineUniformLocation(program, shadertype, name));
@@ -414,12 +414,12 @@ void ImmediateCommandBuffer::ProcessCommands()
 			{
 				ShaderProgramHandle programHandle = m_Buffer.read<ShaderProgramHandle>();
 				auto& program = *m_ResourceManager.ShaderPrograms.get(programHandle);
-				GLenum shadertype = m_Buffer.read<GLenum>();
+				ShaderType shadertype = m_Buffer.read<multigl::ShaderType>();
 				const GLchar * name = m_Buffer.read<const GLchar *>();
 				auto returnVal = m_Buffer.read<GLuint*>();
 				if (returnVal)
 				{
-					GL_CHECK(*returnVal = glGetSubroutineIndex(program, shadertype, name));
+					GL_CHECK(*returnVal = (glGetSubroutineIndex(program, shadertype, name)));
 					return;
 				}
 				GL_CHECK(glGetSubroutineIndex(program, shadertype, name));
@@ -431,7 +431,7 @@ void ImmediateCommandBuffer::ProcessCommands()
 				auto returnVal = m_Buffer.read<GLboolean*>();
 				if (returnVal)
 				{
-					GL_CHECK(*returnVal = glIsTransformFeedback(id));
+					GL_CHECK(*returnVal = (glIsTransformFeedback(id)));
 					return;
 				}
 				GL_CHECK(glIsTransformFeedback(id));
@@ -439,13 +439,13 @@ void ImmediateCommandBuffer::ProcessCommands()
 			}
 			case CommandId::CreateShaderProgramv:
 			{
-				GLenum type = m_Buffer.read<GLenum>();
+				ShaderType type = m_Buffer.read<multigl::ShaderType>();
 				GLsizei count = m_Buffer.read<GLsizei>();
 				const GLchar *const* strings = m_Buffer.read<const GLchar *const*>();
 				auto returnVal = m_Buffer.read<GLuint*>();
 				if (returnVal)
 				{
-					GL_CHECK(*returnVal = glCreateShaderProgramv(type, count, strings));
+					GL_CHECK(*returnVal = (glCreateShaderProgramv(type, count, strings)));
 					return;
 				}
 				GL_CHECK(glCreateShaderProgramv(type, count, strings));
@@ -457,7 +457,7 @@ void ImmediateCommandBuffer::ProcessCommands()
 				auto returnVal = m_Buffer.read<GLboolean*>();
 				if (returnVal)
 				{
-					GL_CHECK(*returnVal = glIsProgramPipeline(pipeline));
+					GL_CHECK(*returnVal = (glIsProgramPipeline(pipeline)));
 					return;
 				}
 				GL_CHECK(glIsProgramPipeline(pipeline));
@@ -467,12 +467,12 @@ void ImmediateCommandBuffer::ProcessCommands()
 			{
 				ShaderProgramHandle programHandle = m_Buffer.read<ShaderProgramHandle>();
 				auto& program = *m_ResourceManager.ShaderPrograms.get(programHandle);
-				GLenum programInterface = m_Buffer.read<GLenum>();
+				ProgramInterface programInterface = m_Buffer.read<multigl::ProgramInterface>();
 				const GLchar * name = m_Buffer.read<const GLchar *>();
 				auto returnVal = m_Buffer.read<GLuint*>();
 				if (returnVal)
 				{
-					GL_CHECK(*returnVal = glGetProgramResourceIndex(program, programInterface, name));
+					GL_CHECK(*returnVal = (glGetProgramResourceIndex(program, programInterface, name)));
 					return;
 				}
 				GL_CHECK(glGetProgramResourceIndex(program, programInterface, name));
@@ -482,12 +482,12 @@ void ImmediateCommandBuffer::ProcessCommands()
 			{
 				ShaderProgramHandle programHandle = m_Buffer.read<ShaderProgramHandle>();
 				auto& program = *m_ResourceManager.ShaderPrograms.get(programHandle);
-				GLenum programInterface = m_Buffer.read<GLenum>();
+				ProgramInterface programInterface = m_Buffer.read<multigl::ProgramInterface>();
 				const GLchar * name = m_Buffer.read<const GLchar *>();
 				auto returnVal = m_Buffer.read<GLint*>();
 				if (returnVal)
 				{
-					GL_CHECK(*returnVal = glGetProgramResourceLocation(program, programInterface, name));
+					GL_CHECK(*returnVal = (glGetProgramResourceLocation(program, programInterface, name)));
 					return;
 				}
 				GL_CHECK(glGetProgramResourceLocation(program, programInterface, name));
@@ -497,12 +497,12 @@ void ImmediateCommandBuffer::ProcessCommands()
 			{
 				ShaderProgramHandle programHandle = m_Buffer.read<ShaderProgramHandle>();
 				auto& program = *m_ResourceManager.ShaderPrograms.get(programHandle);
-				GLenum programInterface = m_Buffer.read<GLenum>();
+				ProgramInterface programInterface = m_Buffer.read<multigl::ProgramInterface>();
 				const GLchar * name = m_Buffer.read<const GLchar *>();
 				auto returnVal = m_Buffer.read<GLint*>();
 				if (returnVal)
 				{
-					GL_CHECK(*returnVal = glGetProgramResourceLocationIndex(program, programInterface, name));
+					GL_CHECK(*returnVal = (glGetProgramResourceLocationIndex(program, programInterface, name)));
 					return;
 				}
 				GL_CHECK(glGetProgramResourceLocationIndex(program, programInterface, name));
@@ -521,7 +521,7 @@ void ImmediateCommandBuffer::ProcessCommands()
 				auto returnVal = m_Buffer.read<GLuint*>();
 				if (returnVal)
 				{
-					GL_CHECK(*returnVal = glGetDebugMessageLog(count, bufSize, sources, types, ids, severities, lengths, messageLog));
+					GL_CHECK(*returnVal = (glGetDebugMessageLog(count, bufSize, sources, types, ids, severities, lengths, messageLog)));
 					return;
 				}
 				GL_CHECK(glGetDebugMessageLog(count, bufSize, sources, types, ids, severities, lengths, messageLog));
@@ -538,11 +538,11 @@ void ImmediateCommandBuffer::ProcessCommands()
 			{
 				BufferHandle bufferHandle = m_Buffer.read<BufferHandle>();
 				auto& buffer = *m_ResourceManager.Buffers.get(bufferHandle);
-				GLenum access = m_Buffer.read<GLenum>();
+				BufferAccessARB access = m_Buffer.read<multigl::BufferAccessARB>();
 				auto returnVal = m_Buffer.read<void **>();
 				if (returnVal)
 				{
-					GL_CHECK(*returnVal = glMapNamedBuffer(buffer, access));
+					GL_CHECK(*returnVal = (glMapNamedBuffer(buffer, access)));
 					return;
 				}
 				GL_CHECK(glMapNamedBuffer(buffer, access));
@@ -558,7 +558,7 @@ void ImmediateCommandBuffer::ProcessCommands()
 				auto returnVal = m_Buffer.read<void **>();
 				if (returnVal)
 				{
-					GL_CHECK(*returnVal = glMapNamedBufferRange(buffer, offset, length, access));
+					GL_CHECK(*returnVal = (glMapNamedBufferRange(buffer, offset, length, access)));
 					return;
 				}
 				GL_CHECK(glMapNamedBufferRange(buffer, offset, length, access));
@@ -571,7 +571,7 @@ void ImmediateCommandBuffer::ProcessCommands()
 				auto returnVal = m_Buffer.read<GLboolean*>();
 				if (returnVal)
 				{
-					GL_CHECK(*returnVal = glUnmapNamedBuffer(buffer));
+					GL_CHECK(*returnVal = (glUnmapNamedBuffer(buffer)));
 					return;
 				}
 				GL_CHECK(glUnmapNamedBuffer(buffer));
@@ -588,11 +588,11 @@ void ImmediateCommandBuffer::ProcessCommands()
 			{
 				FramebufferHandle framebufferHandle = m_Buffer.read<FramebufferHandle>();
 				auto& framebuffer = *m_ResourceManager.Framebuffers.get(framebufferHandle);
-				GLenum target = m_Buffer.read<GLenum>();
-				auto returnVal = m_Buffer.read<GLenum*>();
+				FramebufferTarget target = m_Buffer.read<multigl::FramebufferTarget>();
+				auto returnVal = m_Buffer.read<multigl::FramebufferStatus*>();
 				if (returnVal)
 				{
-					GL_CHECK(*returnVal = glCheckNamedFramebufferStatus(framebuffer, target));
+					GL_CHECK(*returnVal = FramebufferStatus(glCheckNamedFramebufferStatus(framebuffer, target)));
 					return;
 				}
 				GL_CHECK(glCheckNamedFramebufferStatus(framebuffer, target));
@@ -607,7 +607,7 @@ void ImmediateCommandBuffer::ProcessCommands()
 			}
 			case CommandId::CreateTexture:
 			{
-				auto target = m_Buffer.read<GLenum>();
+				auto target = m_Buffer.read<TextureTarget>();
 				auto handle = m_Buffer.read<TextureHandle>();
 				auto& texture = *m_ResourceManager.Textures.get(handle);
 				glCreateTextures(target, 1, &texture);
@@ -622,10 +622,10 @@ void ImmediateCommandBuffer::ProcessCommands()
 			}
 			case CommandId::GetGraphicsResetStatus:
 			{
-				auto returnVal = m_Buffer.read<GLenum*>();
+				auto returnVal = m_Buffer.read<multigl::GraphicsResetStatus*>();
 				if (returnVal)
 				{
-					GL_CHECK(*returnVal = glGetGraphicsResetStatus());
+					GL_CHECK(*returnVal = GraphicsResetStatus(glGetGraphicsResetStatus()));
 					return;
 				}
 				GL_CHECK(glGetGraphicsResetStatus());

@@ -15,20 +15,20 @@ ImmediateCommandBuffer::~ImmediateCommandBuffer()
 	// TODO: Wait on job system task here
 }
 
-void ImmediateCommandBuffer::GetError(GLenum* returnVal)
+void ImmediateCommandBuffer::GetError(ErrorCode* returnVal)
 {
 	m_Buffer.write_command(CommandId::GetError);
 	m_Buffer.write(returnVal);
 }
 
-void ImmediateCommandBuffer::GetString(GLenum name, const GLubyte ** returnVal)
+void ImmediateCommandBuffer::GetString(StringName name, const GLubyte ** returnVal)
 {
 	m_Buffer.write_command(CommandId::GetString);
 	m_Buffer.write(name);
 	m_Buffer.write(returnVal);
 }
 
-void ImmediateCommandBuffer::IsEnabled(GLenum cap, GLboolean* returnVal)
+void ImmediateCommandBuffer::IsEnabled(EnableCap cap, GLboolean* returnVal)
 {
 	m_Buffer.write_command(CommandId::IsEnabled);
 	m_Buffer.write(cap);
@@ -74,7 +74,7 @@ void ImmediateCommandBuffer::IsBuffer(BufferHandle buffer, GLboolean* returnVal)
 	m_Buffer.write(returnVal);
 }
 
-void ImmediateCommandBuffer::MapBuffer(GLenum target, GLenum access, void ** returnVal)
+void ImmediateCommandBuffer::MapBuffer(BufferTarget target, BufferAccessARB access, void ** returnVal)
 {
 	m_Buffer.write_command(CommandId::MapBuffer);
 	m_Buffer.write(target);
@@ -82,7 +82,7 @@ void ImmediateCommandBuffer::MapBuffer(GLenum target, GLenum access, void ** ret
 	m_Buffer.write(returnVal);
 }
 
-void ImmediateCommandBuffer::UnmapBuffer(GLenum target, GLboolean* returnVal)
+void ImmediateCommandBuffer::UnmapBuffer(BufferTarget target, GLboolean* returnVal)
 {
 	m_Buffer.write_command(CommandId::UnmapBuffer);
 	m_Buffer.write(target);
@@ -98,13 +98,13 @@ ShaderProgramHandle ImmediateCommandBuffer::CreateProgram()
 	return handle;
 }
 
-ShaderHandle ImmediateCommandBuffer::CreateShader(GLenum type)
+ShaderHandle ImmediateCommandBuffer::CreateShader(multigl::ShaderType type)
 {
 	m_Buffer.write_command(CommandId::CreateShader);
 
 	auto handle = m_ResourceManager.Shaders.create(0);
 	m_Buffer.write(handle);
-	m_Buffer.write<GLenum>(type);
+	m_Buffer.write<ShaderType>(type);
 	return handle;
 }
 
@@ -138,7 +138,7 @@ void ImmediateCommandBuffer::IsShader(ShaderHandle shader, GLboolean* returnVal)
 	m_Buffer.write(returnVal);
 }
 
-void ImmediateCommandBuffer::IsEnabledi(GLenum target, GLuint index, GLboolean* returnVal)
+void ImmediateCommandBuffer::IsEnabledi(EnableCap target, GLuint index, GLboolean* returnVal)
 {
 	m_Buffer.write_command(CommandId::IsEnabledi);
 	m_Buffer.write(target);
@@ -154,7 +154,7 @@ void ImmediateCommandBuffer::GetFragDataLocation(ShaderProgramHandle program, co
 	m_Buffer.write(returnVal);
 }
 
-void ImmediateCommandBuffer::GetStringi(GLenum name, GLuint index, const GLubyte ** returnVal)
+void ImmediateCommandBuffer::GetStringi(StringName name, GLuint index, const GLubyte ** returnVal)
 {
 	m_Buffer.write_command(CommandId::GetStringi);
 	m_Buffer.write(name);
@@ -194,14 +194,14 @@ FramebufferHandle ImmediateCommandBuffer::GenFramebuffer()
 	return handle;
 }
 
-void ImmediateCommandBuffer::CheckFramebufferStatus(GLenum target, GLenum* returnVal)
+void ImmediateCommandBuffer::CheckFramebufferStatus(FramebufferTarget target, FramebufferStatus* returnVal)
 {
 	m_Buffer.write_command(CommandId::CheckFramebufferStatus);
 	m_Buffer.write(target);
 	m_Buffer.write(returnVal);
 }
 
-void ImmediateCommandBuffer::MapBufferRange(GLenum target, GLintptr offset, GLsizeiptr length, GLbitfield access, void ** returnVal)
+void ImmediateCommandBuffer::MapBufferRange(BufferTarget target, GLintptr offset, GLsizeiptr length, GLbitfield access, void ** returnVal)
 {
 	m_Buffer.write_command(CommandId::MapBufferRange);
 	m_Buffer.write(target);
@@ -235,7 +235,7 @@ void ImmediateCommandBuffer::GetUniformBlockIndex(ShaderProgramHandle program, c
 	m_Buffer.write(returnVal);
 }
 
-void ImmediateCommandBuffer::FenceSync(GLenum condition, GLbitfield flags, GLsync* returnVal)
+void ImmediateCommandBuffer::FenceSync(SyncCondition condition, GLbitfield flags, GLsync* returnVal)
 {
 	m_Buffer.write_command(CommandId::FenceSync);
 	m_Buffer.write(condition);
@@ -250,7 +250,7 @@ void ImmediateCommandBuffer::IsSync(GLsync sync, GLboolean* returnVal)
 	m_Buffer.write(returnVal);
 }
 
-void ImmediateCommandBuffer::ClientWaitSync(GLsync sync, GLbitfield flags, GLuint64 timeout, GLenum* returnVal)
+void ImmediateCommandBuffer::ClientWaitSync(GLsync sync, GLbitfield flags, GLuint64 timeout, SyncStatus* returnVal)
 {
 	m_Buffer.write_command(CommandId::ClientWaitSync);
 	m_Buffer.write(sync);
@@ -274,7 +274,7 @@ void ImmediateCommandBuffer::IsSampler(GLuint sampler, GLboolean* returnVal)
 	m_Buffer.write(returnVal);
 }
 
-void ImmediateCommandBuffer::GetSubroutineUniformLocation(ShaderProgramHandle program, GLenum shadertype, const GLchar * name, GLint* returnVal)
+void ImmediateCommandBuffer::GetSubroutineUniformLocation(ShaderProgramHandle program, ShaderType shadertype, const GLchar * name, GLint* returnVal)
 {
 	m_Buffer.write_command(CommandId::GetSubroutineUniformLocation);
 	m_Buffer.write(program);
@@ -283,7 +283,7 @@ void ImmediateCommandBuffer::GetSubroutineUniformLocation(ShaderProgramHandle pr
 	m_Buffer.write(returnVal);
 }
 
-void ImmediateCommandBuffer::GetSubroutineIndex(ShaderProgramHandle program, GLenum shadertype, const GLchar * name, GLuint* returnVal)
+void ImmediateCommandBuffer::GetSubroutineIndex(ShaderProgramHandle program, ShaderType shadertype, const GLchar * name, GLuint* returnVal)
 {
 	m_Buffer.write_command(CommandId::GetSubroutineIndex);
 	m_Buffer.write(program);
@@ -299,7 +299,7 @@ void ImmediateCommandBuffer::IsTransformFeedback(GLuint id, GLboolean* returnVal
 	m_Buffer.write(returnVal);
 }
 
-void ImmediateCommandBuffer::CreateShaderProgramv(GLenum type, GLsizei count, const GLchar *const* strings, GLuint* returnVal)
+void ImmediateCommandBuffer::CreateShaderProgramv(ShaderType type, GLsizei count, const GLchar *const* strings, GLuint* returnVal)
 {
 	m_Buffer.write_command(CommandId::CreateShaderProgramv);
 	m_Buffer.write(type);
@@ -315,7 +315,7 @@ void ImmediateCommandBuffer::IsProgramPipeline(GLuint pipeline, GLboolean* retur
 	m_Buffer.write(returnVal);
 }
 
-void ImmediateCommandBuffer::GetProgramResourceIndex(ShaderProgramHandle program, GLenum programInterface, const GLchar * name, GLuint* returnVal)
+void ImmediateCommandBuffer::GetProgramResourceIndex(ShaderProgramHandle program, ProgramInterface programInterface, const GLchar * name, GLuint* returnVal)
 {
 	m_Buffer.write_command(CommandId::GetProgramResourceIndex);
 	m_Buffer.write(program);
@@ -324,7 +324,7 @@ void ImmediateCommandBuffer::GetProgramResourceIndex(ShaderProgramHandle program
 	m_Buffer.write(returnVal);
 }
 
-void ImmediateCommandBuffer::GetProgramResourceLocation(ShaderProgramHandle program, GLenum programInterface, const GLchar * name, GLint* returnVal)
+void ImmediateCommandBuffer::GetProgramResourceLocation(ShaderProgramHandle program, ProgramInterface programInterface, const GLchar * name, GLint* returnVal)
 {
 	m_Buffer.write_command(CommandId::GetProgramResourceLocation);
 	m_Buffer.write(program);
@@ -333,7 +333,7 @@ void ImmediateCommandBuffer::GetProgramResourceLocation(ShaderProgramHandle prog
 	m_Buffer.write(returnVal);
 }
 
-void ImmediateCommandBuffer::GetProgramResourceLocationIndex(ShaderProgramHandle program, GLenum programInterface, const GLchar * name, GLint* returnVal)
+void ImmediateCommandBuffer::GetProgramResourceLocationIndex(ShaderProgramHandle program, ProgramInterface programInterface, const GLchar * name, GLint* returnVal)
 {
 	m_Buffer.write_command(CommandId::GetProgramResourceLocationIndex);
 	m_Buffer.write(program);
@@ -365,7 +365,7 @@ BufferHandle ImmediateCommandBuffer::CreateBuffer()
 	return handle;
 }
 
-void ImmediateCommandBuffer::MapNamedBuffer(BufferHandle buffer, GLenum access, void ** returnVal)
+void ImmediateCommandBuffer::MapNamedBuffer(BufferHandle buffer, BufferAccessARB access, void ** returnVal)
 {
 	m_Buffer.write_command(CommandId::MapNamedBuffer);
 	m_Buffer.write(buffer);
@@ -399,7 +399,7 @@ FramebufferHandle ImmediateCommandBuffer::CreateFramebuffer()
 	return handle;
 }
 
-void ImmediateCommandBuffer::CheckNamedFramebufferStatus(FramebufferHandle framebuffer, GLenum target, GLenum* returnVal)
+void ImmediateCommandBuffer::CheckNamedFramebufferStatus(FramebufferHandle framebuffer, FramebufferTarget target, FramebufferStatus* returnVal)
 {
 	m_Buffer.write_command(CommandId::CheckNamedFramebufferStatus);
 	m_Buffer.write(framebuffer);
@@ -416,7 +416,7 @@ RenderbufferHandle ImmediateCommandBuffer::CreateRenderbuffer()
 	return handle;
 }
 
-TextureHandle ImmediateCommandBuffer::CreateTexture(GLenum target)
+TextureHandle ImmediateCommandBuffer::CreateTexture(multigl::TextureTarget target)
 {
 	m_Buffer.write_command(CommandId::CreateTexture);
 
@@ -435,7 +435,7 @@ VertexArrayHandle ImmediateCommandBuffer::CreateVertexArray()
 	return handle;
 }
 
-void ImmediateCommandBuffer::GetGraphicsResetStatus(GLenum* returnVal)
+void ImmediateCommandBuffer::GetGraphicsResetStatus(GraphicsResetStatus* returnVal)
 {
 	m_Buffer.write_command(CommandId::GetGraphicsResetStatus);
 	m_Buffer.write(returnVal);

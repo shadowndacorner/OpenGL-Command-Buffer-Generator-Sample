@@ -344,7 +344,7 @@ namespace graphics
 		for (int i = 0; i < desc.member_count; ++i)
 		{
 			auto& member = desc.members[i];
-			buffer.VertexArrayAttribFormat(handle, member.index, member.num_components, enum_convert(member.type), member.normalized ? GL_TRUE : GL_FALSE, member.offset);
+			buffer.VertexArrayAttribFormat(handle, member.index, member.num_components, multigl::VertexAttribType(enum_convert(member.type)), member.normalized ? GL_TRUE : GL_FALSE, member.offset);
 			buffer.VertexArrayAttribBinding(handle, member.index, member.buffer_slot);
 			buffer.EnableVertexArrayAttrib(handle, member.index);
 		}
@@ -398,6 +398,7 @@ int main(int argc, char** argv)
 		0, 2, 3
 	};
 
+	using namespace multigl;
 	auto vbo = commandBuffer.CreateBuffer();
 	commandBuffer.NamedBufferStorage(vbo, sizeof(vertexBuffer), vertexBuffer, 0);
 
@@ -415,15 +416,15 @@ int main(int argc, char** argv)
 	int width, height, channels;
 	auto data = stbi_load("texture.png", &width, &height, &channels, 0);
 
-	auto texture = commandBuffer.CreateTexture(GL_TEXTURE_2D);
-	commandBuffer.TextureStorage2D(texture, 1, GL_RGBA8, width, height);
-	commandBuffer.TextureSubImage2D(texture, 0, 0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, data);
+	auto texture = commandBuffer.CreateTexture(TextureTarget::Texture2D);
+	commandBuffer.TextureStorage2D(texture, 1, InternalFormat::RGBA8, width, height);
+	commandBuffer.TextureSubImage2D(texture, 0, 0, 0, width, height, PixelFormat::RGBA, PixelType::UnsignedByte, data);
 	
-	auto vertexShader = commandBuffer.CreateShader(GL_VERTEX_SHADER);
+	auto vertexShader = commandBuffer.CreateShader(ShaderType::VertexShader);
 	commandBuffer.ShaderSource(vertexShader, vertSource, sizeof(vertSource) / sizeof(char));
 	commandBuffer.CompileShader(vertexShader);
 
-	auto fragShader = commandBuffer.CreateShader(GL_FRAGMENT_SHADER);
+	auto fragShader = commandBuffer.CreateShader(ShaderType::FragmentShader);
 	commandBuffer.ShaderSource(fragShader, fragSource, sizeof(fragSource) / sizeof(char));
 	commandBuffer.CompileShader(fragShader);
 
@@ -438,8 +439,8 @@ int main(int argc, char** argv)
 	commandBuffer.UniformBlockBinding(program, 0, 0);
 	commandBuffer.UniformBlockBinding(program, 1, 1);
 
-	commandBuffer.BindBufferBase(GL_UNIFORM_BUFFER, 0, frameUBO);
-	commandBuffer.BindBufferBase(GL_UNIFORM_BUFFER, 1, objectUBO);
+	commandBuffer.BindBufferBase(BufferTarget::UniformBuffer, 0, frameUBO);
+	commandBuffer.BindBufferBase(BufferTarget::UniformBuffer, 1, objectUBO);
 
 	commandBuffer.BindTextureUnit(0, texture);
 	commandBuffer.ProgramUniform1i(program, 0, 0);
@@ -467,8 +468,8 @@ int main(int argc, char** argv)
 			commandBuffer.UseProgram(program);
 			commandBuffer.BindVertexArray(vertexArray);
 			commandBuffer.VertexArrayVertexBuffer(vertexArray, 0, vbo, 0, sizeof(graphics::static_vertex));
-			commandBuffer.BindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-			commandBuffer.DrawElements(GL_TRIANGLES, sizeof(indexBuffer) / sizeof(uint16_t), GL_UNSIGNED_SHORT, 0);
+			commandBuffer.BindBuffer(BufferTarget::ElementArrayBuffer, ibo);
+			commandBuffer.DrawElements(PrimitiveType::Triangles, sizeof(indexBuffer) / sizeof(uint16_t), DrawElementsType::UnsignedShort, 0);
 		}
 
 		commandBuffer.ProcessCommands();
