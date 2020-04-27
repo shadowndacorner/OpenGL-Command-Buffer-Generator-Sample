@@ -525,9 +525,8 @@ void CommandBuffer::ProcessCommands()
 			}
 			case CommandId::ActiveTexture:
 			{
-				TextureHandle textureHandle = m_Buffer.read<TextureHandle>();
-				auto& texture = *m_ResourceManager.Textures.get(textureHandle);
-				GL_CHECK(glActiveTexture(texture));
+				GLuint textureSlot = m_Buffer.read<GLuint>();
+				GL_CHECK(glActiveTexture(GL_TEXTURE0 + textureSlot));
 				break;
 			}
 			case CommandId::SampleCoverage:

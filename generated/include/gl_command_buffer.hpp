@@ -74,7 +74,7 @@ namespace multigl
 		void TexImage3D(multigl::TextureTarget target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, multigl::PixelFormat format, multigl::PixelType type, const void * pixels);
 		void TexSubImage3D(multigl::TextureTarget target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, multigl::PixelFormat format, multigl::PixelType type, const void * pixels);
 		void CopyTexSubImage3D(multigl::TextureTarget target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height);
-		void ActiveTexture(multigl::TextureHandle texture);
+		void ActiveTexture(GLuint textureSlot);
 		void SampleCoverage(GLfloat value, GLboolean invert);
 		void CompressedTexImage3D(multigl::TextureTarget target, GLint level, multigl::InternalFormat internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLsizei imageSize, const void * data);
 		void CompressedTexImage2D(multigl::TextureTarget target, GLint level, multigl::InternalFormat internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, const void * data);

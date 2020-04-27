@@ -522,10 +522,10 @@ void CommandBuffer::CopyTexSubImage3D(multigl::TextureTarget target, GLint level
 	m_Buffer.write(height);
 }
 
-void CommandBuffer::ActiveTexture(multigl::TextureHandle texture)
+void CommandBuffer::ActiveTexture(GLuint textureSlot)
 {
 	m_Buffer.write_command(CommandId::ActiveTexture);
-	m_Buffer.write(texture);
+	m_Buffer.write(textureSlot);
 }
 
 void CommandBuffer::SampleCoverage(GLfloat value, GLboolean invert)
